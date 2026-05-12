@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using JingHongLu.Skills;
@@ -14,6 +15,9 @@ namespace JingHongLu.SwordArts
 
         private readonly List<StrokeRecord> records = new List<StrokeRecord>();
         private bool warnedMissingSkillController;
+
+        public event Action<StrokeRecord> OnStrokeRecorded;
+        public event Action OnRecordsChanged;
 
         public IReadOnlyList<StrokeRecord> Records => records;
         public float StrokeLifetime => strokeLifetime;
@@ -49,6 +53,34 @@ namespace JingHongLu.SwordArts
             RemoveExpiredRecords();
         }
 
+        public IReadOnlyList<StrokeRecord> GetActiveRecords()
+        {
+            RemoveExpiredRecords();
+            return records;
+        }
+
+        public void RemoveLastRecords(int count)
+        {
+            if (count <= 0 || records.Count == 0)
+            {
+                return;
+            }
+
+            if (count >= records.Count)
+            {
+                records.Clear();
+            }
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    records.RemoveAt(records.Count - 1);
+                }
+            }
+
+            OnRecordsChanged?.Invoke();
+        }
+
         private void ResolveReferences()
         {
             if (skillController == null)
@@ -65,12 +97,17 @@ namespace JingHongLu.SwordArts
             }
 
             RemoveExpiredRecords();
-            records.Add(new StrokeRecord(skill.StrokeType, skill, Time.time));
 
-            while (records.Count > Mathf.Max(1, maxStrokeCount))
-            {
-                records.RemoveAt(0);
-            }
+            StrokeRecord newRecord = new StrokeRecord(
+                skill.StrokeType,
+                skill,
+                Time.time);
+            records.Add(newRecord);
+
+            TrimToMaxCount();
+
+            OnStrokeRecorded?.Invoke(newRecord);
+            OnRecordsChanged?.Invoke();
 
             if (logStrokeRecords)
             {
@@ -82,14 +119,35 @@ namespace JingHongLu.SwordArts
         {
             float now = Time.time;
             float lifetime = Mathf.Max(0f, strokeLifetime);
+            bool removedAny = false;
 
             for (int i = records.Count - 1; i >= 0; i--)
             {
                 if (now - records[i].Time > lifetime)
                 {
                     records.RemoveAt(i);
+                    removedAny = true;
                 }
             }
+
+            if (removedAny)
+            {
+                OnRecordsChanged?.Invoke();
+            }
+        }
+
+        private bool TrimToMaxCount()
+        {
+            int safeMaxCount = Mathf.Max(1, maxStrokeCount);
+            bool removedAny = false;
+
+            while (records.Count > safeMaxCount)
+            {
+                records.RemoveAt(0);
+                removedAny = true;
+            }
+
+            return removedAny;
         }
 
         private string BuildDebugText()

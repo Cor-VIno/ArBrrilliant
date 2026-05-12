@@ -1,0 +1,29 @@
+using System.Collections.Generic;
+using JingHongLu.Skills;
+using UnityEngine;
+
+namespace JingHongLu.SwordArts
+{
+    [CreateAssetMenu(
+        fileName = "SwordArtData",
+        menuName = "JingHongLu/SwordArts/Sword Art Data")]
+    public sealed class SwordArtData : ScriptableObject
+    {
+        [Header("Basic")]
+        [SerializeField] private string swordArtId = string.Empty;
+        [SerializeField] private string displayName = string.Empty;
+
+        [Header("Sequence")]
+        [SerializeField] private StrokeType[] requiredSequence;
+
+        [Header("Trigger")]
+        [SerializeField] private bool consumeMatchedStrokes = true;
+        [SerializeField] private float cooldown = 0f;
+
+        public string SwordArtId => swordArtId;
+        public string DisplayName => displayName;
+        public IReadOnlyList<StrokeType> RequiredSequence => requiredSequence;
+        public bool ConsumeMatchedStrokes => consumeMatchedStrokes;
+        public float Cooldown => cooldown;
+    }
+}

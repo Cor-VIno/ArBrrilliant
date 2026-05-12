@@ -513,6 +513,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerDashController2D
   motor: {fileID: 1997787998}
   damageable: {fileID: 0}
+--- !u!114 &1997788005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997787995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2641afe09baa441c899ed77f53cc00fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.SwordArtMatcher
+  strokeRecorder: {fileID: 1997788012}
+  swordArts:
+  - {fileID: 11400000, guid: 16fb1b599b7341f2aed34430d40117f7, type: 2}
+  - {fileID: 11400000, guid: 62881bd0bb0a62f4c83c2fae14589bfe, type: 2}
+  logMatchedSwordArt: 1
+--- !u!114 &1997788006 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1785346738552175715, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+  m_PrefabInstance: {fileID: 2665350594413093923}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997787995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cc40a18c73b4d2b903bce911041bb49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Skills.PlayerSkillController
+--- !u!114 &1997788012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997787995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77f7b42b41db43b186bdb90908e019ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.StrokeRecorder
+  skillController: {fileID: 1997788006}
+  strokeLifetime: 3
+  maxStrokeCount: 5
+  logStrokeRecords: 1
 --- !u!1001 &2665350594413093923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -584,6 +628,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1997788004}
+    - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1997788005}
+    - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1997788012}
   m_SourcePrefab: {fileID: 100100000, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
 --- !u!1001 &6100636087996527265
 PrefabInstance:
