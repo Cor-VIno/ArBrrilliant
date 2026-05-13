@@ -18,4 +18,5 @@ MonoBehaviour:
   - 1
   - 2
   consumeMatchedStrokes: 1
-  cooldown: 0
+  cooldown: 0.5
+  effectData: {fileID: 11400000, guid: af14dabbbdf4428597b82d4c4b57ef63, type: 2}

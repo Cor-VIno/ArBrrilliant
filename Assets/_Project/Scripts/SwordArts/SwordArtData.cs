@@ -20,10 +20,14 @@ namespace JingHongLu.SwordArts
         [SerializeField] private bool consumeMatchedStrokes = true;
         [SerializeField] private float cooldown = 0f;
 
+        [Header("Effect")]
+        [SerializeField] private SwordArtEffectData effectData;
+
         public string SwordArtId => swordArtId;
         public string DisplayName => displayName;
         public IReadOnlyList<StrokeType> RequiredSequence => requiredSequence;
         public bool ConsumeMatchedStrokes => consumeMatchedStrokes;
         public float Cooldown => cooldown;
+        public SwordArtEffectData EffectData => effectData;
     }
 }
