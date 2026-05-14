@@ -527,8 +527,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.SwordArtMatcher
   strokeRecorder: {fileID: 1997788012}
   swordArts:
-  - {fileID: 11400000, guid: 16fb1b599b7341f2aed34430d40117f7, type: 2}
   - {fileID: 11400000, guid: 62881bd0bb0a62f4c83c2fae14589bfe, type: 2}
+  - {fileID: 11400000, guid: 7b3a8f7dbfd9422ab172e3a9bda9fa51, type: 2}
+  - {fileID: 11400000, guid: ba715be50dde44f99883f1c18d0c3609, type: 2}
   logMatchedSwordArt: 1
 --- !u!114 &1997788006 stripped
 MonoBehaviour:
@@ -557,6 +558,33 @@ MonoBehaviour:
   strokeLifetime: 3
   maxStrokeCount: 5
   logStrokeRecords: 1
+--- !u!114 &1997788013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997787995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84e11d3496014c118c6762656ef8b474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.SwordArtExecutor
+  matcher: {fileID: 1997788005}
+  aim: {fileID: 1997788014}
+  ownerTeam: 1
+  logExecution: 1
+--- !u!114 &1997788014 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4257306292869420020, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+  m_PrefabInstance: {fileID: 2665350594413093923}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997787995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea0af83a9a84466a3f492bc64776361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerAim2D
 --- !u!1001 &2665350594413093923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -617,6 +645,18 @@ PrefabInstance:
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 6101000000000000001, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: maxHealth
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101000000000000001, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: currentHealth
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101000000000000004, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: dashController
+      value: 
+      objectReference: {fileID: 1997788004}
     - target: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: m_Name
       value: Player
@@ -634,6 +674,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1997788012}
+    - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1997788013}
   m_SourcePrefab: {fileID: 100100000, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
 --- !u!1001 &6100636087996527265
 PrefabInstance:
@@ -683,10 +726,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3466161962813156661, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4160151727826028457, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
+      propertyPath: maxHealth
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4160151727826028457, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
+      propertyPath: currentHealth
+      value: 10000
+      objectReference: {fileID: 0}
     - target: {fileID: 4505163382433563501, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
       propertyPath: m_Name
       value: Dummy_Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 6201000000000000001, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
+      propertyPath: m_GravityScale
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6201000000000000002, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 1997788003}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

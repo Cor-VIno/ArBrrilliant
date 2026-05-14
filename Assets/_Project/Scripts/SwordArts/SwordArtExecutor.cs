@@ -74,6 +74,12 @@ namespace JingHongLu.SwordArts
                 case SwordArtEffectType.InstantHitbox:
                     SpawnInstantHitbox(swordArt, effectData);
                     break;
+                case SwordArtEffectType.LineArea:
+                    SpawnLineArea(swordArt, effectData);
+                    break;
+                case SwordArtEffectType.HealingArea:
+                    SpawnHealingArea(swordArt, effectData);
+                    break;
                 default:
                     Debug.LogWarning(
                         $"{swordArt.DisplayName} uses unsupported sword art effect: {effectData.EffectType}.",
@@ -112,7 +118,11 @@ namespace JingHongLu.SwordArts
                 radius: effectData.HitboxRadius,
                 innerRadius: effectData.HitboxInnerRadius,
                 arcAngle: effectData.HitboxArcAngle,
-                destroyOnFirstHit: false);
+                destroyOnFirstHit: false,
+                sourceDisplayName: swordArt.DisplayName,
+                canKnockUp: effectData.CanKnockUp,
+                knockUpVelocity: effectData.KnockUpVelocity,
+                airborneDuration: effectData.AirborneDuration);
 
             if (logExecution)
             {
@@ -128,6 +138,105 @@ namespace JingHongLu.SwordArts
             }
 
             return transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
+        }
+
+        private void SpawnLineArea(
+            SwordArtData swordArt,
+            SwordArtEffectData effectData)
+        {
+            Vector2 startPoint = transform.position;
+            Vector2 aimDirection = GetAimDirection();
+            Vector2 targetPoint = GetLineAreaTargetPoint(startPoint, aimDirection);
+            Vector2 toTarget = targetPoint - startPoint;
+            float maxLength = Mathf.Max(0.01f, effectData.LineMaxLength);
+
+            if (toTarget.sqrMagnitude < 0.0001f)
+            {
+                targetPoint = startPoint + aimDirection * (maxLength * 0.5f);
+            }
+            else if (toTarget.magnitude > maxLength)
+            {
+                targetPoint = startPoint + toTarget.normalized * maxLength;
+            }
+
+            GameObject areaObject =
+                new GameObject($"{swordArt.SwordArtId}_LineArea");
+            areaObject.transform.position = startPoint;
+
+            SwordArtLineArea2D lineArea =
+                areaObject.AddComponent<SwordArtLineArea2D>();
+            lineArea.Initialize(
+                owner: gameObject,
+                ownerTeam: ownerTeam,
+                startPoint: startPoint,
+                endPoint: targetPoint,
+                lineWidth: effectData.LineWidth,
+                duration: effectData.AreaDuration,
+                tickInterval: effectData.TickInterval,
+                tickDamage: effectData.TickDamage,
+                finalDamage: effectData.FinalDamage,
+                targetLayerMask: effectData.TargetLayerMask,
+                sourceDisplayName: swordArt.DisplayName,
+                finalCanKnockUp: effectData.FinalCanKnockUp,
+                finalKnockUpVelocity: effectData.FinalKnockUpVelocity,
+                finalAirborneDuration: effectData.FinalAirborneDuration,
+                gizmoColor: effectData.GizmoColor);
+
+            if (logExecution)
+            {
+                Debug.Log($"执行剑招效果：{swordArt.DisplayName}", this);
+            }
+        }
+
+        private Vector2 GetLineAreaTargetPoint(
+            Vector2 startPoint,
+            Vector2 aimDirection)
+        {
+            if (aim != null)
+            {
+                return aim.MouseWorldPosition;
+            }
+
+            return startPoint + aimDirection;
+        }
+
+        private void SpawnHealingArea(
+            SwordArtData swordArt,
+            SwordArtEffectData effectData)
+        {
+            if (!TryGetComponent(out Health health))
+            {
+                health = GetComponentInParent<Health>();
+            }
+
+            if (health == null)
+            {
+                Debug.LogWarning("Healing area requires Health on owner.", this);
+                return;
+            }
+
+            Vector2 center = transform.position;
+            GameObject areaObject =
+                new GameObject($"{swordArt.SwordArtId}_HealingArea");
+            areaObject.transform.position = center;
+
+            SwordArtHealingArea2D healingArea =
+                areaObject.AddComponent<SwordArtHealingArea2D>();
+            healingArea.Initialize(
+                target: transform,
+                targetHealth: health,
+                center: center,
+                radius: effectData.HealingRadius,
+                duration: effectData.HealingDuration,
+                tickInterval: effectData.HealingTickInterval,
+                healAmountPerTick: effectData.HealingAmountPerTick,
+                sourceDisplayName: swordArt.DisplayName,
+                gizmoColor: effectData.GizmoColor);
+
+            if (logExecution)
+            {
+                Debug.Log($"执行剑招效果：{swordArt.DisplayName}", this);
+            }
         }
 
         private Vector3 CalculateHitboxCenter(

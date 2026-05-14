@@ -23,6 +23,8 @@ MonoBehaviour:
   damage: 25
   canCritical: 1
   canKnockUp: 1
+  knockUpVelocity: {x: 2, y: 7}
+  airborneDuration: 1.2
   hitboxSize: {x: 1.2, y: 2.4}
   hitboxOffset: {x: 0.8, y: 0}
   hitboxDuration: 0.12

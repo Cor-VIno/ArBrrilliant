@@ -16,3 +16,9 @@ MonoBehaviour:
   duration: 0.18
   endVelocityMultiplier: 0
   invincibleDuringDash: 1
+  enableAirborneHoming: 1
+  airborneHomingSearchRadius: 5
+  airborneTargetLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  homingStopDistance: 0.3

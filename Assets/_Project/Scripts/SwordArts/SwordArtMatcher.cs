@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using JingHongLu.Skills;
 using UnityEngine;
@@ -93,14 +94,19 @@ namespace JingHongLu.SwordArts
                     continue;
                 }
 
-                TriggerSwordArt(swordArt);
+                int sequenceLength = sequence.Count;
 
-                if (swordArt.ConsumeMatchedStrokes)
+                bool shouldConsumeMatchedStrokes =
+                    swordArt.ConsumeMatchedStrokes &&
+                    !IsPrefixOfLongerConfiguredSequence(sequence);
+
+                if (shouldConsumeMatchedStrokes)
                 {
-                    strokeRecorder.RemoveLastRecords(sequence.Count);
+                    strokeRecorder.RemoveLastRecords(sequenceLength);
                 }
 
                 StartCooldown(swordArt);
+                StartCoroutine(DelayedTriggerSwordArtRoutine(swordArt));
                 break;
             }
         }
@@ -132,6 +138,61 @@ namespace JingHongLu.SwordArts
             return true;
         }
 
+        private bool IsPrefixOfLongerConfiguredSequence(
+            IReadOnlyList<StrokeType> sequence)
+        {
+            if (sequence == null || swordArts == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < swordArts.Length; i++)
+            {
+                SwordArtData candidate = swordArts[i];
+
+                if (candidate == null || IsOnCooldown(candidate))
+                {
+                    continue;
+                }
+
+                IReadOnlyList<StrokeType> candidateSequence =
+                    candidate.RequiredSequence;
+
+                if (candidateSequence == null ||
+                    candidateSequence.Count <= sequence.Count)
+                {
+                    continue;
+                }
+
+                if (IsSequencePrefix(sequence, candidateSequence))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsSequencePrefix(
+            IReadOnlyList<StrokeType> prefix,
+            IReadOnlyList<StrokeType> sequence)
+        {
+            if (prefix == null || sequence == null || prefix.Count > sequence.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < prefix.Count; i++)
+            {
+                if (prefix[i] != sequence[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void TriggerSwordArt(SwordArtData swordArt)
         {
             OnSwordArtTriggered?.Invoke(swordArt);
@@ -140,6 +201,18 @@ namespace JingHongLu.SwordArts
             {
                 Debug.Log($"触发剑招：{swordArt.DisplayName}", this);
             }
+        }
+
+        private IEnumerator DelayedTriggerSwordArtRoutine(SwordArtData swordArt)
+        {
+            float delay = Mathf.Max(0f, swordArt.ExecutionDelay);
+
+            if (delay > 0f)
+            {
+                yield return new WaitForSeconds(delay);
+            }
+
+            TriggerSwordArt(swordArt);
         }
 
         private void StartCooldown(SwordArtData swordArt)

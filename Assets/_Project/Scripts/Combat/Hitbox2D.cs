@@ -25,6 +25,10 @@ namespace JingHongLu.Combat
         [SerializeField] private float innerRadius = 0f;
         [SerializeField] private float arcAngle = 90f;
         [SerializeField] private bool destroyOnFirstHit = false;
+        [SerializeField] private string sourceDisplayName;
+        [SerializeField] private bool canKnockUp;
+        [SerializeField] private Vector2 knockUpVelocity;
+        [SerializeField] private float airborneDuration;
 
         private readonly Collider2D[] overlapResults = new Collider2D[MaxOverlapCount];
         private readonly HashSet<Damageable> hitTargets = new HashSet<Damageable>();
@@ -48,7 +52,11 @@ namespace JingHongLu.Combat
             float radius,
             float innerRadius,
             float arcAngle,
-            bool destroyOnFirstHit)
+            bool destroyOnFirstHit,
+            string sourceDisplayName = null,
+            bool canKnockUp = false,
+            Vector2 knockUpVelocity = default,
+            float airborneDuration = 0f)
         {
             this.owner = owner;
             this.ownerTeam = ownerTeam;
@@ -67,6 +75,10 @@ namespace JingHongLu.Combat
             this.innerRadius = Mathf.Max(0f, innerRadius);
             this.arcAngle = Mathf.Clamp(arcAngle, 0f, 360f);
             this.destroyOnFirstHit = destroyOnFirstHit;
+            this.sourceDisplayName = sourceDisplayName;
+            this.canKnockUp = canKnockUp;
+            this.knockUpVelocity = knockUpVelocity;
+            this.airborneDuration = Mathf.Max(0f, airborneDuration);
 
             ConfigureContactFilter();
             remainingLifetime = Mathf.Max(0.01f, lifetime);
@@ -242,7 +254,11 @@ namespace JingHongLu.Combat
                 knockbackForce: 0f,
                 canCritical: canCritical,
                 isCritical: false,
-                sourceSkill: sourceSkill);
+                sourceSkill: sourceSkill,
+                sourceDisplayName: sourceDisplayName,
+                canKnockUp: canKnockUp,
+                knockUpVelocity: knockUpVelocity,
+                airborneDuration: airborneDuration);
 
             target.ApplyDamage(damageInfo);
 

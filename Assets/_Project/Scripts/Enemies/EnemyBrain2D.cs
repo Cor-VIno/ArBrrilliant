@@ -1,0 +1,745 @@
+using System.Collections;
+using JingHongLu.Combat;
+using JingHongLu.Skills;
+using UnityEngine;
+
+namespace JingHongLu.Enemies
+{
+    public sealed class EnemyBrain2D : MonoBehaviour
+    {
+        [SerializeField] private EnemyData data;
+        [SerializeField] private Transform target;
+        [SerializeField] private Rigidbody2D body;
+        [SerializeField] private AirborneTarget2D airborneTarget;
+        [SerializeField] private PlayerSkillController targetSkillController;
+        [SerializeField] private TeamId ownerTeam = TeamId.Enemy;
+        [SerializeField] private bool logAttack = true;
+
+        private bool isAttacking;
+        private bool isRepositioning;
+        private float cooldownTimer;
+        private float rangedCooldownTimer;
+        private float backstepCooldownTimer;
+        private float reactionCooldownTimer;
+        private int facingSign = 1;
+        private bool warnedMissingTarget;
+
+        private void Awake()
+        {
+            ResolveReferences();
+        }
+
+        private void OnEnable()
+        {
+            ResolveReferences();
+            SubscribeAirborneEvents();
+            SubscribeTargetSkillEvents();
+        }
+
+        private void OnDisable()
+        {
+            UnsubscribeTargetSkillEvents();
+            UnsubscribeAirborneEvents();
+            StopAllCoroutines();
+            isAttacking = false;
+            isRepositioning = false;
+
+            if (body != null)
+            {
+                body.linearVelocity = new Vector2(0f, body.linearVelocity.y);
+            }
+        }
+
+        private void Update()
+        {
+            TickCooldown();
+            TickRangedCooldown();
+            TickBackstepCooldown();
+            TickReactionCooldown();
+
+            if (airborneTarget != null && airborneTarget.IsAirborne)
+            {
+                return;
+            }
+
+            if (data == null)
+            {
+                StopHorizontalMovement();
+                return;
+            }
+
+            if (target == null)
+            {
+                ResolveTarget();
+
+                if (target == null)
+                {
+                    StopHorizontalMovement();
+                    LogMissingTargetWarning();
+                    return;
+                }
+
+                ResolveTargetSkillController();
+                SubscribeTargetSkillEvents();
+            }
+
+            if (isAttacking)
+            {
+                StopHorizontalMovement();
+                return;
+            }
+
+            if (isRepositioning)
+            {
+                return;
+            }
+
+            float distance = Vector2.Distance(transform.position, target.position);
+
+            if (distance > data.LoseTargetRange)
+            {
+                StopHorizontalMovement();
+                return;
+            }
+
+            if (distance <= data.AttackRange)
+            {
+                StopHorizontalMovement();
+                TryAttack();
+                return;
+            }
+
+            bool inRangedRange = data.CanUseRangedAttack
+                && distance >= data.RangedAttackMinDistance
+                && distance <= data.RangedAttackMaxDistance;
+
+            if (inRangedRange)
+            {
+                StopHorizontalMovement();
+
+                if (TryRangedAttack())
+                {
+                    return;
+                }
+            }
+
+            if (data.EnableCombatSpacing && distance < data.PreferredMinDistance)
+            {
+                if (TryBackstep())
+                {
+                    return;
+                }
+
+                StopHorizontalMovement();
+                return;
+            }
+
+            if (data.EnableCombatSpacing && distance <= data.PreferredMaxDistance)
+            {
+                StopHorizontalMovement();
+                return;
+            }
+
+            if (distance <= data.AggroRange)
+            {
+                ChaseTarget();
+                return;
+            }
+
+            StopHorizontalMovement();
+        }
+
+        private void ResolveReferences()
+        {
+            if (body == null)
+            {
+                TryGetComponent(out body);
+            }
+
+            if (airborneTarget == null)
+            {
+                TryGetComponent(out airborneTarget);
+            }
+
+            if (airborneTarget == null)
+            {
+                airborneTarget = GetComponentInChildren<AirborneTarget2D>();
+            }
+
+            if (airborneTarget == null)
+            {
+                airborneTarget = GetComponentInParent<AirborneTarget2D>();
+            }
+
+            if (target == null)
+            {
+                ResolveTarget();
+            }
+
+            if (targetSkillController == null)
+            {
+                ResolveTargetSkillController();
+            }
+        }
+
+        private void SubscribeAirborneEvents()
+        {
+            if (airborneTarget == null)
+            {
+                return;
+            }
+
+            airborneTarget.OnAirborneStarted -= HandleAirborneStarted;
+            airborneTarget.OnAirborneEnded -= HandleAirborneEnded;
+            airborneTarget.OnAirborneStarted += HandleAirborneStarted;
+            airborneTarget.OnAirborneEnded += HandleAirborneEnded;
+        }
+
+        private void UnsubscribeAirborneEvents()
+        {
+            if (airborneTarget == null)
+            {
+                return;
+            }
+
+            airborneTarget.OnAirborneStarted -= HandleAirborneStarted;
+            airborneTarget.OnAirborneEnded -= HandleAirborneEnded;
+        }
+
+        private void HandleAirborneStarted(AirborneTarget2D target)
+        {
+            InterruptCurrentAction();
+        }
+
+        private void HandleAirborneEnded(AirborneTarget2D target)
+        {
+            if (logAttack)
+            {
+                Debug.Log($"{name} airborne ended, AI resumed.", this);
+            }
+        }
+
+        private void InterruptCurrentAction()
+        {
+            StopAllCoroutines();
+            isAttacking = false;
+            isRepositioning = false;
+
+            if (logAttack)
+            {
+                Debug.Log($"{name} action interrupted by airborne.", this);
+            }
+        }
+
+        private void HandleTargetSkillCastStarted(SkillData skill)
+        {
+            if (data == null || !data.ReactToDangerousPlayerSkill)
+            {
+                return;
+            }
+
+            if (skill == null || reactionCooldownTimer > 0f)
+            {
+                return;
+            }
+
+            if (isAttacking || isRepositioning)
+            {
+                return;
+            }
+
+            if (airborneTarget != null && airborneTarget.IsAirborne)
+            {
+                return;
+            }
+
+            bool isDangerous =
+                skill.CanKnockUp ||
+                skill.ExecutionType == SkillExecutionType.Dash;
+
+            if (!isDangerous)
+            {
+                return;
+            }
+
+            if (Random.value > data.DangerousSkillReactionChance)
+            {
+                return;
+            }
+
+            reactionCooldownTimer = data.DangerousSkillReactionCooldown;
+            TryBackstep();
+        }
+
+        private void ResolveTarget()
+        {
+            GameObject playerObject = null;
+
+            try
+            {
+                playerObject = GameObject.FindGameObjectWithTag("Player");
+            }
+            catch (UnityException)
+            {
+                playerObject = null;
+            }
+
+            if (playerObject == null)
+            {
+                playerObject = GameObject.Find("Player");
+            }
+
+            if (playerObject != null)
+            {
+                target = playerObject.transform;
+            }
+        }
+
+        private void ResolveTargetSkillController()
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            targetSkillController = target.GetComponent<PlayerSkillController>();
+        }
+
+        private void SubscribeTargetSkillEvents()
+        {
+            if (targetSkillController == null)
+            {
+                return;
+            }
+
+            targetSkillController.OnSkillCastStarted -=
+                HandleTargetSkillCastStarted;
+            targetSkillController.OnSkillCastStarted +=
+                HandleTargetSkillCastStarted;
+        }
+
+        private void UnsubscribeTargetSkillEvents()
+        {
+            if (targetSkillController == null)
+            {
+                return;
+            }
+
+            targetSkillController.OnSkillCastStarted -=
+                HandleTargetSkillCastStarted;
+        }
+
+        private void TickCooldown()
+        {
+            if (cooldownTimer > 0f)
+            {
+                cooldownTimer -= Time.deltaTime;
+            }
+        }
+
+        private void TickRangedCooldown()
+        {
+            if (rangedCooldownTimer > 0f)
+            {
+                rangedCooldownTimer -= Time.deltaTime;
+            }
+        }
+
+        private void TickBackstepCooldown()
+        {
+            if (backstepCooldownTimer > 0f)
+            {
+                backstepCooldownTimer -= Time.deltaTime;
+            }
+        }
+
+        private void TickReactionCooldown()
+        {
+            if (reactionCooldownTimer > 0f)
+            {
+                reactionCooldownTimer -= Time.deltaTime;
+            }
+        }
+
+        private void ChaseTarget()
+        {
+            if (target == null)
+            {
+                StopHorizontalMovement();
+                return;
+            }
+
+            float horizontalDelta = target.position.x - transform.position.x;
+            float absHorizontalDelta = Mathf.Abs(horizontalDelta);
+
+            if (absHorizontalDelta <= data.StopDistance)
+            {
+                StopHorizontalMovement();
+                return;
+            }
+
+            int directionSign = horizontalDelta >= 0f ? 1 : -1;
+            facingSign = directionSign;
+            SetVisualFacing(directionSign);
+            SetHorizontalVelocity(directionSign * data.MoveSpeed);
+        }
+
+        private void TryAttack()
+        {
+            if (isAttacking || cooldownTimer > 0f)
+            {
+                return;
+            }
+
+            StartCoroutine(AttackRoutine());
+        }
+
+        private bool TryRangedAttack()
+        {
+            if (isAttacking || rangedCooldownTimer > 0f)
+            {
+                return false;
+            }
+
+            if (data.HarpoonProjectileData == null)
+            {
+                return false;
+            }
+
+            StartCoroutine(RangedAttackRoutine());
+            return true;
+        }
+
+        private IEnumerator AttackRoutine()
+        {
+            isAttacking = true;
+            StopHorizontalMovement();
+
+            if (data.AttackWindup > 0f)
+            {
+                yield return new WaitForSeconds(data.AttackWindup);
+            }
+
+            if (airborneTarget != null && airborneTarget.IsAirborne)
+            {
+                isAttacking = false;
+                yield break;
+            }
+
+            SpawnAttackHitbox();
+            cooldownTimer = data.AttackCooldown;
+
+            if (data.AttackRecovery > 0f)
+            {
+                yield return new WaitForSeconds(data.AttackRecovery);
+            }
+
+            yield return PostAttackRhythmRoutine();
+            isAttacking = false;
+        }
+
+        private IEnumerator RangedAttackRoutine()
+        {
+            isAttacking = true;
+            StopHorizontalMovement();
+
+            if (data.RangedAttackWindup > 0f)
+            {
+                yield return new WaitForSeconds(data.RangedAttackWindup);
+            }
+
+            if (airborneTarget != null && airborneTarget.IsAirborne)
+            {
+                isAttacking = false;
+                yield break;
+            }
+
+            SpawnHarpoonProjectile();
+            rangedCooldownTimer = data.RangedAttackCooldown;
+
+            if (data.AttackRecovery > 0f)
+            {
+                yield return new WaitForSeconds(data.AttackRecovery);
+            }
+
+            yield return PostAttackRhythmRoutine();
+            isAttacking = false;
+        }
+
+        private IEnumerator PostAttackRhythmRoutine()
+        {
+            isAttacking = false;
+
+            if (data.PostAttackIdleTime > 0f)
+            {
+                isRepositioning = true;
+                StopHorizontalMovement();
+                yield return new WaitForSeconds(data.PostAttackIdleTime);
+                isRepositioning = false;
+            }
+
+            if (airborneTarget != null && airborneTarget.IsAirborne)
+            {
+                yield break;
+            }
+
+            if (data.EnableBackstep &&
+                Random.value < data.BackstepChanceAfterAttack)
+            {
+                yield return BackstepRoutine();
+            }
+        }
+
+        private bool TryBackstep()
+        {
+            if (data == null || !data.EnableBackstep)
+            {
+                return false;
+            }
+
+            if (backstepCooldownTimer > 0f)
+            {
+                return false;
+            }
+
+            if (isAttacking || isRepositioning)
+            {
+                return false;
+            }
+
+            if (airborneTarget != null && airborneTarget.IsAirborne)
+            {
+                return false;
+            }
+
+            StartCoroutine(BackstepRoutine());
+            return true;
+        }
+
+        private IEnumerator BackstepRoutine()
+        {
+            isRepositioning = true;
+            backstepCooldownTimer = data.BackstepCooldown;
+
+            float timer = 0f;
+            float direction = -facingSign;
+
+            if (target != null)
+            {
+                float delta = transform.position.x - target.position.x;
+
+                if (Mathf.Abs(delta) > 0.001f)
+                {
+                    direction = Mathf.Sign(delta);
+                }
+            }
+
+            while (timer < data.BackstepDuration)
+            {
+                if (airborneTarget != null && airborneTarget.IsAirborne)
+                {
+                    break;
+                }
+
+                SetHorizontalVelocity(direction * data.BackstepSpeed);
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            StopHorizontalMovement();
+            isRepositioning = false;
+        }
+
+        private void SpawnAttackHitbox()
+        {
+            Vector2 direction = new Vector2(facingSign, 0f);
+            Vector2 offset = data.HitboxOffset;
+            offset.x *= facingSign;
+
+            GameObject hitboxObject = new GameObject("EnemyAttackHitbox");
+            hitboxObject.transform.position = (Vector2)transform.position + offset;
+
+            Hitbox2D hitbox = hitboxObject.AddComponent<Hitbox2D>();
+            hitbox.Initialize(
+                owner: gameObject,
+                ownerTeam: ownerTeam,
+                damage: data.AttackDamage,
+                size: data.HitboxSize,
+                direction: direction,
+                lifetime: data.HitboxDuration,
+                targetLayerMask: data.TargetLayerMask,
+                hitOncePerTarget: true,
+                canCritical: false,
+                sourceSkill: null,
+                gizmoColor: data.GizmoColor,
+                shape: data.HitboxShape,
+                angleDegrees: direction.x >= 0f ? 0f : 180f,
+                radius: 1f,
+                innerRadius: 0f,
+                arcAngle: 90f,
+                destroyOnFirstHit: false,
+                sourceDisplayName: "敌人攻击");
+
+            if (logAttack)
+            {
+                Debug.Log($"{name} attacked.", this);
+            }
+        }
+
+        private void SpawnHarpoonProjectile()
+        {
+            ProjectileData projectileData = data.HarpoonProjectileData;
+
+            if (projectileData == null)
+            {
+                return;
+            }
+
+            Vector2 aimDirection = GetDirectionToTarget();
+            Vector3 spawnPosition = CalculateProjectileSpawnPosition(
+                projectileData,
+                aimDirection);
+
+            GameObject projectileObject = projectileData.ProjectilePrefab != null
+                ? Instantiate(projectileData.ProjectilePrefab, spawnPosition, Quaternion.identity)
+                : new GameObject("WaterBandit_Harpoon");
+            projectileObject.transform.position = spawnPosition;
+
+            ProjectileMover2D mover = projectileObject.GetComponent<ProjectileMover2D>();
+
+            if (mover == null)
+            {
+                mover = projectileObject.AddComponent<ProjectileMover2D>();
+            }
+
+            mover.Initialize(
+                motionType: projectileData.MotionType,
+                direction: aimDirection,
+                speed: projectileData.Speed,
+                lifetime: projectileData.Lifetime,
+                gravity: projectileData.Gravity,
+                rotateToVelocity: projectileData.RotateToVelocity);
+
+            ProjectileImpact2D impact = projectileObject.GetComponent<ProjectileImpact2D>();
+
+            if (impact == null)
+            {
+                impact = projectileObject.AddComponent<ProjectileImpact2D>();
+            }
+
+            impact.Initialize(
+                impactLayerMask: projectileData.ImpactLayerMask,
+                checkRadius: projectileData.ImpactCheckRadius,
+                destroyOnImpact: projectileData.DestroyOnImpact);
+
+            Hitbox2D hitbox = projectileObject.GetComponent<Hitbox2D>();
+
+            if (hitbox == null)
+            {
+                hitbox = projectileObject.AddComponent<Hitbox2D>();
+            }
+
+            hitbox.Initialize(
+                owner: gameObject,
+                ownerTeam: ownerTeam,
+                damage: data.RangedAttackDamage,
+                size: data.HitboxSize,
+                direction: aimDirection,
+                lifetime: projectileData.Lifetime,
+                targetLayerMask: data.TargetLayerMask,
+                hitOncePerTarget: true,
+                canCritical: false,
+                sourceSkill: null,
+                gizmoColor: data.GizmoColor,
+                shape: data.HitboxShape,
+                angleDegrees: GetAngleDegrees(aimDirection),
+                radius: 1f,
+                innerRadius: 0f,
+                arcAngle: 90f,
+                destroyOnFirstHit: projectileData.DestroyOnFirstHit,
+                sourceDisplayName: "水匪鱼叉");
+
+            if (logAttack)
+            {
+                Debug.Log($"{name} threw a harpoon.", this);
+            }
+        }
+
+        private Vector2 GetDirectionToTarget()
+        {
+            if (target == null)
+            {
+                return new Vector2(facingSign, 0f);
+            }
+
+            Vector2 toTarget = target.position - transform.position;
+
+            if (toTarget.sqrMagnitude < 0.0001f)
+            {
+                return new Vector2(facingSign, 0f);
+            }
+
+            facingSign = toTarget.x >= 0f ? 1 : -1;
+            SetVisualFacing(facingSign);
+
+            return toTarget.normalized;
+        }
+
+        private Vector3 CalculateProjectileSpawnPosition(
+            ProjectileData projectileData,
+            Vector2 aimDirection)
+        {
+            Vector2 origin = transform.position;
+            Vector2 forward = aimDirection.sqrMagnitude > 0.0001f
+                ? aimDirection.normalized
+                : new Vector2(facingSign, 0f);
+            Vector2 right = new Vector2(-forward.y, forward.x);
+            Vector2 offset = projectileData.SpawnOffset;
+            Vector2 worldOffset = forward * offset.x + right * offset.y;
+
+            return origin + worldOffset;
+        }
+
+        private static float GetAngleDegrees(Vector2 direction)
+        {
+            return Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        }
+
+        private void SetHorizontalVelocity(float xVelocity)
+        {
+            if (body == null)
+            {
+                transform.position += Vector3.right * (xVelocity * Time.deltaTime);
+                return;
+            }
+
+            Vector2 velocity = body.linearVelocity;
+            velocity.x = xVelocity;
+            body.linearVelocity = velocity;
+        }
+
+        private void StopHorizontalMovement()
+        {
+            SetHorizontalVelocity(0f);
+        }
+
+        private void SetVisualFacing(int directionSign)
+        {
+            Vector3 scale = transform.localScale;
+            float absX = Mathf.Abs(scale.x);
+            scale.x = directionSign >= 0 ? absX : -absX;
+            transform.localScale = scale;
+        }
+
+        private void LogMissingTargetWarning()
+        {
+            if (warnedMissingTarget)
+            {
+                return;
+            }
+
+            warnedMissingTarget = true;
+            Debug.LogWarning($"{nameof(EnemyBrain2D)} on {name} could not find a Player target.", this);
+        }
+    }
+}

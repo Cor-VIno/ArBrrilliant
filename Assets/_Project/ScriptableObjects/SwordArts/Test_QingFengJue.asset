@@ -12,8 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f97adcfa3c4b43b39f6970e24155ca, type: 3}
   m_Name: Test_QingFengJue
   m_EditorClassIdentifier: 
-  swordArtId: test_QingFengJue
-  displayName: "\u5251\u62DB\uFF1A\u6E05\u98CE\u51B3"
-  requiredSequence: 0100000001000000030000000400000004000000
+  swordArtId: test_qing_feng_jue
+  displayName: "\u5251\u62DB\uFF1A\u6E05\u98CE\u8BC0"
+  requiredSequence:
+  - 3
+  - 1
+  - 3
+  - 4
+  - 4
   consumeMatchedStrokes: 1
-  cooldown: 0
+  cooldown: 1
+  executionDelay: 0.25
+  effectData: {fileID: 11400000, guid: 89fd5324739e4785ab139194cea8769d, type: 2}

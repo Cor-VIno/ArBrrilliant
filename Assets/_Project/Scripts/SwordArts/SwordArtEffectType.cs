@@ -2,6 +2,8 @@ namespace JingHongLu.SwordArts
 {
     public enum SwordArtEffectType
     {
-        InstantHitbox
+        InstantHitbox,
+        LineArea,
+        HealingArea
     }
 }

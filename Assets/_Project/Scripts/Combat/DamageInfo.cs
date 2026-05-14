@@ -14,7 +14,11 @@ namespace JingHongLu.Combat
             float knockbackForce,
             bool canCritical,
             bool isCritical,
-            SkillData sourceSkill)
+            SkillData sourceSkill,
+            string sourceDisplayName = null,
+            bool canKnockUp = false,
+            Vector2 knockUpVelocity = default,
+            float airborneDuration = 0f)
         {
             Attacker = attacker;
             Target = target;
@@ -25,6 +29,10 @@ namespace JingHongLu.Combat
             CanCritical = canCritical;
             IsCritical = isCritical;
             SourceSkill = sourceSkill;
+            SourceDisplayName = ResolveSourceDisplayName(sourceDisplayName, sourceSkill);
+            CanKnockUp = canKnockUp;
+            KnockUpVelocity = knockUpVelocity;
+            AirborneDuration = airborneDuration;
         }
 
         public GameObject Attacker { get; }
@@ -36,5 +44,26 @@ namespace JingHongLu.Combat
         public bool CanCritical { get; }
         public bool IsCritical { get; }
         public SkillData SourceSkill { get; }
+        public string SourceDisplayName { get; }
+        public bool CanKnockUp { get; }
+        public Vector2 KnockUpVelocity { get; }
+        public float AirborneDuration { get; }
+
+        private static string ResolveSourceDisplayName(
+            string sourceDisplayName,
+            SkillData sourceSkill)
+        {
+            if (!string.IsNullOrWhiteSpace(sourceDisplayName))
+            {
+                return sourceDisplayName;
+            }
+
+            if (sourceSkill != null)
+            {
+                return sourceSkill.DisplayName;
+            }
+
+            return "unknown";
+        }
     }
 }

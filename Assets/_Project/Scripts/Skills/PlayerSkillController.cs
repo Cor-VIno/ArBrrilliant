@@ -15,6 +15,7 @@ namespace JingHongLu.Skills
         [SerializeField] private PlayerMotor2D motor = null;
         [SerializeField] private PlayerAim2D aim = null;
         [SerializeField] private PlayerDashController2D dashController = null;
+        [SerializeField] private PlayerAirborneTargetFinder2D airborneTargetFinder = null;
         [SerializeField] private PlayerSkillLoadout skillLoadout = null;
 
         private readonly Dictionary<SkillData, float> cooldownTimers = new Dictionary<SkillData, float>();
@@ -48,6 +49,11 @@ namespace JingHongLu.Skills
             if (dashController == null)
             {
                 TryGetComponent(out dashController);
+            }
+
+            if (airborneTargetFinder == null)
+            {
+                TryGetComponent(out airborneTargetFinder);
             }
         }
 
@@ -211,7 +217,7 @@ namespace JingHongLu.Skills
                 yield break;
             }
 
-            Vector2 aimDirection = GetAimDirection();
+            Vector2 aimDirection = ResolveDashDirection(skill.DashData);
             SpawnDashHitbox(skill, aimDirection, skill.DashData.Duration);
 
             yield return dashController.DashRoutine(skill.DashData, aimDirection);
@@ -244,7 +250,11 @@ namespace JingHongLu.Skills
                 radius: skill.HitboxRadius,
                 innerRadius: skill.HitboxInnerRadius,
                 arcAngle: skill.HitboxArcAngle,
-                destroyOnFirstHit: false);
+                destroyOnFirstHit: false,
+                sourceDisplayName: null,
+                canKnockUp: skill.CanKnockUp,
+                knockUpVelocity: skill.KnockUpVelocity,
+                airborneDuration: skill.AirborneDuration);
         }
 
         private void SpawnProjectile(SkillData skill)
@@ -323,7 +333,11 @@ namespace JingHongLu.Skills
                 radius: skill.HitboxRadius,
                 innerRadius: skill.HitboxInnerRadius,
                 arcAngle: skill.HitboxArcAngle,
-                destroyOnFirstHit: projectileData.DestroyOnFirstHit);
+                destroyOnFirstHit: projectileData.DestroyOnFirstHit,
+                sourceDisplayName: null,
+                canKnockUp: skill.CanKnockUp,
+                knockUpVelocity: skill.KnockUpVelocity,
+                airborneDuration: skill.AirborneDuration);
         }
 
         private void SpawnDashHitbox(SkillData skill, Vector2 aimDirection, float duration)
@@ -353,7 +367,43 @@ namespace JingHongLu.Skills
                 radius: skill.HitboxRadius,
                 innerRadius: skill.HitboxInnerRadius,
                 arcAngle: skill.HitboxArcAngle,
-                destroyOnFirstHit: false);
+                destroyOnFirstHit: false,
+                sourceDisplayName: null,
+                canKnockUp: skill.CanKnockUp,
+                knockUpVelocity: skill.KnockUpVelocity,
+                airborneDuration: skill.AirborneDuration);
+        }
+
+        private Vector2 ResolveDashDirection(DashData dashData)
+        {
+            Vector2 fallbackDirection = GetAimDirection();
+
+            if (dashData == null ||
+                !dashData.EnableAirborneHoming ||
+                airborneTargetFinder == null)
+            {
+                return fallbackDirection;
+            }
+
+            AirborneTarget2D target = airborneTargetFinder.FindNearestAirborneTarget(
+                transform.position,
+                dashData.AirborneHomingSearchRadius,
+                dashData.AirborneTargetLayerMask);
+
+            if (target == null)
+            {
+                return fallbackDirection;
+            }
+
+            Vector2 toTarget = target.transform.position - transform.position;
+
+            if (toTarget.magnitude <= dashData.HomingStopDistance ||
+                toTarget.sqrMagnitude < 0.0001f)
+            {
+                return fallbackDirection;
+            }
+
+            return toTarget.normalized;
         }
 
         private Vector2 GetAimDirection()

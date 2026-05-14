@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b66e8fc4d2e4cc7978b600a9e640f3c, type: 3}
+  m_Name: Effect_ChangShengJue
+  m_EditorClassIdentifier: 
+  effectType: 2
+  damage: 30
+  canCritical: 1
+  canKnockUp: 0
+  knockUpVelocity: {x: 3, y: 8}
+  airborneDuration: 1.5
+  hitboxShape: 3
+  hitboxSize: {x: 2.5, y: 1.5}
+  hitboxOffset: {x: 0.8, y: 0}
+  hitboxDuration: 0.16
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  hitboxRadius: 2.6
+  hitboxInnerRadius: 0.2
+  hitboxArcAngle: 160
+  hitboxRotationOffset: 0
+  lineMaxLength: 8
+  lineWidth: 0.8
+  areaDuration: 3
+  tickInterval: 0.5
+  tickDamage: 6
+  finalDamage: 24
+  finalCanKnockUp: 1
+  finalKnockUpVelocity: {x: 3, y: 7}
+  finalAirborneDuration: 1.2
+  healingRadius: 2.5
+  healingDuration: 4
+  healingTickInterval: 0.5
+  healingAmountPerTick: 6
+  gizmoColor: {r: 0, g: 1, b: 0, a: 1}

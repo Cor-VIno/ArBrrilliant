@@ -10,12 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83f97adcfa3c4b43b39f6970e24155ca, type: 3}
-  m_Name: Test_HengShu
+  m_Name: Test_ChangShengJue
   m_EditorClassIdentifier: 
-  swordArtId: test_heng_shu
-  displayName: "\u6D4B\u8BD5\u5251\u62DB\uFF1A\u6A2A\u7AD6"
-  requiredSequence: 0100000001000000
+  swordArtId: test_chang_sheng_jue
+  displayName: "\u5251\u62DB\uFF1A\u957F\u751F\u8BC0"
+  requiredSequence:
+  - 3
+  - 1
+  - 1
+  - 1
+  - 2
   consumeMatchedStrokes: 1
-  cooldown: 0.5
+  cooldown: 3
   executionDelay: 0.25
-  effectData: {fileID: 11400000, guid: af14dabbbdf4428597b82d4c4b57ef63, type: 2}
+  effectData: {fileID: 11400000, guid: 2ed127e635084a2e807e41517bed8f76, type: 2}

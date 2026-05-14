@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 018396bb4d134364ac4f94057db6de91, type: 3}
-  m_Name: Projectile_Basic_LeftFalling
+  m_Name: Projectile_WaterBandit_Harpoon
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 0}
-  motionType: 0
-  speed: 15
+  motionType: 1
+  speed: 12
   lifetime: 3
-  gravity: 0
-  spawnOffset: {x: 0.8, y: 0}
+  gravity: 7
+  spawnOffset: {x: 0.8, y: 0.2}
   rotateToVelocity: 1
   destroyOnFirstHit: 1
   impactLayerMask:

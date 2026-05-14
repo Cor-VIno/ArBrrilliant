@@ -20,6 +20,9 @@ namespace JingHongLu.SwordArts
         [SerializeField] private bool consumeMatchedStrokes = true;
         [SerializeField] private float cooldown = 0f;
 
+        [Header("Timing")]
+        [SerializeField] private float executionDelay = 0.25f;
+
         [Header("Effect")]
         [SerializeField] private SwordArtEffectData effectData;
 
@@ -28,6 +31,7 @@ namespace JingHongLu.SwordArts
         public IReadOnlyList<StrokeType> RequiredSequence => requiredSequence;
         public bool ConsumeMatchedStrokes => consumeMatchedStrokes;
         public float Cooldown => cooldown;
+        public float ExecutionDelay => executionDelay;
         public SwordArtEffectData EffectData => effectData;
     }
 }

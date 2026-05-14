@@ -42,10 +42,14 @@ namespace JingHongLu.Combat
 
             health.TakeDamage(damageInfo.Damage);
 
-            string sourceSkillId = damageInfo.SourceSkill != null
-                ? damageInfo.SourceSkill.SkillId
-                : "unknown";
-            Debug.Log($"{name} took {damageInfo.Damage} damage from {sourceSkillId}", this);
+            if (damageInfo.CanKnockUp)
+            {
+                ApplyKnockUp(damageInfo);
+            }
+
+            Debug.Log(
+                $"{name} took {damageInfo.Damage} damage from {damageInfo.SourceDisplayName}",
+                this);
         }
 
         public void SetInvincible(bool value)
@@ -64,6 +68,51 @@ namespace JingHongLu.Combat
             {
                 health = GetComponentInParent<Health>();
             }
+        }
+
+        private void ApplyKnockUp(DamageInfo damageInfo)
+        {
+            AirborneTarget2D airborneTarget =
+                GetComponentInParent<AirborneTarget2D>();
+
+            if (airborneTarget != null)
+            {
+                airborneTarget.MarkAirborne(damageInfo.AirborneDuration);
+            }
+
+            Rigidbody2D body = GetComponentInParent<Rigidbody2D>();
+
+            if (body == null)
+            {
+                return;
+            }
+
+            Vector2 velocity = damageInfo.KnockUpVelocity;
+            float horizontalSign = ResolveKnockUpHorizontalSign(damageInfo);
+            velocity.x = Mathf.Abs(velocity.x) * horizontalSign;
+            velocity.y = Mathf.Abs(velocity.y);
+            body.linearVelocity = velocity;
+        }
+
+        private float ResolveKnockUpHorizontalSign(DamageInfo damageInfo)
+        {
+            if (Mathf.Abs(damageInfo.KnockbackDirection.x) > 0.0001f)
+            {
+                return Mathf.Sign(damageInfo.KnockbackDirection.x);
+            }
+
+            if (damageInfo.Attacker != null)
+            {
+                float delta =
+                    transform.position.x - damageInfo.Attacker.transform.position.x;
+
+                if (Mathf.Abs(delta) > 0.0001f)
+                {
+                    return Mathf.Sign(delta);
+                }
+            }
+
+            return 1f;
         }
     }
 }

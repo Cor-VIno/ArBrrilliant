@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c17a56ca260d4d58b0925dfdbd0937a3, type: 3}
+  m_Name: Enemy_WaterBandit
+  m_EditorClassIdentifier: 
+  aggroRange: 9
+  loseTargetRange: 13
+  moveSpeed: 2
+  stopDistance: 1.2
+  attackDamage: 8
+  attackRange: 1.4
+  attackCooldown: 1.2
+  attackWindup: 0.25
+  attackRecovery: 0.35
+  canUseRangedAttack: 1
+  rangedAttackDamage: 10
+  rangedAttackMinDistance: 3
+  rangedAttackMaxDistance: 8
+  rangedAttackCooldown: 2.2
+  rangedAttackWindup: 0.35
+  harpoonProjectileData: {fileID: 11400000, guid: 8a5dc0d5bd9f4638b9202dc3345d0bea, type: 2}
+  enableCombatSpacing: 1
+  preferredMinDistance: 1.8
+  preferredMaxDistance: 4.5
+  postAttackIdleTime: 0.25
+  enableBackstep: 1
+  backstepSpeed: 4
+  backstepDuration: 0.25
+  backstepCooldown: 1.2
+  backstepChanceAfterAttack: 0.35
+  reactToDangerousPlayerSkill: 1
+  dangerousSkillReactionChance: 0.45
+  dangerousSkillReactionCooldown: 1.5
+  hitboxShape: 0
+  hitboxSize: {x: 1.2, y: 0.8}
+  hitboxOffset: {x: 0.8, y: 0}
+  hitboxDuration: 0.12
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  gizmoColor: {r: 1, g: 0, b: 0, a: 1}

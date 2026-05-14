@@ -28,6 +28,10 @@ namespace JingHongLu.Skills
         [SerializeField] private bool canCritical = true;
         [SerializeField] private bool canKnockUp = false;
 
+        [Header("Knock Up")]
+        [SerializeField] private Vector2 knockUpVelocity = new Vector2(2f, 7f);
+        [SerializeField] private float airborneDuration = 1.2f;
+
         [Header("Hitbox")]
         [Tooltip("Used by Box / Capsule. Circle / Arc usually ignore this.")]
         [InspectorName("Size")]
@@ -97,6 +101,8 @@ namespace JingHongLu.Skills
         public float Damage => damage;
         public bool CanCritical => canCritical;
         public bool CanKnockUp => canKnockUp;
+        public Vector2 KnockUpVelocity => knockUpVelocity;
+        public float AirborneDuration => airborneDuration;
         public Vector2 HitboxSize => hitboxSize;
         public Vector2 HitboxOffset => hitboxOffset;
         public float HitboxDuration => hitboxDuration;
