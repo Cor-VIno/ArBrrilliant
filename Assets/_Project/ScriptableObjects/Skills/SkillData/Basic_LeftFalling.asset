@@ -42,4 +42,5 @@ MonoBehaviour:
   projectileLifetime: 1.2
   projectileSpawnOffset: {x: 0.8, y: 0}
   projectileRotateToDirection: 1
+  visualData: {fileID: 11400000, guid: c4198abe8c504b789597f646a2a5471a, type: 2}
   gizmoColor: {r: 0.35, g: 1, b: 0.55, a: 0.35}

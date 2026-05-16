@@ -46,6 +46,7 @@ namespace JingHongLu.Player
 
         public int FacingDirection { get; private set; } = 1;
         public bool IsExternalMotionActive { get; private set; }
+        public bool IsGrounded => isGrounded;
 
         private void Awake()
         {
