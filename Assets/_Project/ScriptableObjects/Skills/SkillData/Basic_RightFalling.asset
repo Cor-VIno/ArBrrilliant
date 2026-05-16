@@ -38,4 +38,5 @@ MonoBehaviour:
   hitboxRotationOffset: 0
   projectileData: {fileID: 0}
   dashData: {fileID: 11400000, guid: acc4d657987d4e3aa499104b5fd23aec, type: 2}
+  visualData: {fileID: 11400000, guid: 4ecde3278e8449938d4ea319c0aa544d, type: 2}
   gizmoColor: {r: 1, g: 0.85, b: 0.2, a: 0.35}

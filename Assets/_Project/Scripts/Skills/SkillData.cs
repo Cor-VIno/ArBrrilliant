@@ -1,4 +1,5 @@
 using JingHongLu.Combat;
+using JingHongLu.Visuals;
 using UnityEngine;
 
 namespace JingHongLu.Skills
@@ -87,6 +88,9 @@ namespace JingHongLu.Skills
         [Tooltip("Used by Dash execution. Defines dash distance, duration, and invincibility.")]
         [SerializeField] private DashData dashData = null;
 
+        [Header("Visual")]
+        [SerializeField] private SkillVisualData visualData = null;
+
         [Header("Debug")]
         [SerializeField] private Color gizmoColor = new Color(1f, 0.25f, 0.1f, 0.35f);
 
@@ -116,6 +120,7 @@ namespace JingHongLu.Skills
         public float HitboxRotationOffset => hitboxRotationOffset;
         public ProjectileData ProjectileData => projectileData;
         public DashData DashData => dashData;
+        public SkillVisualData VisualData => visualData;
         public Color GizmoColor => gizmoColor;
     }
 }

@@ -23,6 +23,8 @@ MonoBehaviour:
   damage: 10
   canCritical: 1
   canKnockUp: 0
+  knockUpVelocity: {x: 2, y: 7}
+  airborneDuration: 1.2
   hitboxSize: {x: 1.8, y: 1}
   hitboxOffset: {x: 0, y: 0}
   hitboxDuration: 0.08
@@ -37,9 +39,6 @@ MonoBehaviour:
   hitboxArcAngle: 110
   hitboxRotationOffset: 0
   projectileData: {fileID: 0}
-  projectilePrefab: {fileID: 0}
-  projectileSpeed: 12
-  projectileLifetime: 1.2
-  projectileSpawnOffset: {x: 0.8, y: 0}
-  projectileRotateToDirection: 1
+  dashData: {fileID: 0}
+  visualData: {fileID: 11400000, guid: a25bdd86c86b47f499c806af54481f16, type: 2}
   gizmoColor: {r: 1, g: 0.25, b: 0.1, a: 0.35}
