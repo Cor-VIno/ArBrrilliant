@@ -23,6 +23,9 @@ namespace JingHongLu.UI
         [SerializeField] private float fadeInDuration = 0.25f;
         [SerializeField] private float fadeOutDuration = 0.35f;
 
+        [Header("Audio Settings")]
+        [SerializeField] private AudioSource bootAudioSource;
+
         private bool hasStarted;
 
         private void Start()
@@ -68,6 +71,15 @@ namespace JingHongLu.UI
             }
 
             hasStarted = true;
+
+            // 音频播放逻辑
+            if (bootAudioSource != null && bootAudioSource.clip != null)
+            {
+                DontDestroyOnLoad(bootAudioSource.gameObject);
+                bootAudioSource.Play();
+                Destroy(bootAudioSource.gameObject, bootAudioSource.clip.length);
+            }
+
             StartCoroutine(StartFlowRoutine());
         }
 
