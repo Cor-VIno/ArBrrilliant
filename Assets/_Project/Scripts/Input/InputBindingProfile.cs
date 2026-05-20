@@ -20,6 +20,8 @@ namespace JingHongLu.Input
         [SerializeField] private KeyCode skillSlot2Key = KeyCode.Mouse1;
         [SerializeField] private KeyCode skillSlot3Key = KeyCode.Q;
         [SerializeField] private KeyCode skillSlot4Key = KeyCode.E;
+        [SerializeField] private KeyCode swordArtReleaseKey = KeyCode.R;
+        [SerializeField] private KeyCode cancelKey = KeyCode.Escape;
 
         public KeyCode MoveLeftKey => moveLeftKey;
         public KeyCode MoveRightKey => moveRightKey;
@@ -31,6 +33,8 @@ namespace JingHongLu.Input
         public KeyCode SkillSlot2Key => skillSlot2Key;
         public KeyCode SkillSlot3Key => skillSlot3Key;
         public KeyCode SkillSlot4Key => skillSlot4Key;
+        public KeyCode SwordArtReleaseKey => swordArtReleaseKey;
+        public KeyCode CancelKey => cancelKey;
 
         public void ResetToDefaultBindings()
         {
@@ -44,6 +48,8 @@ namespace JingHongLu.Input
             skillSlot2Key = KeyCode.Mouse1;
             skillSlot3Key = KeyCode.Q;
             skillSlot4Key = KeyCode.E;
+            swordArtReleaseKey = KeyCode.R;
+            cancelKey = KeyCode.Escape;
         }
 
         public KeyCode GetPrimaryKey(GameplayInputAction action)
@@ -58,6 +64,8 @@ namespace JingHongLu.Input
                 GameplayInputAction.SkillSlot2 => skillSlot2Key,
                 GameplayInputAction.SkillSlot3 => skillSlot3Key,
                 GameplayInputAction.SkillSlot4 => skillSlot4Key,
+                GameplayInputAction.SwordArtRelease => swordArtReleaseKey,
+                GameplayInputAction.Cancel => cancelKey,
                 _ => KeyCode.None
             };
         }
@@ -99,6 +107,12 @@ namespace JingHongLu.Input
                     break;
                 case GameplayInputAction.SkillSlot4:
                     skillSlot4Key = key;
+                    break;
+                case GameplayInputAction.SwordArtRelease:
+                    swordArtReleaseKey = key;
+                    break;
+                case GameplayInputAction.Cancel:
+                    cancelKey = key;
                     break;
             }
         }

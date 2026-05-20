@@ -22,7 +22,7 @@ MonoBehaviour:
     destroyDelay: 0
   executedCue:
     animatorTrigger: Attack_Horizontal
-    vfxPrefab: {fileID: 1915551382106182266, guid: 2799c04b04e95834181944141422bf05, type: 3}
+    vfxPrefab: {fileID: 0}
     spawnPoint: 3
     localOffset: {x: 0, y: 0}
     rotateToAimDirection: 1

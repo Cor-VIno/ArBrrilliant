@@ -9,18 +9,27 @@ namespace JingHongLu.SwordArts
     public sealed class StrokeRecorder : MonoBehaviour
     {
         [SerializeField] private PlayerSkillController skillController;
-        [SerializeField] private float strokeLifetime = 3f;
-        [SerializeField] private int maxStrokeCount = 8;
+
+        [Header("Stroke Slots")]
+        [SerializeField] private int maxSlotCount = 7;
+        [SerializeField] private float naturalRemoveInterval = 3f;
+
         [SerializeField] private bool logStrokeRecords = true;
 
         private readonly List<StrokeRecord> records = new List<StrokeRecord>();
         private bool warnedMissingSkillController;
+        private float naturalRemoveTimer;
 
         public event Action<StrokeRecord> OnStrokeRecorded;
+        public event Action<StrokeRecord> OnStrokeExpired;
+        public event Action<StrokeRecord> OnStrokeOverflowed;
+        public event Action<IReadOnlyList<StrokeRecord>> OnStrokesConsumed;
         public event Action OnRecordsChanged;
+        public event Action<IReadOnlyList<StrokeRecord>> OnRecordsChangedDetailed;
 
         public IReadOnlyList<StrokeRecord> Records => records;
-        public float StrokeLifetime => strokeLifetime;
+        public int MaxSlotCount => Mathf.Max(1, maxSlotCount);
+        public float NaturalRemoveInterval => Mathf.Max(0.01f, naturalRemoveInterval);
 
         private void Awake()
         {
@@ -50,13 +59,135 @@ namespace JingHongLu.SwordArts
 
         private void Update()
         {
-            RemoveExpiredRecords();
+            TickNaturalRemoveTimer();
         }
 
         public IReadOnlyList<StrokeRecord> GetActiveRecords()
         {
-            RemoveExpiredRecords();
             return records;
+        }
+
+        public int GetStrokeCount(StrokeType strokeType)
+        {
+            int count = 0;
+
+            for (int i = 0; i < records.Count; i++)
+            {
+                if (records[i].StrokeType == strokeType)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        public bool HasEnoughStrokes(IReadOnlyList<StrokeType> requiredStrokes)
+        {
+            if (requiredStrokes == null || requiredStrokes.Count == 0)
+            {
+                return true;
+            }
+
+            Dictionary<StrokeType, int> ownedCounts = BuildStrokeCounts(records);
+            Dictionary<StrokeType, int> requiredCounts =
+                BuildStrokeCounts(requiredStrokes);
+
+            foreach (KeyValuePair<StrokeType, int> pair in requiredCounts)
+            {
+                ownedCounts.TryGetValue(pair.Key, out int ownedCount);
+
+                if (ownedCount < pair.Value)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool ConsumeRequiredStrokes(IReadOnlyList<StrokeType> requiredStrokes)
+        {
+            if (requiredStrokes == null || requiredStrokes.Count == 0)
+            {
+                return false;
+            }
+
+            if (!HasEnoughStrokes(requiredStrokes))
+            {
+                return false;
+            }
+
+            Dictionary<StrokeType, int> remainingRequiredCounts =
+                BuildStrokeCounts(requiredStrokes);
+            List<StrokeRecord> remainingRecords = new List<StrokeRecord>(records.Count);
+            List<StrokeRecord> consumedRecords = new List<StrokeRecord>();
+
+            for (int i = 0; i < records.Count; i++)
+            {
+                StrokeRecord record = records[i];
+
+                if (remainingRequiredCounts.TryGetValue(
+                        record.StrokeType,
+                        out int remainingCount) &&
+                    remainingCount > 0)
+                {
+                    consumedRecords.Add(record);
+                    remainingRequiredCounts[record.StrokeType] = remainingCount - 1;
+                    continue;
+                }
+
+                remainingRecords.Add(record);
+            }
+
+            records.Clear();
+            records.AddRange(remainingRecords);
+
+            OnStrokesConsumed?.Invoke(consumedRecords);
+            ResetNaturalRemoveTimer();
+            NotifyRecordsChanged();
+            return true;
+        }
+
+        public void ResetNaturalRemoveTimer()
+        {
+            naturalRemoveTimer = 0f;
+        }
+
+        public void RecordStroke(StrokeType strokeType, SkillData sourceSkill = null)
+        {
+            if (strokeType == StrokeType.None)
+            {
+                return;
+            }
+
+            AddStroke(new StrokeRecord(strokeType, sourceSkill, Time.time));
+        }
+
+        public void AddStroke(StrokeRecord record)
+        {
+            if (record.StrokeType == StrokeType.None)
+            {
+                return;
+            }
+
+            int safeMaxSlotCount = MaxSlotCount;
+
+            if (records.Count >= safeMaxSlotCount)
+            {
+                StrokeRecord overflowedRecord = records[0];
+                records.RemoveAt(0);
+                OnStrokeOverflowed?.Invoke(overflowedRecord);
+            }
+
+            records.Add(record);
+            OnStrokeRecorded?.Invoke(record);
+            NotifyRecordsChanged();
+
+            if (logStrokeRecords)
+            {
+                Debug.Log($"当前笔画槽：{BuildDebugText()}", this);
+            }
         }
 
         public void RemoveLastRecords(int count)
@@ -78,7 +209,12 @@ namespace JingHongLu.SwordArts
                 }
             }
 
-            OnRecordsChanged?.Invoke();
+            if (records.Count == 0)
+            {
+                ResetNaturalRemoveTimer();
+            }
+
+            NotifyRecordsChanged();
         }
 
         private void ResolveReferences()
@@ -96,58 +232,35 @@ namespace JingHongLu.SwordArts
                 return;
             }
 
-            RemoveExpiredRecords();
+            RecordStroke(skill.StrokeType, skill);
+        }
 
-            StrokeRecord newRecord = new StrokeRecord(
-                skill.StrokeType,
-                skill,
-                Time.time);
-            records.Add(newRecord);
+        private void TickNaturalRemoveTimer()
+        {
+            if (records.Count == 0)
+            {
+                ResetNaturalRemoveTimer();
+                return;
+            }
 
-            TrimToMaxCount();
+            naturalRemoveTimer += Time.deltaTime;
 
-            OnStrokeRecorded?.Invoke(newRecord);
+            if (naturalRemoveTimer < NaturalRemoveInterval)
+            {
+                return;
+            }
+
+            naturalRemoveTimer = 0f;
+            StrokeRecord expiredRecord = records[0];
+            records.RemoveAt(0);
+            OnStrokeExpired?.Invoke(expiredRecord);
+            NotifyRecordsChanged();
+        }
+
+        private void NotifyRecordsChanged()
+        {
             OnRecordsChanged?.Invoke();
-
-            if (logStrokeRecords)
-            {
-                Debug.Log($"当前笔画：{BuildDebugText()}", this);
-            }
-        }
-
-        private void RemoveExpiredRecords()
-        {
-            float now = Time.time;
-            float lifetime = Mathf.Max(0f, strokeLifetime);
-            bool removedAny = false;
-
-            for (int i = records.Count - 1; i >= 0; i--)
-            {
-                if (now - records[i].Time > lifetime)
-                {
-                    records.RemoveAt(i);
-                    removedAny = true;
-                }
-            }
-
-            if (removedAny)
-            {
-                OnRecordsChanged?.Invoke();
-            }
-        }
-
-        private bool TrimToMaxCount()
-        {
-            int safeMaxCount = Mathf.Max(1, maxStrokeCount);
-            bool removedAny = false;
-
-            while (records.Count > safeMaxCount)
-            {
-                records.RemoveAt(0);
-                removedAny = true;
-            }
-
-            return removedAny;
+            OnRecordsChangedDetailed?.Invoke(records);
         }
 
         private string BuildDebugText()
@@ -183,6 +296,45 @@ namespace JingHongLu.SwordArts
             Debug.LogWarning(
                 $"{nameof(StrokeRecorder)} requires a {nameof(PlayerSkillController)} on the same GameObject or an assigned reference.",
                 this);
+        }
+
+        private static Dictionary<StrokeType, int> BuildStrokeCounts(
+            IReadOnlyList<StrokeRecord> sourceRecords)
+        {
+            Dictionary<StrokeType, int> counts = new Dictionary<StrokeType, int>();
+
+            for (int i = 0; i < sourceRecords.Count; i++)
+            {
+                AddStrokeCount(counts, sourceRecords[i].StrokeType);
+            }
+
+            return counts;
+        }
+
+        private static Dictionary<StrokeType, int> BuildStrokeCounts(
+            IReadOnlyList<StrokeType> sourceStrokes)
+        {
+            Dictionary<StrokeType, int> counts = new Dictionary<StrokeType, int>();
+
+            for (int i = 0; i < sourceStrokes.Count; i++)
+            {
+                AddStrokeCount(counts, sourceStrokes[i]);
+            }
+
+            return counts;
+        }
+
+        private static void AddStrokeCount(
+            IDictionary<StrokeType, int> counts,
+            StrokeType strokeType)
+        {
+            if (strokeType == StrokeType.None)
+            {
+                return;
+            }
+
+            counts.TryGetValue(strokeType, out int count);
+            counts[strokeType] = count + 1;
         }
 
         private static string ToDisplayName(StrokeType strokeType)

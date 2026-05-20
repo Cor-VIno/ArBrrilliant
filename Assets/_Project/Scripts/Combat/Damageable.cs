@@ -1,3 +1,5 @@
+using System;
+using JingHongLu.Player;
 using UnityEngine;
 
 namespace JingHongLu.Combat
@@ -12,6 +14,10 @@ namespace JingHongLu.Combat
         public Health Health => health;
         public bool IsInvincible => isInvincible;
 
+        public event Action<DamageInfo> OnDamageTaken;
+        public event Action<DamageInfo> OnDamageIgnoredByInvincibility;
+        public event Action<DamageInfo> OnDamageTakenWithSuperArmor;
+
         private void Awake()
         {
             ResolveReferences();
@@ -24,8 +30,9 @@ namespace JingHongLu.Combat
 
         public void ApplyDamage(DamageInfo damageInfo)
         {
-            if (isInvincible)
+            if (IsDamageIgnoredByInvincibility())
             {
+                OnDamageIgnoredByInvincibility?.Invoke(damageInfo);
                 return;
             }
 
@@ -42,7 +49,15 @@ namespace JingHongLu.Combat
 
             health.TakeDamage(damageInfo.Damage);
 
-            if (damageInfo.CanKnockUp)
+            bool hasSuperArmor = HasSuperArmor();
+            OnDamageTaken?.Invoke(damageInfo);
+
+            if (hasSuperArmor)
+            {
+                OnDamageTakenWithSuperArmor?.Invoke(damageInfo);
+            }
+
+            if (damageInfo.CanKnockUp && !hasSuperArmor)
             {
                 ApplyKnockUp(damageInfo);
             }
@@ -55,6 +70,29 @@ namespace JingHongLu.Combat
         public void SetInvincible(bool value)
         {
             isInvincible = value;
+        }
+
+        private bool IsDamageIgnoredByInvincibility()
+        {
+            if (isInvincible)
+            {
+                return true;
+            }
+
+            PlayerInvincibilityController invincibilityController =
+                GetComponentInParent<PlayerInvincibilityController>();
+
+            return invincibilityController != null &&
+                invincibilityController.IsInvincible;
+        }
+
+        private bool HasSuperArmor()
+        {
+            PlayerSuperArmorController superArmorController =
+                GetComponentInParent<PlayerSuperArmorController>();
+
+            return superArmorController != null &&
+                superArmorController.HasSuperArmor;
         }
 
         private void ResolveReferences()

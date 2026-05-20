@@ -13,13 +13,19 @@ MonoBehaviour:
   m_Name: Basic_RightFalling
   m_EditorClassIdentifier: 
   skillId: basic_right_falling
-  displayName: "\u637A\uFF1A\u7A81\u523A"
+  displayName: "\u7A81\u523A"
   strokeType: 4
   icon: {fileID: 0}
   executionType: 2
   cooldown: 0.8
-  castTime: 0.02
+  castTime: 0.12
   recoveryTime: 0.18
+  chargeUntilRelease: 0
+  minChargeTime: 0.15
+  maxChargeTime: 1.2
+  lockMovementWhileCharging: 1
+  blockOtherSkillsWhileCharging: 1
+  superArmorWhileCharging: 1
   damage: 12
   canCritical: 1
   canKnockUp: 0

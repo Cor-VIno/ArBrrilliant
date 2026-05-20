@@ -16,9 +16,12 @@ namespace JingHongLu.SwordArts
             new Dictionary<SwordArtData, float>();
         private readonly List<SwordArtData> cooldownSwordArts =
             new List<SwordArtData>();
+        private readonly List<SwordArtData> availableSwordArts =
+            new List<SwordArtData>();
         private bool warnedMissingStrokeRecorder;
 
         public event Action<SwordArtData> OnSwordArtTriggered;
+        public event Action<IReadOnlyList<SwordArtData>> OnAvailableSwordArtsChanged;
 
         private void Awake()
         {
@@ -31,7 +34,8 @@ namespace JingHongLu.SwordArts
 
             if (strokeRecorder != null)
             {
-                strokeRecorder.OnStrokeRecorded += HandleStrokeRecorded;
+                strokeRecorder.OnRecordsChanged += HandleRecordsChanged;
+                RefreshAvailableSwordArts();
                 return;
             }
 
@@ -42,7 +46,7 @@ namespace JingHongLu.SwordArts
         {
             if (strokeRecorder != null)
             {
-                strokeRecorder.OnStrokeRecorded -= HandleStrokeRecorded;
+                strokeRecorder.OnRecordsChanged -= HandleRecordsChanged;
             }
         }
 
@@ -51,31 +55,13 @@ namespace JingHongLu.SwordArts
             TickCooldowns();
         }
 
-        private void ResolveReferences()
+        public IReadOnlyList<SwordArtData> GetAvailableSwordArts()
         {
-            if (strokeRecorder == null)
-            {
-                TryGetComponent(out strokeRecorder);
-            }
-        }
+            availableSwordArts.Clear();
 
-        private void HandleStrokeRecorded(StrokeRecord record)
-        {
-            TryMatchSwordArts();
-        }
-
-        private void TryMatchSwordArts()
-        {
             if (strokeRecorder == null || swordArts == null)
             {
-                return;
-            }
-
-            IReadOnlyList<StrokeRecord> records = strokeRecorder.GetActiveRecords();
-
-            if (records.Count == 0)
-            {
-                return;
+                return availableSwordArts;
             }
 
             for (int i = 0; i < swordArts.Length; i++)
@@ -87,28 +73,115 @@ namespace JingHongLu.SwordArts
                     continue;
                 }
 
-                IReadOnlyList<StrokeType> sequence = swordArt.RequiredSequence;
+                IReadOnlyList<StrokeType> requiredStrokes =
+                    swordArt.RequiredSequence;
 
-                if (!IsSequenceMatchedAtTail(records, sequence))
+                if (requiredStrokes == null || requiredStrokes.Count == 0)
                 {
                     continue;
                 }
 
-                int sequenceLength = sequence.Count;
-
-                bool shouldConsumeMatchedStrokes =
-                    swordArt.ConsumeMatchedStrokes &&
-                    !IsPrefixOfLongerConfiguredSequence(sequence);
-
-                if (shouldConsumeMatchedStrokes)
+                if (IsSwordArtAvailable(swordArt))
                 {
-                    strokeRecorder.RemoveLastRecords(sequenceLength);
+                    availableSwordArts.Add(swordArt);
                 }
-
-                StartCooldown(swordArt);
-                StartCoroutine(DelayedTriggerSwordArtRoutine(swordArt));
-                break;
             }
+
+            return availableSwordArts;
+        }
+
+        public bool RequestTriggerSwordArt(SwordArtData swordArt)
+        {
+            if (swordArt == null || strokeRecorder == null || IsOnCooldown(swordArt))
+            {
+                return false;
+            }
+
+            if (!IsSwordArtAvailable(swordArt))
+            {
+                return false;
+            }
+
+            IReadOnlyList<StrokeType> requiredStrokes = swordArt.RequiredSequence;
+
+            if (swordArt.ConsumeMatchedStrokes)
+            {
+                bool consumed = swordArt.MatchMode switch
+                {
+                    SwordArtMatchMode.OrderedTail => ConsumeOrderedTail(requiredStrokes),
+                    SwordArtMatchMode.UnorderedCounts =>
+                        strokeRecorder.ConsumeRequiredStrokes(requiredStrokes),
+                    _ => false
+                };
+
+                if (!consumed)
+                {
+                    return false;
+                }
+            }
+
+            strokeRecorder.ResetNaturalRemoveTimer();
+            StartCooldown(swordArt);
+            StartCoroutine(DelayedTriggerSwordArtRoutine(swordArt));
+            RefreshAvailableSwordArts();
+            return true;
+        }
+
+        private void ResolveReferences()
+        {
+            if (strokeRecorder == null)
+            {
+                TryGetComponent(out strokeRecorder);
+            }
+        }
+
+        private void HandleRecordsChanged()
+        {
+            RefreshAvailableSwordArts();
+        }
+
+        private void RefreshAvailableSwordArts()
+        {
+            IReadOnlyList<SwordArtData> available = GetAvailableSwordArts();
+            OnAvailableSwordArtsChanged?.Invoke(available);
+        }
+
+        private bool IsSwordArtAvailable(SwordArtData swordArt)
+        {
+            if (swordArt == null || strokeRecorder == null)
+            {
+                return false;
+            }
+
+            IReadOnlyList<StrokeType> requiredStrokes =
+                swordArt.RequiredSequence;
+
+            if (requiredStrokes == null || requiredStrokes.Count == 0)
+            {
+                return false;
+            }
+
+            return swordArt.MatchMode switch
+            {
+                SwordArtMatchMode.OrderedTail => IsSequenceMatchedAtTail(
+                    strokeRecorder.GetActiveRecords(),
+                    requiredStrokes),
+                SwordArtMatchMode.UnorderedCounts =>
+                    strokeRecorder.HasEnoughStrokes(requiredStrokes),
+                _ => false
+            };
+        }
+
+        private bool ConsumeOrderedTail(IReadOnlyList<StrokeType> requiredStrokes)
+        {
+            if (requiredStrokes == null || requiredStrokes.Count == 0)
+            {
+                return false;
+            }
+
+            strokeRecorder.RemoveLastRecords(requiredStrokes.Count);
+            strokeRecorder.ResetNaturalRemoveTimer();
+            return true;
         }
 
         private static bool IsSequenceMatchedAtTail(
@@ -120,7 +193,7 @@ namespace JingHongLu.SwordArts
                 return false;
             }
 
-            if (records.Count < sequence.Count)
+            if (records == null || records.Count < sequence.Count)
             {
                 return false;
             }
@@ -130,61 +203,6 @@ namespace JingHongLu.SwordArts
             for (int i = 0; i < sequence.Count; i++)
             {
                 if (records[recordStartIndex + i].StrokeType != sequence[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool IsPrefixOfLongerConfiguredSequence(
-            IReadOnlyList<StrokeType> sequence)
-        {
-            if (sequence == null || swordArts == null)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < swordArts.Length; i++)
-            {
-                SwordArtData candidate = swordArts[i];
-
-                if (candidate == null || IsOnCooldown(candidate))
-                {
-                    continue;
-                }
-
-                IReadOnlyList<StrokeType> candidateSequence =
-                    candidate.RequiredSequence;
-
-                if (candidateSequence == null ||
-                    candidateSequence.Count <= sequence.Count)
-                {
-                    continue;
-                }
-
-                if (IsSequencePrefix(sequence, candidateSequence))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static bool IsSequencePrefix(
-            IReadOnlyList<StrokeType> prefix,
-            IReadOnlyList<StrokeType> sequence)
-        {
-            if (prefix == null || sequence == null || prefix.Count > sequence.Count)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < prefix.Count; i++)
-            {
-                if (prefix[i] != sequence[i])
                 {
                     return false;
                 }
@@ -237,6 +255,8 @@ namespace JingHongLu.SwordArts
 
         private void TickCooldowns()
         {
+            bool changed = false;
+
             for (int i = cooldownSwordArts.Count - 1; i >= 0; i--)
             {
                 SwordArtData swordArt = cooldownSwordArts[i];
@@ -245,6 +265,7 @@ namespace JingHongLu.SwordArts
                     !cooldownTimers.TryGetValue(swordArt, out float timer))
                 {
                     cooldownSwordArts.RemoveAt(i);
+                    changed = true;
                     continue;
                 }
 
@@ -254,10 +275,16 @@ namespace JingHongLu.SwordArts
                 {
                     cooldownTimers.Remove(swordArt);
                     cooldownSwordArts.RemoveAt(i);
+                    changed = true;
                     continue;
                 }
 
                 cooldownTimers[swordArt] = timer;
+            }
+
+            if (changed)
+            {
+                RefreshAvailableSwordArts();
             }
         }
 

@@ -24,6 +24,14 @@ namespace JingHongLu.Skills
         [SerializeField] private float castTime = 0.03f;
         [SerializeField] private float recoveryTime = 0.12f;
 
+        [Header("Charge")]
+        [SerializeField] private bool chargeUntilRelease;
+        [SerializeField] private float minChargeTime = 0.15f;
+        [SerializeField] private float maxChargeTime = 1.2f;
+        [SerializeField] private bool lockMovementWhileCharging = true;
+        [SerializeField] private bool blockOtherSkillsWhileCharging = true;
+        [SerializeField] private bool superArmorWhileCharging = true;
+
         [Header("Damage")]
         [SerializeField] private float damage = 10f;
         [SerializeField] private bool canCritical = true;
@@ -102,6 +110,12 @@ namespace JingHongLu.Skills
         public float Cooldown => cooldown;
         public float CastTime => castTime;
         public float RecoveryTime => recoveryTime;
+        public bool ChargeUntilRelease => chargeUntilRelease;
+        public float MinChargeTime => minChargeTime;
+        public float MaxChargeTime => maxChargeTime;
+        public bool LockMovementWhileCharging => lockMovementWhileCharging;
+        public bool BlockOtherSkillsWhileCharging => blockOtherSkillsWhileCharging;
+        public bool SuperArmorWhileCharging => superArmorWhileCharging;
         public float Damage => damage;
         public bool CanCritical => canCritical;
         public bool CanKnockUp => canKnockUp;

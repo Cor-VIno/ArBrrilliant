@@ -19,6 +19,8 @@ MonoBehaviour:
   jumpKey: 32
   dodgeKey: 304
   skillSlot1Key: 323
-  skillSlot2Key: 324
+  skillSlot2Key: 101
   skillSlot3Key: 113
-  skillSlot4Key: 101
+  skillSlot4Key: 324
+  swordArtReleaseKey: 114
+  cancelKey: 27

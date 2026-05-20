@@ -13,13 +13,19 @@ MonoBehaviour:
   m_Name: Basic_LeftFalling
   m_EditorClassIdentifier: 
   skillId: basic_left_falling
-  displayName: "\u6487\uFF1A\u8FDC\u7A0B\u5251\u6C14"
-  strokeType: 3
+  displayName: "\u8FDC\u7A0B"
+  strokeType: 1
   icon: {fileID: 0}
   executionType: 1
   cooldown: 0.45
-  castTime: 0.05
-  recoveryTime: 0.12
+  castTime: 0.15
+  recoveryTime: 0.25
+  chargeUntilRelease: 0
+  minChargeTime: 0.15
+  maxChargeTime: 1.2
+  lockMovementWhileCharging: 1
+  blockOtherSkillsWhileCharging: 1
+  superArmorWhileCharging: 1
   damage: 8
   canCritical: 1
   canKnockUp: 0

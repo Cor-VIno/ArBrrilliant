@@ -16,18 +16,30 @@ namespace JingHongLu.Skills
         [SerializeField] private PlayerAim2D aim = null;
         [SerializeField] private PlayerDashController2D dashController = null;
         [SerializeField] private PlayerAirborneTargetFinder2D airborneTargetFinder = null;
+        [SerializeField] private PlayerSuperArmorController superArmorController = null;
         [SerializeField] private PlayerSkillLoadout skillLoadout = null;
 
         private readonly Dictionary<SkillData, float> cooldownTimers = new Dictionary<SkillData, float>();
         private readonly List<SkillData> cooldownSkills = new List<SkillData>();
 
         private bool isCasting;
+        private bool isChargingSkill;
+        private SkillData chargingSkill;
+        private SkillSlot chargingSlot;
+        private float chargeTimer;
+        private bool chargeLockedMovement;
+        private bool chargeAppliedSuperArmor;
 
         public event Action<SkillData> OnSkillCastStarted;
         public event Action<SkillData> OnSkillExecuted;
         public event Action<SkillData> OnSkillCastFinished;
+        public event Action<SkillData> OnSkillChargeStarted;
+        public event Action<SkillData, float, float> OnSkillChargeUpdated;
+        public event Action<SkillData, float> OnSkillChargeReleased;
+        public event Action<SkillData> OnSkillChargeCanceled;
 
         public bool IsCasting => isCasting;
+        public bool IsChargingSkill => isChargingSkill;
 
         private void Awake()
         {
@@ -55,12 +67,22 @@ namespace JingHongLu.Skills
             {
                 TryGetComponent(out airborneTargetFinder);
             }
+
+            if (superArmorController == null)
+            {
+                TryGetComponent(out superArmorController);
+            }
         }
 
         private void Update()
         {
             TickCooldowns();
             ReadSkillSlotInput();
+        }
+
+        private void OnDisable()
+        {
+            CancelChargedSkill();
         }
 
         public void SetSkillLoadout(PlayerSkillLoadout newSkillLoadout)
@@ -100,25 +122,63 @@ namespace JingHongLu.Skills
                 return;
             }
 
-            if (inputReader.SkillSlot1Pressed)
+            if (isChargingSkill)
             {
-                TryCastSlot(SkillSlot.Slot1);
+                UpdateChargingSkill();
+                return;
             }
 
-            if (inputReader.SkillSlot2Pressed)
+            TryHandleSlotInput(SkillSlot.Slot1);
+            TryHandleSlotInput(SkillSlot.Slot2);
+            TryHandleSlotInput(SkillSlot.Slot3);
+            TryHandleSlotInput(SkillSlot.Slot4);
+        }
+
+        private void TryHandleSlotInput(SkillSlot slot)
+        {
+            if (!IsSlotPressed(slot))
             {
-                TryCastSlot(SkillSlot.Slot2);
+                return;
             }
 
-            if (inputReader.SkillSlot3Pressed)
+            SkillData skill = GetSkill(slot);
+
+            if (skill != null && skill.ChargeUntilRelease)
             {
-                TryCastSlot(SkillSlot.Slot3);
+                TryBeginChargedSkill(slot, skill);
+                return;
             }
 
-            if (inputReader.SkillSlot4Pressed)
+            TryCastSlot(slot);
+        }
+
+        private SkillData GetSkill(SkillSlot slot)
+        {
+            return skillLoadout != null ? skillLoadout.GetSkill(slot) : null;
+        }
+
+        private bool IsSlotPressed(SkillSlot slot)
+        {
+            return slot switch
             {
-                TryCastSlot(SkillSlot.Slot4);
-            }
+                SkillSlot.Slot1 => inputReader.SkillSlot1Pressed,
+                SkillSlot.Slot2 => inputReader.SkillSlot2Pressed,
+                SkillSlot.Slot3 => inputReader.SkillSlot3Pressed,
+                SkillSlot.Slot4 => inputReader.SkillSlot4Pressed,
+                _ => false
+            };
+        }
+
+        private bool IsSlotReleased(SkillSlot slot)
+        {
+            return slot switch
+            {
+                SkillSlot.Slot1 => inputReader.SkillSlot1Released,
+                SkillSlot.Slot2 => inputReader.SkillSlot2Released,
+                SkillSlot.Slot3 => inputReader.SkillSlot3Released,
+                SkillSlot.Slot4 => inputReader.SkillSlot4Released,
+                _ => false
+            };
         }
 
         private void TryCastSlot(SkillSlot slot)
@@ -128,7 +188,7 @@ namespace JingHongLu.Skills
                 return;
             }
 
-            SkillData skill = skillLoadout.GetSkill(slot);
+            SkillData skill = GetSkill(slot);
 
             if (!CanCast(skill))
             {
@@ -142,7 +202,154 @@ namespace JingHongLu.Skills
         {
             return skill != null
                 && !isCasting
+                && !isChargingSkill
                 && !cooldownTimers.ContainsKey(skill);
+        }
+
+        private void TryBeginChargedSkill(SkillSlot slot, SkillData skill)
+        {
+            if (!CanCast(skill))
+            {
+                return;
+            }
+
+            isChargingSkill = true;
+            chargingSkill = skill;
+            chargingSlot = slot;
+            chargeTimer = 0f;
+            chargeLockedMovement = skill.LockMovementWhileCharging && motor != null;
+            chargeAppliedSuperArmor = skill.SuperArmorWhileCharging &&
+                superArmorController != null;
+
+            if (chargeLockedMovement)
+            {
+                motor.BeginExternalMotion();
+                StopHorizontalMotion();
+            }
+
+            if (chargeAppliedSuperArmor)
+            {
+                superArmorController.SetSuperArmor(true);
+            }
+
+            OnSkillChargeStarted?.Invoke(skill);
+            OnSkillCastStarted?.Invoke(skill);
+        }
+
+        private void UpdateChargingSkill()
+        {
+            if (chargingSkill == null)
+            {
+                CancelChargedSkill();
+                return;
+            }
+
+            chargeTimer += Time.deltaTime;
+            OnSkillChargeUpdated?.Invoke(
+                chargingSkill,
+                chargeTimer,
+                CalculateNormalizedCharge(chargingSkill, chargeTimer));
+
+            if (chargeLockedMovement)
+            {
+                StopHorizontalMotion();
+            }
+
+            if (IsSlotReleased(chargingSlot))
+            {
+                ReleaseChargedSkill();
+            }
+        }
+
+        private void ReleaseChargedSkill()
+        {
+            SkillData skill = chargingSkill;
+            float releasedChargeTime = chargeTimer;
+            EndChargeState();
+
+            if (skill == null)
+            {
+                return;
+            }
+
+            OnSkillChargeReleased?.Invoke(skill, releasedChargeTime);
+            StartCoroutine(CastChargedSkillRoutine(skill));
+        }
+
+        private IEnumerator CastChargedSkillRoutine(SkillData skill)
+        {
+            isCasting = true;
+            StartCooldown(skill);
+            OnSkillExecuted?.Invoke(skill);
+            yield return ExecuteSkillRoutine(skill);
+
+            if (skill.RecoveryTime > 0f)
+            {
+                yield return new WaitForSeconds(skill.RecoveryTime);
+            }
+
+            isCasting = false;
+            OnSkillCastFinished?.Invoke(skill);
+        }
+
+        private void CancelChargedSkill()
+        {
+            if (!isChargingSkill)
+            {
+                return;
+            }
+
+            SkillData skill = chargingSkill;
+            EndChargeState();
+            OnSkillChargeCanceled?.Invoke(skill);
+        }
+
+        private void EndChargeState()
+        {
+            if (chargeAppliedSuperArmor && superArmorController != null)
+            {
+                superArmorController.SetSuperArmor(false);
+            }
+
+            if (chargeLockedMovement && motor != null)
+            {
+                motor.EndExternalMotion();
+            }
+
+            isChargingSkill = false;
+            chargingSkill = null;
+            chargeTimer = 0f;
+            chargeLockedMovement = false;
+            chargeAppliedSuperArmor = false;
+        }
+
+        private static float CalculateNormalizedCharge(SkillData skill, float currentChargeTime)
+        {
+            if (skill == null || skill.MaxChargeTime <= 0f)
+            {
+                return 1f;
+            }
+
+            return Mathf.Clamp01(currentChargeTime / skill.MaxChargeTime);
+        }
+
+        private void StopHorizontalMotion()
+        {
+            if (motor == null)
+            {
+                return;
+            }
+
+            Rigidbody2D body = GetComponent<Rigidbody2D>();
+
+            if (body == null)
+            {
+                return;
+            }
+
+            Vector2 velocity = body.linearVelocity;
+            velocity.x = 0f;
+            motor.SetExternalVelocity(velocity);
         }
 
         private IEnumerator CastSkillRoutine(SkillData skill)

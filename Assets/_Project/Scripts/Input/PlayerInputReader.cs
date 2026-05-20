@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace JingHongLu.Input
@@ -8,6 +9,7 @@ namespace JingHongLu.Input
         [SerializeField] private InputBindingProfile bindingProfile;
 
         private InputBindingProfile runtimeDefaultProfile;
+        private bool gameplayInputBlocked;
 
         public Vector2 MoveInput { get; private set; }
         public bool JumpPressed { get; private set; }
@@ -17,10 +19,23 @@ namespace JingHongLu.Input
         public bool SkillSlot2Pressed { get; private set; }
         public bool SkillSlot3Pressed { get; private set; }
         public bool SkillSlot4Pressed { get; private set; }
+        public bool SkillSlot1Held { get; private set; }
+        public bool SkillSlot2Held { get; private set; }
+        public bool SkillSlot3Held { get; private set; }
+        public bool SkillSlot4Held { get; private set; }
+        public bool SkillSlot1Released { get; private set; }
+        public bool SkillSlot2Released { get; private set; }
+        public bool SkillSlot3Released { get; private set; }
+        public bool SkillSlot4Released { get; private set; }
+
+        public event Action OnSwordArtReleasePressed;
+        public event Action OnCancelPressed;
+        public event Action OnBlockedGameplayInputPressed;
 
         public InputBindingProfile ActiveBindingProfile => bindingProfile != null
             ? bindingProfile
             : runtimeDefaultProfile;
+        public bool GameplayInputBlocked => gameplayInputBlocked;
 
         private void Awake()
         {
@@ -40,6 +55,16 @@ namespace JingHongLu.Input
         {
             bindingProfile = newBindingProfile;
             EnsureBindingProfile();
+        }
+
+        public void SetGameplayInputBlocked(bool blocked)
+        {
+            gameplayInputBlocked = blocked;
+
+            if (blocked)
+            {
+                ClearGameplayInputs();
+            }
         }
 
         private InputBindingProfile EnsureBindingProfile()
@@ -69,10 +94,20 @@ namespace JingHongLu.Input
             SkillSlot2Pressed = false;
             SkillSlot3Pressed = false;
             SkillSlot4Pressed = false;
+            SkillSlot1Released = false;
+            SkillSlot2Released = false;
+            SkillSlot3Released = false;
+            SkillSlot4Released = false;
         }
 
         private void ReadMovement(InputBindingProfile profile)
         {
+            if (gameplayInputBlocked)
+            {
+                MoveInput = Vector2.zero;
+                return;
+            }
+
             int horizontal = 0;
             KeyCode moveLeftKey = profile.GetPrimaryKey(GameplayInputAction.MoveLeft);
             KeyCode moveRightKey = profile.GetPrimaryKey(GameplayInputAction.MoveRight);
@@ -94,15 +129,82 @@ namespace JingHongLu.Input
 
         private void ReadActions(InputBindingProfile profile)
         {
+            bool wasGameplayInputBlocked = gameplayInputBlocked;
+
+            if (IsPressed(profile.GetPrimaryKey(GameplayInputAction.Cancel)))
+            {
+                OnCancelPressed?.Invoke();
+            }
+
+            if (IsPressed(profile.GetPrimaryKey(GameplayInputAction.SwordArtRelease)))
+            {
+                OnSwordArtReleasePressed?.Invoke();
+            }
+
+            if (wasGameplayInputBlocked || gameplayInputBlocked)
+            {
+                if (IsBlockedGameplayActionPressed(profile))
+                {
+                    OnBlockedGameplayInputPressed?.Invoke();
+                }
+
+                ClearGameplayInputs();
+                return;
+            }
+
             KeyCode jumpKey = profile.GetPrimaryKey(GameplayInputAction.Jump);
 
             JumpPressed = IsPressed(jumpKey);
             JumpHeld = IsHeld(jumpKey);
             DodgePressed = IsPressed(profile.GetPrimaryKey(GameplayInputAction.Dodge));
-            SkillSlot1Pressed = IsPressed(profile.GetPrimaryKey(GameplayInputAction.SkillSlot1));
-            SkillSlot2Pressed = IsPressed(profile.GetPrimaryKey(GameplayInputAction.SkillSlot2));
-            SkillSlot3Pressed = IsPressed(profile.GetPrimaryKey(GameplayInputAction.SkillSlot3));
-            SkillSlot4Pressed = IsPressed(profile.GetPrimaryKey(GameplayInputAction.SkillSlot4));
+            KeyCode skillSlot1Key = profile.GetPrimaryKey(GameplayInputAction.SkillSlot1);
+            KeyCode skillSlot2Key = profile.GetPrimaryKey(GameplayInputAction.SkillSlot2);
+            KeyCode skillSlot3Key = profile.GetPrimaryKey(GameplayInputAction.SkillSlot3);
+            KeyCode skillSlot4Key = profile.GetPrimaryKey(GameplayInputAction.SkillSlot4);
+
+            SkillSlot1Pressed = IsPressed(skillSlot1Key);
+            SkillSlot2Pressed = IsPressed(skillSlot2Key);
+            SkillSlot3Pressed = IsPressed(skillSlot3Key);
+            SkillSlot4Pressed = IsPressed(skillSlot4Key);
+            SkillSlot1Held = IsHeld(skillSlot1Key);
+            SkillSlot2Held = IsHeld(skillSlot2Key);
+            SkillSlot3Held = IsHeld(skillSlot3Key);
+            SkillSlot4Held = IsHeld(skillSlot4Key);
+            SkillSlot1Released = IsReleased(skillSlot1Key);
+            SkillSlot2Released = IsReleased(skillSlot2Key);
+            SkillSlot3Released = IsReleased(skillSlot3Key);
+            SkillSlot4Released = IsReleased(skillSlot4Key);
+
+        }
+
+        private void ClearGameplayInputs()
+        {
+            MoveInput = Vector2.zero;
+            JumpPressed = false;
+            JumpHeld = false;
+            DodgePressed = false;
+            SkillSlot1Pressed = false;
+            SkillSlot2Pressed = false;
+            SkillSlot3Pressed = false;
+            SkillSlot4Pressed = false;
+            SkillSlot1Held = false;
+            SkillSlot2Held = false;
+            SkillSlot3Held = false;
+            SkillSlot4Held = false;
+            SkillSlot1Released = false;
+            SkillSlot2Released = false;
+            SkillSlot3Released = false;
+            SkillSlot4Released = false;
+        }
+
+        private static bool IsBlockedGameplayActionPressed(InputBindingProfile profile)
+        {
+            return IsPressed(profile.GetPrimaryKey(GameplayInputAction.Jump))
+                || IsPressed(profile.GetPrimaryKey(GameplayInputAction.Dodge))
+                || IsPressed(profile.GetPrimaryKey(GameplayInputAction.SkillSlot1))
+                || IsPressed(profile.GetPrimaryKey(GameplayInputAction.SkillSlot2))
+                || IsPressed(profile.GetPrimaryKey(GameplayInputAction.SkillSlot3))
+                || IsPressed(profile.GetPrimaryKey(GameplayInputAction.SkillSlot4));
         }
 
         private static bool IsPressed(KeyCode key)
@@ -113,6 +215,11 @@ namespace JingHongLu.Input
         private static bool IsHeld(KeyCode key)
         {
             return key != KeyCode.None && global::UnityEngine.Input.GetKey(key);
+        }
+
+        private static bool IsReleased(KeyCode key)
+        {
+            return key != KeyCode.None && global::UnityEngine.Input.GetKeyUp(key);
         }
     }
 }

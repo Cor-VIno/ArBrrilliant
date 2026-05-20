@@ -9,6 +9,8 @@ namespace JingHongLu.Input
         SkillSlot1,
         SkillSlot2,
         SkillSlot3,
-        SkillSlot4
+        SkillSlot4,
+        SwordArtRelease,
+        Cancel
     }
 }

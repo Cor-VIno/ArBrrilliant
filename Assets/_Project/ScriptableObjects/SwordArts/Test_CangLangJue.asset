@@ -20,6 +20,7 @@ MonoBehaviour:
   - 3
   - 3
   - 4
+  matchMode: 1
   consumeMatchedStrokes: 1
   cooldown: 1.5
   executionDelay: 0.25

@@ -13,13 +13,19 @@ MonoBehaviour:
   m_Name: Basic_Vertical
   m_EditorClassIdentifier: 
   skillId: basic_vertical
-  displayName: "\u7AD6\uFF1A\u91CD\u51FB"
+  displayName: "\u91CD\u51FB"
   strokeType: 2
   icon: {fileID: 0}
   executionType: 0
   cooldown: 0.7
   castTime: 0.35
   recoveryTime: 0.25
+  chargeUntilRelease: 1
+  minChargeTime: 0.15
+  maxChargeTime: 1.2
+  lockMovementWhileCharging: 1
+  blockOtherSkillsWhileCharging: 1
+  superArmorWhileCharging: 1
   damage: 25
   canCritical: 1
   canKnockUp: 1

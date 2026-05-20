@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   swordArtId: test_heng_shu
   displayName: "\u6D4B\u8BD5\u5251\u62DB\uFF1A\u6A2A\u7AD6"
-  requiredSequence: 0100000001000000
+  requiredSequence: 0100000002000000
+  matchMode: 1
   consumeMatchedStrokes: 1
   cooldown: 0.5
   executionDelay: 0.25

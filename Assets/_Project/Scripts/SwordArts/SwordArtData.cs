@@ -16,6 +16,10 @@ namespace JingHongLu.SwordArts
         [Header("Sequence")]
         [SerializeField] private StrokeType[] requiredSequence;
 
+        [Header("Match")]
+        [SerializeField] private SwordArtMatchMode matchMode =
+            SwordArtMatchMode.UnorderedCounts;
+
         [Header("Trigger")]
         [SerializeField] private bool consumeMatchedStrokes = true;
         [SerializeField] private float cooldown = 0f;
@@ -29,6 +33,7 @@ namespace JingHongLu.SwordArts
         public string SwordArtId => swordArtId;
         public string DisplayName => displayName;
         public IReadOnlyList<StrokeType> RequiredSequence => requiredSequence;
+        public SwordArtMatchMode MatchMode => matchMode;
         public bool ConsumeMatchedStrokes => consumeMatchedStrokes;
         public float Cooldown => cooldown;
         public float ExecutionDelay => executionDelay;
