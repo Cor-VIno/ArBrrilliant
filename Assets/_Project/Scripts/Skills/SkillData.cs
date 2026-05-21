@@ -19,6 +19,9 @@ namespace JingHongLu.Skills
         [Tooltip("How this skill runs. InstantHitbox creates a static hitbox; Projectile creates a moving hitbox; Dash moves the caster.")]
         [SerializeField] private SkillExecutionType executionType = SkillExecutionType.InstantHitbox;
 
+        [Header("Direction")]
+        [SerializeField] private SkillDirectionMode directionMode = SkillDirectionMode.FacingHorizontal;
+
         [Header("Timing")]
         [SerializeField] private float cooldown = 0.25f;
         [SerializeField] private float castTime = 0.03f;
@@ -36,6 +39,10 @@ namespace JingHongLu.Skills
         [SerializeField] private float damage = 10f;
         [SerializeField] private bool canCritical = true;
         [SerializeField] private bool canKnockUp = false;
+
+        [Header("Hit Stun")]
+        [SerializeField] private bool canApplyHitStun;
+        [SerializeField] private float hitStunDuration;
 
         [Header("Knock Up")]
         [SerializeField] private Vector2 knockUpVelocity = new Vector2(2f, 7f);
@@ -107,6 +114,7 @@ namespace JingHongLu.Skills
         public StrokeType StrokeType => strokeType;
         public Sprite Icon => icon;
         public SkillExecutionType ExecutionType => executionType;
+        public SkillDirectionMode DirectionMode => directionMode;
         public float Cooldown => cooldown;
         public float CastTime => castTime;
         public float RecoveryTime => recoveryTime;
@@ -119,6 +127,8 @@ namespace JingHongLu.Skills
         public float Damage => damage;
         public bool CanCritical => canCritical;
         public bool CanKnockUp => canKnockUp;
+        public bool CanApplyHitStun => canApplyHitStun;
+        public float HitStunDuration => hitStunDuration;
         public Vector2 KnockUpVelocity => knockUpVelocity;
         public float AirborneDuration => airborneDuration;
         public Vector2 HitboxSize => hitboxSize;

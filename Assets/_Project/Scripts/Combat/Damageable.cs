@@ -62,6 +62,11 @@ namespace JingHongLu.Combat
                 ApplyKnockUp(damageInfo);
             }
 
+            if (!health.IsDead)
+            {
+                ApplyHitStun(damageInfo);
+            }
+
             Debug.Log(
                 $"{name} took {damageInfo.Damage} damage from {damageInfo.SourceDisplayName}",
                 this);
@@ -151,6 +156,29 @@ namespace JingHongLu.Combat
             }
 
             return 1f;
+        }
+
+        private void ApplyHitStun(DamageInfo damageInfo)
+        {
+            if (!damageInfo.CanApplyHitStun || damageInfo.HitStunDuration <= 0f)
+            {
+                return;
+            }
+
+            HitStunReceiver2D hitStunReceiver =
+                GetComponentInParent<HitStunReceiver2D>();
+
+            if (hitStunReceiver == null)
+            {
+                hitStunReceiver = GetComponent<HitStunReceiver2D>();
+            }
+
+            if (hitStunReceiver == null)
+            {
+                return;
+            }
+
+            hitStunReceiver.ApplyHitStun(damageInfo.HitStunDuration);
         }
     }
 }

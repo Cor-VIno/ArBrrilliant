@@ -29,11 +29,20 @@ namespace JingHongLu.Combat
         [SerializeField] private bool canKnockUp;
         [SerializeField] private Vector2 knockUpVelocity;
         [SerializeField] private float airborneDuration;
+        [SerializeField] private bool canApplyHitStun;
+        [SerializeField] private float hitStunDuration;
+        [SerializeField] private AttackInterruptType interruptType;
+        [SerializeField] private bool canBePerfectDodged;
 
         private readonly Collider2D[] overlapResults = new Collider2D[MaxOverlapCount];
         private readonly HashSet<Damageable> hitTargets = new HashSet<Damageable>();
         private ContactFilter2D contactFilter;
         private float remainingLifetime;
+
+        public GameObject Owner => owner;
+        public TeamId OwnerTeam => ownerTeam;
+        public string SourceDisplayName => sourceDisplayName;
+        public bool CanBePerfectDodged => canBePerfectDodged;
 
         public void Initialize(
             GameObject owner,
@@ -56,7 +65,11 @@ namespace JingHongLu.Combat
             string sourceDisplayName = null,
             bool canKnockUp = false,
             Vector2 knockUpVelocity = default,
-            float airborneDuration = 0f)
+            float airborneDuration = 0f,
+            bool canApplyHitStun = false,
+            float hitStunDuration = 0f,
+            AttackInterruptType interruptType = AttackInterruptType.None,
+            bool canBePerfectDodged = false)
         {
             this.owner = owner;
             this.ownerTeam = ownerTeam;
@@ -79,14 +92,20 @@ namespace JingHongLu.Combat
             this.canKnockUp = canKnockUp;
             this.knockUpVelocity = knockUpVelocity;
             this.airborneDuration = Mathf.Max(0f, airborneDuration);
+            this.canApplyHitStun = canApplyHitStun;
+            this.hitStunDuration = Mathf.Max(0f, hitStunDuration);
+            this.interruptType = interruptType;
+            this.canBePerfectDodged = canBePerfectDodged;
 
             ConfigureContactFilter();
+            ConfigurePerfectDodgeCollider();
             remainingLifetime = Mathf.Max(0.01f, lifetime);
         }
 
         private void Awake()
         {
             ConfigureContactFilter();
+            ConfigurePerfectDodgeCollider();
             remainingLifetime = Mathf.Max(0.01f, lifetime);
         }
 
@@ -107,6 +126,60 @@ namespace JingHongLu.Combat
             contactFilter.useLayerMask = true;
             contactFilter.useTriggers = true;
             contactFilter.SetLayerMask(targetLayerMask);
+        }
+
+        private void ConfigurePerfectDodgeCollider()
+        {
+            if (!canBePerfectDodged)
+            {
+                return;
+            }
+
+            switch (shape)
+            {
+                case HitboxShape.Circle:
+                case HitboxShape.Arc:
+                    CircleCollider2D circle = GetComponent<CircleCollider2D>();
+
+                    if (circle == null)
+                    {
+                        circle = gameObject.AddComponent<CircleCollider2D>();
+                    }
+
+                    circle.isTrigger = true;
+                    circle.radius = Mathf.Max(0.01f, radius);
+                    circle.offset = Vector2.zero;
+                    circle.enabled = true;
+                    break;
+                case HitboxShape.Capsule:
+                    CapsuleCollider2D capsule = GetComponent<CapsuleCollider2D>();
+
+                    if (capsule == null)
+                    {
+                        capsule = gameObject.AddComponent<CapsuleCollider2D>();
+                    }
+
+                    capsule.isTrigger = true;
+                    capsule.size = size;
+                    capsule.direction = CapsuleDirection2D.Horizontal;
+                    capsule.offset = Vector2.zero;
+                    capsule.enabled = true;
+                    break;
+                case HitboxShape.Box:
+                default:
+                    BoxCollider2D box = GetComponent<BoxCollider2D>();
+
+                    if (box == null)
+                    {
+                        box = gameObject.AddComponent<BoxCollider2D>();
+                    }
+
+                    box.isTrigger = true;
+                    box.size = size;
+                    box.offset = Vector2.zero;
+                    box.enabled = true;
+                    break;
+            }
         }
 
         private void ScanForTargets()
@@ -258,7 +331,10 @@ namespace JingHongLu.Combat
                 sourceDisplayName: sourceDisplayName,
                 canKnockUp: canKnockUp,
                 knockUpVelocity: knockUpVelocity,
-                airborneDuration: airborneDuration);
+                airborneDuration: airborneDuration,
+                canApplyHitStun: canApplyHitStun,
+                hitStunDuration: hitStunDuration,
+                interruptType: interruptType);
 
             target.ApplyDamage(damageInfo);
 

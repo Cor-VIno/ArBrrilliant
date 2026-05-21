@@ -17,9 +17,10 @@ MonoBehaviour:
   strokeType: 3
   icon: {fileID: 0}
   executionType: 0
+  directionMode: 0
   cooldown: 0.25
-  castTime: 0.03
-  recoveryTime: 0.12
+  castTime: 0.1
+  recoveryTime: 0.2
   chargeUntilRelease: 0
   minChargeTime: 0.15
   maxChargeTime: 1.2
@@ -29,11 +30,13 @@ MonoBehaviour:
   damage: 10
   canCritical: 1
   canKnockUp: 0
+  canApplyHitStun: 1
+  hitStunDuration: 0.1
   knockUpVelocity: {x: 2, y: 7}
   airborneDuration: 1.2
-  hitboxSize: {x: 1.8, y: 1}
+  hitboxSize: {x: 0.6, y: 0.4}
   hitboxOffset: {x: 0, y: 0}
-  hitboxDuration: 0.08
+  hitboxDuration: 0.2
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 1024

@@ -17,36 +17,37 @@ MonoBehaviour:
   strokeType: 1
   icon: {fileID: 0}
   executionType: 1
+  directionMode: 0
   cooldown: 0.45
-  castTime: 0.15
-  recoveryTime: 0.25
+  castTime: 0.2
+  recoveryTime: 0.3
   chargeUntilRelease: 0
   minChargeTime: 0.15
   maxChargeTime: 1.2
   lockMovementWhileCharging: 1
   blockOtherSkillsWhileCharging: 1
   superArmorWhileCharging: 1
-  damage: 8
+  damage: 10
   canCritical: 1
   canKnockUp: 0
-  hitboxSize: {x: 0.6, y: 0.35}
+  canApplyHitStun: 1
+  hitStunDuration: 0.1
+  knockUpVelocity: {x: 2, y: 7}
+  airborneDuration: 1.2
+  hitboxSize: {x: 0.2, y: 0.2}
   hitboxOffset: {x: 0, y: 0}
-  hitboxDuration: 0.08
+  hitboxDuration: 0.1
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 1024
   castPositionMode: 0
   maxCastRange: 0
-  hitboxShape: 1
-  hitboxRadius: 0.35
+  hitboxShape: 0
+  hitboxRadius: 0.1
   hitboxInnerRadius: 0
   hitboxArcAngle: 100
   hitboxRotationOffset: 0
   projectileData: {fileID: 11400000, guid: 6c1a4fef97cb491c878e2c989d42f432, type: 2}
-  projectilePrefab: {fileID: 0}
-  projectileSpeed: 12
-  projectileLifetime: 1.2
-  projectileSpawnOffset: {x: 0.8, y: 0}
-  projectileRotateToDirection: 1
+  dashData: {fileID: 0}
   visualData: {fileID: 11400000, guid: c4198abe8c504b789597f646a2a5471a, type: 2}
   gizmoColor: {r: 0.35, g: 1, b: 0.55, a: 0.35}

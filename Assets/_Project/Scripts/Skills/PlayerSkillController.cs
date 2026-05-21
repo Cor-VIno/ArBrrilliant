@@ -17,15 +17,21 @@ namespace JingHongLu.Skills
         [SerializeField] private PlayerDashController2D dashController = null;
         [SerializeField] private PlayerAirborneTargetFinder2D airborneTargetFinder = null;
         [SerializeField] private PlayerSuperArmorController superArmorController = null;
+        [SerializeField] private PlayerControlLockController controlLock = null;
         [SerializeField] private PlayerSkillLoadout skillLoadout = null;
+        [SerializeField] private bool logSkillInterruptDebug = true;
 
         private readonly Dictionary<SkillData, float> cooldownTimers = new Dictionary<SkillData, float>();
         private readonly List<SkillData> cooldownSkills = new List<SkillData>();
+        private readonly object skillCastLockSource = new object();
+        private readonly object chargeLockSource = new object();
 
         private bool isCasting;
         private bool isChargingSkill;
         private SkillData chargingSkill;
         private SkillSlot chargingSlot;
+        private SkillData currentSkill;
+        private Coroutine currentCastRoutine;
         private float chargeTimer;
         private bool chargeLockedMovement;
         private bool chargeAppliedSuperArmor;
@@ -37,9 +43,13 @@ namespace JingHongLu.Skills
         public event Action<SkillData, float, float> OnSkillChargeUpdated;
         public event Action<SkillData, float> OnSkillChargeReleased;
         public event Action<SkillData> OnSkillChargeCanceled;
+        public event Action<SkillData> OnSkillInterrupted;
+        public event Action<SkillData, Vector2> OnSkillDirectionResolved;
+        public event Action<SkillData, GameObject> OnProjectileSpawned;
 
         public bool IsCasting => isCasting;
         public bool IsChargingSkill => isChargingSkill;
+        public SkillData CurrentSkill => currentSkill;
 
         private void Awake()
         {
@@ -72,6 +82,11 @@ namespace JingHongLu.Skills
             {
                 TryGetComponent(out superArmorController);
             }
+
+            if (controlLock == null)
+            {
+                controlLock = GetComponentInParent<PlayerControlLockController>();
+            }
         }
 
         private void Update()
@@ -83,6 +98,9 @@ namespace JingHongLu.Skills
         private void OnDisable()
         {
             CancelChargedSkill();
+            CancelCurrentCastState(invokeInterruptedEvent: false);
+            RemoveSkillCastLock();
+            RemoveChargeLock();
         }
 
         public void SetSkillLoadout(PlayerSkillLoadout newSkillLoadout)
@@ -171,6 +189,11 @@ namespace JingHongLu.Skills
 
         private bool IsSlotReleased(SkillSlot slot)
         {
+            if (isChargingSkill && IsRawSlotReleased(slot))
+            {
+                return true;
+            }
+
             return slot switch
             {
                 SkillSlot.Slot1 => inputReader.SkillSlot1Released,
@@ -178,6 +201,29 @@ namespace JingHongLu.Skills
                 SkillSlot.Slot3 => inputReader.SkillSlot3Released,
                 SkillSlot.Slot4 => inputReader.SkillSlot4Released,
                 _ => false
+            };
+        }
+
+        private bool IsRawSlotReleased(SkillSlot slot)
+        {
+            if (inputReader == null || inputReader.ActiveBindingProfile == null)
+            {
+                return false;
+            }
+
+            KeyCode key = inputReader.ActiveBindingProfile.GetPrimaryKey(GetInputAction(slot));
+            return key != KeyCode.None && global::UnityEngine.Input.GetKeyUp(key);
+        }
+
+        private static GameplayInputAction GetInputAction(SkillSlot slot)
+        {
+            return slot switch
+            {
+                SkillSlot.Slot1 => GameplayInputAction.SkillSlot1,
+                SkillSlot.Slot2 => GameplayInputAction.SkillSlot2,
+                SkillSlot.Slot3 => GameplayInputAction.SkillSlot3,
+                SkillSlot.Slot4 => GameplayInputAction.SkillSlot4,
+                _ => GameplayInputAction.SkillSlot1
             };
         }
 
@@ -195,7 +241,7 @@ namespace JingHongLu.Skills
                 return;
             }
 
-            StartCoroutine(CastSkillRoutine(skill));
+            currentCastRoutine = StartCoroutine(CastSkillRoutine(skill));
         }
 
         private bool CanCast(SkillData skill)
@@ -203,6 +249,7 @@ namespace JingHongLu.Skills
             return skill != null
                 && !isCasting
                 && !isChargingSkill
+                && !IsSkillControlLocked(skill)
                 && !cooldownTimers.ContainsKey(skill);
         }
 
@@ -215,6 +262,7 @@ namespace JingHongLu.Skills
 
             isChargingSkill = true;
             chargingSkill = skill;
+            currentSkill = skill;
             chargingSlot = slot;
             chargeTimer = 0f;
             chargeLockedMovement = skill.LockMovementWhileCharging && motor != null;
@@ -232,6 +280,7 @@ namespace JingHongLu.Skills
                 superArmorController.SetSuperArmor(true);
             }
 
+            AddChargeLock();
             OnSkillChargeStarted?.Invoke(skill);
             OnSkillCastStarted?.Invoke(skill);
         }
@@ -273,22 +322,29 @@ namespace JingHongLu.Skills
             }
 
             OnSkillChargeReleased?.Invoke(skill, releasedChargeTime);
-            StartCoroutine(CastChargedSkillRoutine(skill));
+            currentCastRoutine = StartCoroutine(CastChargedSkillRoutine(skill));
         }
 
         private IEnumerator CastChargedSkillRoutine(SkillData skill)
         {
             isCasting = true;
+            currentSkill = skill;
+            AddSkillCastLock(PlayerControlLockFlags.Gameplay);
             StartCooldown(skill);
             OnSkillExecuted?.Invoke(skill);
             yield return ExecuteSkillRoutine(skill);
+
+            AddSkillCastLock(GetSkillRecoveryLockFlags());
 
             if (skill.RecoveryTime > 0f)
             {
                 yield return new WaitForSeconds(skill.RecoveryTime);
             }
 
+            RemoveSkillCastLock();
             isCasting = false;
+            currentSkill = null;
+            currentCastRoutine = null;
             OnSkillCastFinished?.Invoke(skill);
         }
 
@@ -306,6 +362,8 @@ namespace JingHongLu.Skills
 
         private void EndChargeState()
         {
+            RemoveChargeLock();
+
             if (chargeAppliedSuperArmor && superArmorController != null)
             {
                 superArmorController.SetSuperArmor(false);
@@ -318,9 +376,65 @@ namespace JingHongLu.Skills
 
             isChargingSkill = false;
             chargingSkill = null;
+            currentSkill = null;
             chargeTimer = 0f;
             chargeLockedMovement = false;
             chargeAppliedSuperArmor = false;
+        }
+
+        public void CancelCurrentSkillByInterrupt()
+        {
+            if (isChargingSkill)
+            {
+                if (logSkillInterruptDebug)
+                {
+                    Debug.Log(
+                        $"[PlayerSkill] Charge interrupted. Skill={currentSkill?.DisplayName ?? chargingSkill?.DisplayName ?? "None"}",
+                        this);
+                }
+
+                CancelChargedSkill();
+                return;
+            }
+
+            if (isCasting)
+            {
+                if (logSkillInterruptDebug)
+                {
+                    Debug.Log(
+                        $"[PlayerSkill] Cast interrupted. Skill={currentSkill?.DisplayName ?? "None"}",
+                        this);
+                }
+
+                CancelCurrentCastState(invokeInterruptedEvent: true);
+                return;
+            }
+
+            if (logSkillInterruptDebug)
+            {
+                Debug.Log("[PlayerSkill] Interrupt requested, but no active skill.", this);
+            }
+        }
+
+        private void CancelCurrentCastState(bool invokeInterruptedEvent)
+        {
+            if (currentCastRoutine != null)
+            {
+                StopCoroutine(currentCastRoutine);
+                currentCastRoutine = null;
+            }
+
+            SkillData interruptedSkill = currentSkill;
+            bool wasCasting = isCasting;
+
+            isCasting = false;
+            currentSkill = null;
+            RemoveSkillCastLock();
+
+            if (invokeInterruptedEvent && wasCasting && interruptedSkill != null)
+            {
+                OnSkillInterrupted?.Invoke(interruptedSkill);
+            }
         }
 
         private static float CalculateNormalizedCharge(SkillData skill, float currentChargeTime)
@@ -355,6 +469,8 @@ namespace JingHongLu.Skills
         private IEnumerator CastSkillRoutine(SkillData skill)
         {
             isCasting = true;
+            currentSkill = skill;
+            AddSkillCastLock(PlayerControlLockFlags.Gameplay);
             StartCooldown(skill);
             OnSkillCastStarted?.Invoke(skill);
 
@@ -366,12 +482,17 @@ namespace JingHongLu.Skills
             OnSkillExecuted?.Invoke(skill);
             yield return ExecuteSkillRoutine(skill);
 
+            AddSkillCastLock(GetSkillRecoveryLockFlags());
+
             if (skill.RecoveryTime > 0f)
             {
                 yield return new WaitForSeconds(skill.RecoveryTime);
             }
 
+            RemoveSkillCastLock();
             isCasting = false;
+            currentSkill = null;
+            currentCastRoutine = null;
             OnSkillCastFinished?.Invoke(skill);
         }
 
@@ -424,7 +545,7 @@ namespace JingHongLu.Skills
                 yield break;
             }
 
-            Vector2 aimDirection = ResolveDashDirection(skill.DashData);
+            Vector2 aimDirection = ResolveDashDirection(skill, skill.DashData);
             SpawnDashHitbox(skill, aimDirection, skill.DashData.Duration);
 
             yield return dashController.DashRoutine(skill.DashData, aimDirection);
@@ -432,7 +553,7 @@ namespace JingHongLu.Skills
 
         private void SpawnInstantHitbox(SkillData skill)
         {
-            Vector2 aimDirection = GetAimDirection();
+            Vector2 aimDirection = ResolveSkillDirection(skill);
             float angleDegrees = GetAimAngleDegrees(aimDirection, skill);
             Vector3 center = CalculateHitboxCenter(skill, aimDirection);
 
@@ -461,7 +582,9 @@ namespace JingHongLu.Skills
                 sourceDisplayName: null,
                 canKnockUp: skill.CanKnockUp,
                 knockUpVelocity: skill.KnockUpVelocity,
-                airborneDuration: skill.AirborneDuration);
+                airborneDuration: skill.AirborneDuration,
+                canApplyHitStun: skill.CanApplyHitStun,
+                hitStunDuration: skill.HitStunDuration);
         }
 
         private void SpawnProjectile(SkillData skill)
@@ -476,7 +599,7 @@ namespace JingHongLu.Skills
                 return;
             }
 
-            Vector2 aimDirection = GetAimDirection();
+            Vector2 aimDirection = ResolveSkillDirection(skill);
             float angleDegrees = GetAimAngleDegrees(aimDirection, skill);
             Vector3 spawnPosition = CalculateProjectileSpawnPosition(projectileData, aimDirection);
 
@@ -544,7 +667,11 @@ namespace JingHongLu.Skills
                 sourceDisplayName: null,
                 canKnockUp: skill.CanKnockUp,
                 knockUpVelocity: skill.KnockUpVelocity,
-                airborneDuration: skill.AirborneDuration);
+                airborneDuration: skill.AirborneDuration,
+                canApplyHitStun: skill.CanApplyHitStun,
+                hitStunDuration: skill.HitStunDuration);
+
+            OnProjectileSpawned?.Invoke(skill, projectileObject);
         }
 
         private void SpawnDashHitbox(SkillData skill, Vector2 aimDirection, float duration)
@@ -578,14 +705,18 @@ namespace JingHongLu.Skills
                 sourceDisplayName: null,
                 canKnockUp: skill.CanKnockUp,
                 knockUpVelocity: skill.KnockUpVelocity,
-                airborneDuration: skill.AirborneDuration);
+                airborneDuration: skill.AirborneDuration,
+                canApplyHitStun: skill.CanApplyHitStun,
+                hitStunDuration: skill.HitStunDuration);
         }
 
-        private Vector2 ResolveDashDirection(DashData dashData)
+        private Vector2 ResolveDashDirection(SkillData skill, DashData dashData)
         {
-            Vector2 fallbackDirection = GetAimDirection();
+            Vector2 fallbackDirection = ResolveSkillDirection(skill);
 
-            if (dashData == null ||
+            if (skill == null ||
+                skill.DirectionMode != SkillDirectionMode.AimDirection2D ||
+                dashData == null ||
                 !dashData.EnableAirborneHoming ||
                 airborneTargetFinder == null)
             {
@@ -613,15 +744,121 @@ namespace JingHongLu.Skills
             return toTarget.normalized;
         }
 
-        private Vector2 GetAimDirection()
+        private bool IsSkillControlLocked(SkillData skill)
         {
-            if (aim != null)
+            if (controlLock == null)
             {
-                return aim.AimDirection;
+                return false;
             }
 
+            if (controlLock.IsBasicSkillLocked)
+            {
+                return true;
+            }
+
+            return skill != null &&
+                skill.ExecutionType == SkillExecutionType.Dash &&
+                controlLock.IsDashLocked;
+        }
+
+        private void AddSkillCastLock(PlayerControlLockFlags flags)
+        {
+            if (controlLock != null)
+            {
+                controlLock.AddLock(skillCastLockSource, flags);
+            }
+        }
+
+        private void RemoveSkillCastLock()
+        {
+            if (controlLock != null)
+            {
+                controlLock.RemoveLock(skillCastLockSource);
+            }
+        }
+
+        private void AddChargeLock()
+        {
+            if (controlLock != null)
+            {
+                controlLock.AddLock(chargeLockSource, PlayerControlLockFlags.Gameplay);
+            }
+        }
+
+        private void RemoveChargeLock()
+        {
+            if (controlLock != null)
+            {
+                controlLock.RemoveLock(chargeLockSource);
+            }
+        }
+
+        private static PlayerControlLockFlags GetSkillRecoveryLockFlags()
+        {
+            return PlayerControlLockFlags.Move |
+                PlayerControlLockFlags.Jump |
+                PlayerControlLockFlags.BasicSkill |
+                PlayerControlLockFlags.Dash;
+        }
+
+        private Vector2 ResolveSkillDirection(SkillData skill)
+        {
+            Vector2 direction = skill != null
+                ? skill.DirectionMode switch
+                {
+                    SkillDirectionMode.MouseHorizontal => GetMouseHorizontalDirection(),
+                    SkillDirectionMode.AimDirection2D => GetAimDirection2D(),
+                    _ => GetFacingHorizontalDirection()
+                }
+                : GetFacingHorizontalDirection();
+
+            if (direction.sqrMagnitude < 0.0001f)
+            {
+                direction = GetFacingHorizontalDirection();
+            }
+
+            direction = direction.normalized;
+            OnSkillDirectionResolved?.Invoke(skill, direction);
+            return direction;
+        }
+
+        private Vector2 GetFacingHorizontalDirection()
+        {
             int facing = motor != null ? motor.FacingDirection : 1;
-            return new Vector2(facing, 0f);
+
+            if (facing == 0)
+            {
+                facing = transform.localScale.x >= 0f ? 1 : -1;
+            }
+
+            return facing >= 0 ? Vector2.right : Vector2.left;
+        }
+
+        private Vector2 GetMouseHorizontalDirection()
+        {
+            if (aim == null)
+            {
+                return GetFacingHorizontalDirection();
+            }
+
+            return aim.MouseWorldPosition.x >= transform.position.x
+                ? Vector2.right
+                : Vector2.left;
+        }
+
+        private Vector2 GetAimDirection2D()
+        {
+            if (aim == null || aim.AimDirection.sqrMagnitude < 0.0001f)
+            {
+                return GetFacingHorizontalDirection();
+            }
+
+            return aim.AimDirection.normalized;
+        }
+
+        private Vector2 GetAimDirection()
+        {
+            return GetAimDirection2D();
         }
 
         private float GetAimAngleDegrees(Vector2 aimDirection, SkillData skill)

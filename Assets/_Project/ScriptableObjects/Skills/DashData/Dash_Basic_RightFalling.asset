@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Dash_Basic_RightFalling
   m_EditorClassIdentifier: 
   distance: 3
-  duration: 0.18
+  duration: 0.2
   endVelocityMultiplier: 0
   invincibleDuringDash: 1
   enableAirborneHoming: 1

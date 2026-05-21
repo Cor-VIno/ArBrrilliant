@@ -11,6 +11,7 @@ namespace JingHongLu.Enemies
         [SerializeField] private Transform target;
         [SerializeField] private Rigidbody2D body;
         [SerializeField] private AirborneTarget2D airborneTarget;
+        [SerializeField] private HitStunReceiver2D hitStunReceiver;
         [SerializeField] private PlayerSkillController targetSkillController;
         [SerializeField] private TeamId ownerTeam = TeamId.Enemy;
         [SerializeField] private bool logAttack = true;
@@ -33,12 +34,14 @@ namespace JingHongLu.Enemies
         {
             ResolveReferences();
             SubscribeAirborneEvents();
+            SubscribeHitStunEvents();
             SubscribeTargetSkillEvents();
         }
 
         private void OnDisable()
         {
             UnsubscribeTargetSkillEvents();
+            UnsubscribeHitStunEvents();
             UnsubscribeAirborneEvents();
             StopAllCoroutines();
             isAttacking = false;
@@ -59,6 +62,12 @@ namespace JingHongLu.Enemies
 
             if (airborneTarget != null && airborneTarget.IsAirborne)
             {
+                return;
+            }
+
+            if (hitStunReceiver != null && hitStunReceiver.IsStunned)
+            {
+                StopHorizontalMovement();
                 return;
             }
 
@@ -94,15 +103,16 @@ namespace JingHongLu.Enemies
                 return;
             }
 
-            float distance = Vector2.Distance(transform.position, target.position);
+            float horizontalDistance = Mathf.Abs(target.position.x - transform.position.x);
+            FaceTarget();
 
-            if (distance > data.LoseTargetRange)
+            if (horizontalDistance > data.LoseTargetRange)
             {
                 StopHorizontalMovement();
                 return;
             }
 
-            if (distance <= data.AttackRange)
+            if (horizontalDistance <= data.AttackRange)
             {
                 StopHorizontalMovement();
                 TryAttack();
@@ -110,8 +120,8 @@ namespace JingHongLu.Enemies
             }
 
             bool inRangedRange = data.CanUseRangedAttack
-                && distance >= data.RangedAttackMinDistance
-                && distance <= data.RangedAttackMaxDistance;
+                && horizontalDistance >= data.RangedAttackMinDistance
+                && horizontalDistance <= data.RangedAttackMaxDistance;
 
             if (inRangedRange)
             {
@@ -121,12 +131,23 @@ namespace JingHongLu.Enemies
                 {
                     return;
                 }
+
+                if (rangedCooldownTimer > 0f)
+                {
+                    return;
+                }
             }
 
-            if (data.EnableCombatSpacing && distance < data.PreferredMinDistance)
+            if (data.EnableCombatSpacing && horizontalDistance < data.PreferredMinDistance)
             {
                 if (TryBackstep())
                 {
+                    return;
+                }
+
+                if (horizontalDistance > data.AttackRange)
+                {
+                    ChaseTarget();
                     return;
                 }
 
@@ -134,13 +155,7 @@ namespace JingHongLu.Enemies
                 return;
             }
 
-            if (data.EnableCombatSpacing && distance <= data.PreferredMaxDistance)
-            {
-                StopHorizontalMovement();
-                return;
-            }
-
-            if (distance <= data.AggroRange)
+            if (horizontalDistance <= data.AggroRange)
             {
                 ChaseTarget();
                 return;
@@ -169,6 +184,21 @@ namespace JingHongLu.Enemies
             if (airborneTarget == null)
             {
                 airborneTarget = GetComponentInParent<AirborneTarget2D>();
+            }
+
+            if (hitStunReceiver == null)
+            {
+                TryGetComponent(out hitStunReceiver);
+            }
+
+            if (hitStunReceiver == null)
+            {
+                hitStunReceiver = GetComponentInParent<HitStunReceiver2D>();
+            }
+
+            if (hitStunReceiver == null)
+            {
+                hitStunReceiver = GetComponentInChildren<HitStunReceiver2D>();
             }
 
             if (target == null)
@@ -206,9 +236,33 @@ namespace JingHongLu.Enemies
             airborneTarget.OnAirborneEnded -= HandleAirborneEnded;
         }
 
+        private void SubscribeHitStunEvents()
+        {
+            if (hitStunReceiver == null)
+            {
+                return;
+            }
+
+            hitStunReceiver.OnHitStunStarted -= HandleHitStunStarted;
+            hitStunReceiver.OnHitStunEnded -= HandleHitStunEnded;
+            hitStunReceiver.OnHitStunStarted += HandleHitStunStarted;
+            hitStunReceiver.OnHitStunEnded += HandleHitStunEnded;
+        }
+
+        private void UnsubscribeHitStunEvents()
+        {
+            if (hitStunReceiver == null)
+            {
+                return;
+            }
+
+            hitStunReceiver.OnHitStunStarted -= HandleHitStunStarted;
+            hitStunReceiver.OnHitStunEnded -= HandleHitStunEnded;
+        }
+
         private void HandleAirborneStarted(AirborneTarget2D target)
         {
-            InterruptCurrentAction();
+            InterruptCurrentAction("airborne");
         }
 
         private void HandleAirborneEnded(AirborneTarget2D target)
@@ -219,7 +273,21 @@ namespace JingHongLu.Enemies
             }
         }
 
-        private void InterruptCurrentAction()
+        private void HandleHitStunStarted(float duration)
+        {
+            InterruptCurrentAction("hit stun");
+            StopHorizontalMovement();
+        }
+
+        private void HandleHitStunEnded()
+        {
+            if (logAttack)
+            {
+                Debug.Log($"{name} hit stun ended, AI resumed.", this);
+            }
+        }
+
+        private void InterruptCurrentAction(string reason)
         {
             StopAllCoroutines();
             isAttacking = false;
@@ -227,7 +295,7 @@ namespace JingHongLu.Enemies
 
             if (logAttack)
             {
-                Debug.Log($"{name} action interrupted by airborne.", this);
+                Debug.Log($"{name} action interrupted by {reason}.", this);
             }
         }
 
@@ -371,8 +439,11 @@ namespace JingHongLu.Enemies
 
             float horizontalDelta = target.position.x - transform.position.x;
             float absHorizontalDelta = Mathf.Abs(horizontalDelta);
+            float effectiveStopDistance = Mathf.Min(
+                data.StopDistance,
+                data.AttackRange * 0.8f);
 
-            if (absHorizontalDelta <= data.StopDistance)
+            if (absHorizontalDelta <= effectiveStopDistance)
             {
                 StopHorizontalMovement();
                 return;
@@ -414,6 +485,7 @@ namespace JingHongLu.Enemies
         {
             isAttacking = true;
             StopHorizontalMovement();
+            FaceTarget();
 
             if (data.AttackWindup > 0f)
             {
@@ -426,6 +498,7 @@ namespace JingHongLu.Enemies
                 yield break;
             }
 
+            FaceTarget();
             SpawnAttackHitbox();
             cooldownTimer = data.AttackCooldown;
 
@@ -552,6 +625,7 @@ namespace JingHongLu.Enemies
 
         private void SpawnAttackHitbox()
         {
+            FaceTarget();
             Vector2 direction = new Vector2(facingSign, 0f);
             Vector2 offset = data.HitboxOffset;
             offset.x *= facingSign;
@@ -578,7 +652,9 @@ namespace JingHongLu.Enemies
                 innerRadius: 0f,
                 arcAngle: 90f,
                 destroyOnFirstHit: false,
-                sourceDisplayName: "敌人攻击");
+                sourceDisplayName: "敌人攻击",
+                interruptType: AttackInterruptType.Heavy,
+                canBePerfectDodged: true);
 
             if (logAttack)
             {
@@ -721,6 +797,25 @@ namespace JingHongLu.Enemies
         private void StopHorizontalMovement()
         {
             SetHorizontalVelocity(0f);
+        }
+
+        private void FaceTarget()
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            float horizontalDelta = target.position.x - transform.position.x;
+
+            if (Mathf.Abs(horizontalDelta) <= 0.001f)
+            {
+                return;
+            }
+
+            int directionSign = horizontalDelta >= 0f ? 1 : -1;
+            facingSign = directionSign;
+            SetVisualFacing(directionSign);
         }
 
         private void SetVisualFacing(int directionSign)

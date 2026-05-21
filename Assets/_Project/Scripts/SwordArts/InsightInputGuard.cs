@@ -11,6 +11,7 @@ namespace JingHongLu.SwordArts
         [SerializeField] private PlayerInputReader inputReader;
         [SerializeField] private Rigidbody2D playerBody;
         [SerializeField] private PlayerInvincibilityController invincibilityController;
+        [SerializeField] private PlayerControlLockController controlLock;
         [SerializeField] private bool blockGameplayInput = true;
         [SerializeField] private bool enableInvincibility = true;
         [SerializeField] private bool stopHorizontalVelocityOnStart = true;
@@ -52,7 +53,15 @@ namespace JingHongLu.SwordArts
                 inputReader.OnCancelPressed -= HandleCancelPressed;
                 inputReader.OnBlockedGameplayInputPressed -=
                     HandleBlockedGameplayInputPressed;
-                inputReader.SetGameplayInputBlocked(false);
+                if (controlLock == null)
+                {
+                    inputReader.SetGameplayInputBlocked(false);
+                }
+            }
+
+            if (controlLock != null)
+            {
+                controlLock.RemoveLock(this);
             }
 
             if (invincibilityController != null)
@@ -82,13 +91,22 @@ namespace JingHongLu.SwordArts
             {
                 TryGetComponent(out invincibilityController);
             }
+
+            if (controlLock == null)
+            {
+                controlLock = GetComponentInParent<PlayerControlLockController>();
+            }
         }
 
         private void HandleInsightStarted(
             System.Collections.Generic.IReadOnlyList<SwordArtData> candidates,
             int selectedIndex)
         {
-            if (blockGameplayInput && inputReader != null)
+            if (blockGameplayInput && controlLock != null)
+            {
+                controlLock.AddLock(this, PlayerControlLockFlags.Gameplay);
+            }
+            else if (blockGameplayInput && inputReader != null)
             {
                 inputReader.SetGameplayInputBlocked(true);
             }
@@ -108,7 +126,11 @@ namespace JingHongLu.SwordArts
 
         private void HandleInsightEnded()
         {
-            if (inputReader != null)
+            if (controlLock != null)
+            {
+                controlLock.RemoveLock(this);
+            }
+            else if (inputReader != null)
             {
                 inputReader.SetGameplayInputBlocked(false);
             }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 0}
   motionType: 0
-  speed: 15
+  speed: 2
   lifetime: 3
   gravity: 0
   spawnOffset: {x: 0.8, y: 0}
@@ -23,5 +23,5 @@ MonoBehaviour:
   impactLayerMask:
     serializedVersion: 2
     m_Bits: 4224
-  impactCheckRadius: 0.15
+  impactCheckRadius: 0.1
   destroyOnImpact: 1

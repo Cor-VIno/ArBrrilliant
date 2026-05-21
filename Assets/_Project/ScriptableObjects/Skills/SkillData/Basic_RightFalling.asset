@@ -17,21 +17,26 @@ MonoBehaviour:
   strokeType: 4
   icon: {fileID: 0}
   executionType: 2
+  directionMode: 1
   cooldown: 0.8
-  castTime: 0.12
-  recoveryTime: 0.18
+  castTime: 0.01
+  recoveryTime: 0.01
   chargeUntilRelease: 0
   minChargeTime: 0.15
   maxChargeTime: 1.2
   lockMovementWhileCharging: 1
   blockOtherSkillsWhileCharging: 1
   superArmorWhileCharging: 1
-  damage: 12
+  damage: 5
   canCritical: 1
   canKnockUp: 0
+  canApplyHitStun: 0
+  hitStunDuration: 0
+  knockUpVelocity: {x: 2, y: 7}
+  airborneDuration: 1.2
   hitboxSize: {x: 1.2, y: 0.8}
   hitboxOffset: {x: 0.6, y: 0}
-  hitboxDuration: 0.18
+  hitboxDuration: 0.2
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 1024

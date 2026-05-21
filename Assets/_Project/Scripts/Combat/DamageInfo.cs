@@ -18,7 +18,10 @@ namespace JingHongLu.Combat
             string sourceDisplayName = null,
             bool canKnockUp = false,
             Vector2 knockUpVelocity = default,
-            float airborneDuration = 0f)
+            float airborneDuration = 0f,
+            bool canApplyHitStun = false,
+            float hitStunDuration = 0f,
+            AttackInterruptType interruptType = AttackInterruptType.None)
         {
             Attacker = attacker;
             Target = target;
@@ -33,6 +36,9 @@ namespace JingHongLu.Combat
             CanKnockUp = canKnockUp;
             KnockUpVelocity = knockUpVelocity;
             AirborneDuration = airborneDuration;
+            CanApplyHitStun = canApplyHitStun;
+            HitStunDuration = hitStunDuration;
+            InterruptType = interruptType;
         }
 
         public GameObject Attacker { get; }
@@ -48,6 +54,9 @@ namespace JingHongLu.Combat
         public bool CanKnockUp { get; }
         public Vector2 KnockUpVelocity { get; }
         public float AirborneDuration { get; }
+        public bool CanApplyHitStun { get; }
+        public float HitStunDuration { get; }
+        public AttackInterruptType InterruptType { get; }
 
         private static string ResolveSourceDisplayName(
             string sourceDisplayName,

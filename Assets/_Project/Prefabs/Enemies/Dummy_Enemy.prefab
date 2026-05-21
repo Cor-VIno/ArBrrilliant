@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8970075442875249144}
   - component: {fileID: 6201000000000000002}
   - component: {fileID: 6201000000000000003}
+  - component: {fileID: 6201000000000000005}
   - component: {fileID: 6201000000000000004}
   m_Layer: 8
   m_Name: Dummy_Enemy
@@ -217,6 +218,7 @@ MonoBehaviour:
   target: {fileID: 0}
   body: {fileID: 6201000000000000001}
   airborneTarget: {fileID: 6201000000000000003}
+  hitStunReceiver: {fileID: 6201000000000000005}
   targetSkillController: {fileID: 0}
   ownerTeam: 2
   logAttack: 1
@@ -233,6 +235,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.AirborneTarget2D
   logStateChange: 0
+--- !u!114 &6201000000000000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4505163382433563501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8e8a2f15c4b4ea2b8d6c245a71bc9aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.HitStunReceiver2D
+  logHitStun: 0
 --- !u!114 &6201000000000000004
 MonoBehaviour:
   m_ObjectHideFlags: 0

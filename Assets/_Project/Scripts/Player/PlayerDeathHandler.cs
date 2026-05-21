@@ -13,6 +13,7 @@ namespace JingHongLu.Player
         [SerializeField] private PlayerMotor2D motor;
         [SerializeField] private PlayerDashController2D dashController;
         [SerializeField] private Rigidbody2D body;
+        [SerializeField] private PlayerControlLockController controlLock;
         [SerializeField] private bool logDeath = true;
 
         private bool isDead;
@@ -37,6 +38,11 @@ namespace JingHongLu.Player
             if (health != null)
             {
                 health.OnDied -= HandleDied;
+            }
+
+            if (!isDead && controlLock != null)
+            {
+                controlLock.RemoveLock(this);
             }
         }
 
@@ -71,6 +77,11 @@ namespace JingHongLu.Player
             {
                 TryGetComponent(out body);
             }
+
+            if (controlLock == null)
+            {
+                controlLock = GetComponentInParent<PlayerControlLockController>();
+            }
         }
 
         private void HandleDied()
@@ -85,6 +96,11 @@ namespace JingHongLu.Player
             if (logDeath)
             {
                 Debug.Log("Player died.", this);
+            }
+
+            if (controlLock != null)
+            {
+                controlLock.AddLock(this, PlayerControlLockFlags.All);
             }
 
             if (inputReader != null)
