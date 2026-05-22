@@ -35,6 +35,25 @@ namespace JingHongLu.Skills
         [SerializeField] private bool blockOtherSkillsWhileCharging = true;
         [SerializeField] private bool superArmorWhileCharging = true;
 
+        [Header("Heavy Two Stage")]
+        [SerializeField] private bool useHeavyTwoStage;
+        [SerializeField] private float heavyStage1CastTime = 0.1f;
+        [SerializeField] private float heavyStage1HitboxDuration = 0.2f;
+        [SerializeField] private float heavyStage1RecoveryTime = 0f;
+        [SerializeField] private float heavyStage1Damage = 10f;
+        [SerializeField] private Vector2 heavyStage1HitboxSize = new Vector2(0.6f, 0.6f);
+        [SerializeField] private bool heavyStage1CanApplyHitStun = true;
+        [SerializeField] private float heavyStage1HitStunDuration = 0.1f;
+        [SerializeField] private float heavyStage2MaxChargeTime = 1.5f;
+        [SerializeField] private float heavyStage2HitboxDuration = 0.2f;
+        [SerializeField] private float heavyStage2RecoveryTime = 0.2f;
+        [SerializeField] private float heavyStage2BaseDamage = 15f;
+        [SerializeField] private float heavyStage2DamageBonusPerSecond = 20f;
+        [SerializeField] private float heavyStage2MaxDamageBonus = 30f;
+        [SerializeField] private Vector2 heavyStage2HitboxSize = new Vector2(1f, 1f);
+        [SerializeField] private bool heavyStage2CanApplyHitStun = true;
+        [SerializeField] private float heavyStage2HitStunDuration = 0.2f;
+
         [Header("Damage")]
         [SerializeField] private float damage = 10f;
         [SerializeField] private bool canCritical = true;
@@ -124,6 +143,23 @@ namespace JingHongLu.Skills
         public bool LockMovementWhileCharging => lockMovementWhileCharging;
         public bool BlockOtherSkillsWhileCharging => blockOtherSkillsWhileCharging;
         public bool SuperArmorWhileCharging => superArmorWhileCharging;
+        public bool UseHeavyTwoStage => useHeavyTwoStage;
+        public float HeavyStage1CastTime => Mathf.Max(0f, heavyStage1CastTime);
+        public float HeavyStage1HitboxDuration => Mathf.Max(0.01f, heavyStage1HitboxDuration);
+        public float HeavyStage1RecoveryTime => Mathf.Max(0f, heavyStage1RecoveryTime);
+        public float HeavyStage1Damage => heavyStage1Damage;
+        public Vector2 HeavyStage1HitboxSize => heavyStage1HitboxSize;
+        public bool HeavyStage1CanApplyHitStun => heavyStage1CanApplyHitStun;
+        public float HeavyStage1HitStunDuration => Mathf.Max(0f, heavyStage1HitStunDuration);
+        public float HeavyStage2MaxChargeTime => Mathf.Max(0f, heavyStage2MaxChargeTime);
+        public float HeavyStage2HitboxDuration => Mathf.Max(0.01f, heavyStage2HitboxDuration);
+        public float HeavyStage2RecoveryTime => Mathf.Max(0f, heavyStage2RecoveryTime);
+        public float HeavyStage2BaseDamage => heavyStage2BaseDamage;
+        public float HeavyStage2DamageBonusPerSecond => heavyStage2DamageBonusPerSecond;
+        public float HeavyStage2MaxDamageBonus => Mathf.Max(0f, heavyStage2MaxDamageBonus);
+        public Vector2 HeavyStage2HitboxSize => heavyStage2HitboxSize;
+        public bool HeavyStage2CanApplyHitStun => heavyStage2CanApplyHitStun;
+        public float HeavyStage2HitStunDuration => Mathf.Max(0f, heavyStage2HitStunDuration);
         public float Damage => damage;
         public bool CanCritical => canCritical;
         public bool CanKnockUp => canKnockUp;

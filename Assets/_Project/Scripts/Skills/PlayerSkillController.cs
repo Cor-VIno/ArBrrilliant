@@ -35,6 +35,7 @@ namespace JingHongLu.Skills
         private float chargeTimer;
         private bool chargeLockedMovement;
         private bool chargeAppliedSuperArmor;
+        private bool isHeavyTwoStageCharging;
 
         public event Action<SkillData> OnSkillCastStarted;
         public event Action<SkillData> OnSkillExecuted;
@@ -142,7 +143,11 @@ namespace JingHongLu.Skills
 
             if (isChargingSkill)
             {
-                UpdateChargingSkill();
+                if (!isHeavyTwoStageCharging)
+                {
+                    UpdateChargingSkill();
+                }
+
                 return;
             }
 
@@ -160,6 +165,12 @@ namespace JingHongLu.Skills
             }
 
             SkillData skill = GetSkill(slot);
+
+            if (skill != null && skill.UseHeavyTwoStage)
+            {
+                TryBeginHeavyTwoStageSkill(slot, skill);
+                return;
+            }
 
             if (skill != null && skill.ChargeUntilRelease)
             {
@@ -202,6 +213,17 @@ namespace JingHongLu.Skills
                 SkillSlot.Slot4 => inputReader.SkillSlot4Released,
                 _ => false
             };
+        }
+
+        private bool IsRawSlotHeld(SkillSlot slot)
+        {
+            if (inputReader == null || inputReader.ActiveBindingProfile == null)
+            {
+                return false;
+            }
+
+            KeyCode key = inputReader.ActiveBindingProfile.GetPrimaryKey(GetInputAction(slot));
+            return key != KeyCode.None && global::UnityEngine.Input.GetKey(key);
         }
 
         private bool IsRawSlotReleased(SkillSlot slot)
@@ -260,7 +282,17 @@ namespace JingHongLu.Skills
                 return;
             }
 
+            BeginChargeState(slot, skill, heavyTwoStage: false);
+            OnSkillCastStarted?.Invoke(skill);
+        }
+
+        private void BeginChargeState(
+            SkillSlot slot,
+            SkillData skill,
+            bool heavyTwoStage)
+        {
             isChargingSkill = true;
+            isHeavyTwoStageCharging = heavyTwoStage;
             chargingSkill = skill;
             currentSkill = skill;
             chargingSlot = slot;
@@ -282,7 +314,16 @@ namespace JingHongLu.Skills
 
             AddChargeLock();
             OnSkillChargeStarted?.Invoke(skill);
-            OnSkillCastStarted?.Invoke(skill);
+        }
+
+        private void TryBeginHeavyTwoStageSkill(SkillSlot slot, SkillData skill)
+        {
+            if (!CanCast(skill))
+            {
+                return;
+            }
+
+            currentCastRoutine = StartCoroutine(RunHeavyTwoStageRoutine(slot, skill));
         }
 
         private void UpdateChargingSkill()
@@ -375,6 +416,7 @@ namespace JingHongLu.Skills
             }
 
             isChargingSkill = false;
+            isHeavyTwoStageCharging = false;
             chargingSkill = null;
             currentSkill = null;
             chargeTimer = 0f;
@@ -394,6 +436,12 @@ namespace JingHongLu.Skills
                 }
 
                 CancelChargedSkill();
+
+                if (currentCastRoutine != null)
+                {
+                    CancelCurrentCastState(invokeInterruptedEvent: true);
+                }
+
                 return;
             }
 
@@ -496,6 +544,112 @@ namespace JingHongLu.Skills
             OnSkillCastFinished?.Invoke(skill);
         }
 
+        private IEnumerator RunHeavyTwoStageRoutine(SkillSlot slot, SkillData skill)
+        {
+            isCasting = true;
+            currentSkill = skill;
+            AddSkillCastLock(PlayerControlLockFlags.Gameplay);
+            StartCooldown(skill);
+            OnSkillCastStarted?.Invoke(skill);
+
+            if (skill.HeavyStage1CastTime > 0f)
+            {
+                yield return new WaitForSeconds(skill.HeavyStage1CastTime);
+            }
+
+            SpawnInstantHitbox(
+                skill,
+                skill.HeavyStage1Damage,
+                skill.HeavyStage1HitboxSize,
+                skill.HeavyStage1HitboxDuration,
+                skill.HeavyStage1CanApplyHitStun,
+                skill.HeavyStage1HitStunDuration);
+
+            if (skill.HeavyStage1HitboxDuration > 0f)
+            {
+                yield return new WaitForSeconds(skill.HeavyStage1HitboxDuration);
+            }
+
+            if (skill.HeavyStage1RecoveryTime > 0f)
+            {
+                yield return new WaitForSeconds(skill.HeavyStage1RecoveryTime);
+            }
+
+            BeginChargeState(slot, skill, heavyTwoStage: true);
+
+            while (isChargingSkill && chargingSkill == skill)
+            {
+                bool shouldRelease = !IsRawSlotHeld(slot);
+                float maxChargeTime = skill.HeavyStage2MaxChargeTime;
+
+                if (!shouldRelease)
+                {
+                    chargeTimer += Time.deltaTime;
+                    float normalizedCharge = maxChargeTime <= 0f
+                        ? 1f
+                        : Mathf.Clamp01(chargeTimer / maxChargeTime);
+                    OnSkillChargeUpdated?.Invoke(skill, chargeTimer, normalizedCharge);
+
+                    if (chargeLockedMovement)
+                    {
+                        StopHorizontalMotion();
+                    }
+
+                    shouldRelease = IsRawSlotReleased(slot) ||
+                        (maxChargeTime > 0f && chargeTimer >= maxChargeTime);
+                }
+
+                if (shouldRelease)
+                {
+                    break;
+                }
+
+                yield return null;
+            }
+
+            if (!isChargingSkill || chargingSkill != skill)
+            {
+                yield break;
+            }
+
+            float releasedChargeTime = chargeTimer;
+            float damageBonus = Mathf.Min(
+                releasedChargeTime * skill.HeavyStage2DamageBonusPerSecond,
+                skill.HeavyStage2MaxDamageBonus);
+            float finalDamage = skill.HeavyStage2BaseDamage + damageBonus;
+            EndChargeState();
+
+            currentSkill = skill;
+            OnSkillChargeReleased?.Invoke(skill, releasedChargeTime);
+
+            SpawnInstantHitbox(
+                skill,
+                finalDamage,
+                skill.HeavyStage2HitboxSize,
+                skill.HeavyStage2HitboxDuration,
+                skill.HeavyStage2CanApplyHitStun,
+                skill.HeavyStage2HitStunDuration);
+            OnSkillExecuted?.Invoke(skill);
+
+            if (skill.HeavyStage2HitboxDuration > 0f)
+            {
+                yield return new WaitForSeconds(skill.HeavyStage2HitboxDuration);
+            }
+
+            AddSkillCastLock(GetSkillRecoveryLockFlags());
+
+            if (skill.HeavyStage2RecoveryTime > 0f)
+            {
+                yield return new WaitForSeconds(skill.HeavyStage2RecoveryTime);
+            }
+
+            RemoveSkillCastLock();
+            isCasting = false;
+            currentSkill = null;
+            currentCastRoutine = null;
+            OnSkillCastFinished?.Invoke(skill);
+        }
+
         private void StartCooldown(SkillData skill)
         {
             if (skill.Cooldown <= 0f)
@@ -553,6 +707,23 @@ namespace JingHongLu.Skills
 
         private void SpawnInstantHitbox(SkillData skill)
         {
+            SpawnInstantHitbox(
+                skill,
+                skill.Damage,
+                skill.HitboxSize,
+                skill.HitboxDuration,
+                skill.CanApplyHitStun,
+                skill.HitStunDuration);
+        }
+
+        private void SpawnInstantHitbox(
+            SkillData skill,
+            float damage,
+            Vector2 hitboxSize,
+            float hitboxDuration,
+            bool canApplyHitStun,
+            float hitStunDuration)
+        {
             Vector2 aimDirection = ResolveSkillDirection(skill);
             float angleDegrees = GetAimAngleDegrees(aimDirection, skill);
             Vector3 center = CalculateHitboxCenter(skill, aimDirection);
@@ -564,10 +735,10 @@ namespace JingHongLu.Skills
             hitbox.Initialize(
                 owner: gameObject,
                 ownerTeam: TeamId.Player,
-                damage: skill.Damage,
-                size: skill.HitboxSize,
+                damage: damage,
+                size: hitboxSize,
                 direction: aimDirection,
-                lifetime: skill.HitboxDuration,
+                lifetime: hitboxDuration,
                 targetLayerMask: skill.TargetLayerMask,
                 hitOncePerTarget: true,
                 canCritical: skill.CanCritical,
@@ -583,8 +754,8 @@ namespace JingHongLu.Skills
                 canKnockUp: skill.CanKnockUp,
                 knockUpVelocity: skill.KnockUpVelocity,
                 airborneDuration: skill.AirborneDuration,
-                canApplyHitStun: skill.CanApplyHitStun,
-                hitStunDuration: skill.HitStunDuration);
+                canApplyHitStun: canApplyHitStun,
+                hitStunDuration: hitStunDuration);
         }
 
         private void SpawnProjectile(SkillData skill)

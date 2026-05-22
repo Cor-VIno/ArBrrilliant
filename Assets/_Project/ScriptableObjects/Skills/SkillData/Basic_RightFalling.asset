@@ -18,9 +18,9 @@ MonoBehaviour:
   icon: {fileID: 0}
   executionType: 2
   directionMode: 1
-  cooldown: 0.8
-  castTime: 0.01
-  recoveryTime: 0.01
+  cooldown: 1.5
+  castTime: 0.1
+  recoveryTime: 0.2
   chargeUntilRelease: 0
   minChargeTime: 0.15
   maxChargeTime: 1.2

@@ -19,14 +19,31 @@ MonoBehaviour:
   executionType: 0
   directionMode: 0
   cooldown: 0.7
-  castTime: 0.2
-  recoveryTime: 0.4
-  chargeUntilRelease: 1
+  castTime: 0.1
+  recoveryTime: 0.2
+  chargeUntilRelease: 0
   minChargeTime: 0.2
   maxChargeTime: 1.5
   lockMovementWhileCharging: 1
   blockOtherSkillsWhileCharging: 1
   superArmorWhileCharging: 1
+  useHeavyTwoStage: 1
+  heavyStage1CastTime: 0.1
+  heavyStage1HitboxDuration: 0.2
+  heavyStage1RecoveryTime: 0
+  heavyStage1Damage: 10
+  heavyStage1HitboxSize: {x: 0.6, y: 0.6}
+  heavyStage1CanApplyHitStun: 1
+  heavyStage1HitStunDuration: 0.1
+  heavyStage2MaxChargeTime: 1.5
+  heavyStage2HitboxDuration: 0.2
+  heavyStage2RecoveryTime: 0.2
+  heavyStage2BaseDamage: 15
+  heavyStage2DamageBonusPerSecond: 20
+  heavyStage2MaxDamageBonus: 30
+  heavyStage2HitboxSize: {x: 1, y: 1}
+  heavyStage2CanApplyHitStun: 1
+  heavyStage2HitStunDuration: 0.2
   damage: 15
   canCritical: 1
   canKnockUp: 1
@@ -36,7 +53,7 @@ MonoBehaviour:
   airborneDuration: 1.2
   hitboxSize: {x: 1, y: 1}
   hitboxOffset: {x: 0.8, y: 0}
-  hitboxDuration: 0.3
+  hitboxDuration: 0.2
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 1024
