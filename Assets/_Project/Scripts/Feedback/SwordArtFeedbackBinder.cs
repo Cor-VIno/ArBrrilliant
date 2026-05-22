@@ -92,7 +92,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(swordArt, out SwordArtFeedbackData feedbackData))
             {
-                PlayCue(feedbackData.ExecutionStartedCue, swordArt);
+                PlayCue("Sword art started", feedbackData.ExecutionStartedCue, swordArt);
             }
         }
 
@@ -100,7 +100,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(swordArt, out SwordArtFeedbackData feedbackData))
             {
-                PlayCue(feedbackData.ExecutionFinishedCue, swordArt);
+                PlayCue("Sword art finished", feedbackData.ExecutionFinishedCue, swordArt);
             }
         }
 
@@ -115,24 +115,32 @@ namespace JingHongLu.Feedback
             return false;
         }
 
-        private void PlayCue(FeedbackCue cue, SwordArtData swordArt)
+        private void PlayCue(string label, FeedbackCue cue, SwordArtData swordArt)
         {
             if (cue == null)
             {
+                if (logFeedback)
+                {
+                    Debug.Log($"[Feedback] {label} cue missing. SwordArt={swordArt?.DisplayName}", this);
+                }
+
                 return;
             }
 
             Vector2 direction = ResolveSafeDirection();
+            bool playedAny = false;
 
             if (!string.IsNullOrWhiteSpace(cue.AnimatorTrigger) && animator != null)
             {
                 animator.SetTrigger(cue.AnimatorTrigger);
+                playedAny = true;
             }
 
             if (cue.AudioClip != null && audioSource != null)
             {
                 audioSource.pitch = Mathf.Max(0.01f, cue.Pitch);
                 audioSource.PlayOneShot(cue.AudioClip, Mathf.Max(0f, cue.Volume));
+                playedAny = true;
             }
 
             if (cue.VfxPrefab != null)
@@ -148,11 +156,14 @@ namespace JingHongLu.Feedback
                 {
                     Destroy(instance, cue.DestroyDelay);
                 }
+
+                playedAny = true;
             }
 
             if (logFeedback)
             {
-                Debug.Log($"[Feedback] Sword art cue played. SwordArt={swordArt?.DisplayName}", this);
+                string result = playedAny ? "played" : "has no configured output";
+                Debug.Log($"[Feedback] {label} cue {result}. SwordArt={swordArt?.DisplayName}", this);
             }
         }
 

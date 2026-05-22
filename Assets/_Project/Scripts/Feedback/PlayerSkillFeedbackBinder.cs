@@ -141,7 +141,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue(feedbackData.CastStartedCue, skill, lastResolvedDirection);
+                PlayCue("Skill cast started", feedbackData.CastStartedCue, skill, lastResolvedDirection);
             }
         }
 
@@ -149,7 +149,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue(feedbackData.ExecutedCue, skill, lastResolvedDirection);
+                PlayCue("Skill executed", feedbackData.ExecutedCue, skill, lastResolvedDirection);
             }
         }
 
@@ -157,7 +157,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue(feedbackData.CastFinishedCue, skill, lastResolvedDirection);
+                PlayCue("Skill cast finished", feedbackData.CastFinishedCue, skill, lastResolvedDirection);
             }
         }
 
@@ -165,7 +165,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue(feedbackData.ChargeStartedCue, skill, lastResolvedDirection);
+                PlayCue("Charge started", feedbackData.ChargeStartedCue, skill, lastResolvedDirection);
             }
         }
 
@@ -173,7 +173,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue(feedbackData.ChargeReleasedCue, skill, lastResolvedDirection);
+                PlayCue("Charge released", feedbackData.ChargeReleasedCue, skill, lastResolvedDirection);
             }
         }
 
@@ -193,6 +193,7 @@ namespace JingHongLu.Feedback
                     ? projectile.transform.position
                     : null;
                 PlayCue(
+                    "Projectile spawned",
                     feedbackData.ProjectileSpawnedCue,
                     skill,
                     lastResolvedDirection,
@@ -211,7 +212,7 @@ namespace JingHongLu.Feedback
             SkillFeedbackData feedbackData = ResolveDashFeedback();
             if (feedbackData != null)
             {
-                PlayCue(feedbackData.DashStartedCue, feedbackData.Skill, lastResolvedDirection);
+                PlayCue("Dash started", feedbackData.DashStartedCue, feedbackData.Skill, lastResolvedDirection);
             }
         }
 
@@ -220,7 +221,7 @@ namespace JingHongLu.Feedback
             SkillFeedbackData feedbackData = ResolveDashFeedback();
             if (feedbackData != null)
             {
-                PlayCue(feedbackData.DashFinishedCue, feedbackData.Skill, lastResolvedDirection);
+                PlayCue("Dash finished", feedbackData.DashFinishedCue, feedbackData.Skill, lastResolvedDirection);
             }
         }
 
@@ -229,7 +230,7 @@ namespace JingHongLu.Feedback
             Vector2 direction = eventData.DodgeDirection.sqrMagnitude > 0.0001f
                 ? eventData.DodgeDirection.normalized
                 : lastResolvedDirection;
-            PlayCue(perfectDodgeCue, null, direction, null, eventData.ContactPoint);
+            PlayCue("Perfect dodge", perfectDodgeCue, null, direction, null, eventData.ContactPoint);
         }
 
         private bool TryGetFeedback(SkillData skill, out SkillFeedbackData feedbackData)
@@ -264,6 +265,7 @@ namespace JingHongLu.Feedback
         }
 
         private void PlayCue(
+            string label,
             FeedbackCue cue,
             SkillData skill,
             Vector2 direction,
@@ -272,20 +274,28 @@ namespace JingHongLu.Feedback
         {
             if (cue == null)
             {
+                if (logFeedback)
+                {
+                    Debug.Log($"[Feedback] {label} cue missing. Skill={skill?.DisplayName}", this);
+                }
+
                 return;
             }
 
             Vector2 safeDirection = ResolveSafeDirection(direction);
+            bool playedAny = false;
 
             if (!string.IsNullOrWhiteSpace(cue.AnimatorTrigger) && animator != null)
             {
                 animator.SetTrigger(cue.AnimatorTrigger);
+                playedAny = true;
             }
 
             if (cue.AudioClip != null && audioSource != null)
             {
                 audioSource.pitch = Mathf.Max(0.01f, cue.Pitch);
                 audioSource.PlayOneShot(cue.AudioClip, Mathf.Max(0f, cue.Volume));
+                playedAny = true;
             }
 
             if (cue.VfxPrefab != null)
@@ -301,11 +311,14 @@ namespace JingHongLu.Feedback
                 {
                     Destroy(instance, cue.DestroyDelay);
                 }
+
+                playedAny = true;
             }
 
             if (logFeedback)
             {
-                Debug.Log($"[Feedback] Skill cue played. Skill={skill?.DisplayName}", this);
+                string result = playedAny ? "played" : "has no configured output";
+                Debug.Log($"[Feedback] {label} cue {result}. Skill={skill?.DisplayName}", this);
             }
         }
 
