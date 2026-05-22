@@ -25,6 +25,7 @@ namespace JingHongLu.Skills
         private readonly List<SkillData> cooldownSkills = new List<SkillData>();
         private readonly object skillCastLockSource = new object();
         private readonly object chargeLockSource = new object();
+        private readonly object fullSkillSuperArmorSource = new object();
 
         private bool isCasting;
         private bool isChargingSkill;
@@ -36,6 +37,7 @@ namespace JingHongLu.Skills
         private bool chargeLockedMovement;
         private bool chargeAppliedSuperArmor;
         private bool isHeavyTwoStageCharging;
+        private bool fullSkillSuperArmorApplied;
 
         public event Action<SkillData> OnSkillCastStarted;
         public event Action<SkillData> OnSkillExecuted;
@@ -100,6 +102,7 @@ namespace JingHongLu.Skills
         {
             CancelChargedSkill();
             CancelCurrentCastState(invokeInterruptedEvent: false);
+            RemoveFullSkillSuperArmor();
             RemoveSkillCastLock();
             RemoveChargeLock();
         }
@@ -371,6 +374,7 @@ namespace JingHongLu.Skills
             isCasting = true;
             currentSkill = skill;
             AddSkillCastLock(PlayerControlLockFlags.Gameplay);
+            ApplyFullSkillSuperArmor(skill);
             StartCooldown(skill);
             OnSkillExecuted?.Invoke(skill);
             yield return ExecuteSkillRoutine(skill);
@@ -383,6 +387,7 @@ namespace JingHongLu.Skills
             }
 
             RemoveSkillCastLock();
+            RemoveFullSkillSuperArmor();
             isCasting = false;
             currentSkill = null;
             currentCastRoutine = null;
@@ -477,6 +482,7 @@ namespace JingHongLu.Skills
 
             isCasting = false;
             currentSkill = null;
+            RemoveFullSkillSuperArmor();
             RemoveSkillCastLock();
 
             if (invokeInterruptedEvent && wasCasting && interruptedSkill != null)
@@ -519,6 +525,7 @@ namespace JingHongLu.Skills
             isCasting = true;
             currentSkill = skill;
             AddSkillCastLock(PlayerControlLockFlags.Gameplay);
+            ApplyFullSkillSuperArmor(skill);
             StartCooldown(skill);
             OnSkillCastStarted?.Invoke(skill);
 
@@ -538,6 +545,7 @@ namespace JingHongLu.Skills
             }
 
             RemoveSkillCastLock();
+            RemoveFullSkillSuperArmor();
             isCasting = false;
             currentSkill = null;
             currentCastRoutine = null;
@@ -549,6 +557,7 @@ namespace JingHongLu.Skills
             isCasting = true;
             currentSkill = skill;
             AddSkillCastLock(PlayerControlLockFlags.Gameplay);
+            ApplyFullSkillSuperArmor(skill);
             StartCooldown(skill);
             OnSkillCastStarted?.Invoke(skill);
 
@@ -644,6 +653,7 @@ namespace JingHongLu.Skills
             }
 
             RemoveSkillCastLock();
+            RemoveFullSkillSuperArmor();
             isCasting = false;
             currentSkill = null;
             currentCastRoutine = null;
@@ -662,6 +672,35 @@ namespace JingHongLu.Skills
             if (!cooldownSkills.Contains(skill))
             {
                 cooldownSkills.Add(skill);
+            }
+        }
+
+        private void ApplyFullSkillSuperArmor(SkillData skill)
+        {
+            if (skill == null ||
+                !skill.SuperArmorDuringEntireSkill ||
+                superArmorController == null ||
+                fullSkillSuperArmorApplied)
+            {
+                return;
+            }
+
+            fullSkillSuperArmorApplied = true;
+            superArmorController.AddSuperArmor(fullSkillSuperArmorSource);
+        }
+
+        private void RemoveFullSkillSuperArmor()
+        {
+            if (!fullSkillSuperArmorApplied)
+            {
+                return;
+            }
+
+            fullSkillSuperArmorApplied = false;
+
+            if (superArmorController != null)
+            {
+                superArmorController.RemoveSuperArmor(fullSkillSuperArmorSource);
             }
         }
 

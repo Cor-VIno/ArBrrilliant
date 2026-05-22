@@ -27,6 +27,7 @@ MonoBehaviour:
   lockMovementWhileCharging: 1
   blockOtherSkillsWhileCharging: 1
   superArmorWhileCharging: 1
+  superArmorDuringEntireSkill: 1
   damage: 5
   canCritical: 1
   canKnockUp: 0

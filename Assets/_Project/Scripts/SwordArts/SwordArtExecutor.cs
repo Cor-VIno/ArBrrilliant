@@ -1,3 +1,4 @@
+using System;
 using JingHongLu.Combat;
 using JingHongLu.Player;
 using UnityEngine;
@@ -12,6 +13,9 @@ namespace JingHongLu.SwordArts
         [SerializeField] private bool logExecution = true;
 
         private bool warnedMissingMatcher;
+
+        public event Action<SwordArtData> OnSwordArtExecutionStarted;
+        public event Action<SwordArtData> OnSwordArtExecutionFinished;
 
         private void Awake()
         {
@@ -69,6 +73,8 @@ namespace JingHongLu.SwordArts
                 return;
             }
 
+            OnSwordArtExecutionStarted?.Invoke(swordArt);
+
             switch (effectData.EffectType)
             {
                 case SwordArtEffectType.InstantHitbox:
@@ -86,6 +92,8 @@ namespace JingHongLu.SwordArts
                         this);
                     break;
             }
+
+            OnSwordArtExecutionFinished?.Invoke(swordArt);
         }
 
         private void SpawnInstantHitbox(

@@ -27,6 +27,7 @@ MonoBehaviour:
   lockMovementWhileCharging: 1
   blockOtherSkillsWhileCharging: 1
   superArmorWhileCharging: 1
+  superArmorDuringEntireSkill: 0
   useHeavyTwoStage: 1
   heavyStage1CastTime: 0.1
   heavyStage1HitboxDuration: 0.2

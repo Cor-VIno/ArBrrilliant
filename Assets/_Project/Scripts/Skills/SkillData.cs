@@ -35,6 +35,9 @@ namespace JingHongLu.Skills
         [SerializeField] private bool blockOtherSkillsWhileCharging = true;
         [SerializeField] private bool superArmorWhileCharging = true;
 
+        [Header("Super Armor")]
+        [SerializeField] private bool superArmorDuringEntireSkill;
+
         [Header("Heavy Two Stage")]
         [SerializeField] private bool useHeavyTwoStage;
         [SerializeField] private float heavyStage1CastTime = 0.1f;
@@ -143,6 +146,7 @@ namespace JingHongLu.Skills
         public bool LockMovementWhileCharging => lockMovementWhileCharging;
         public bool BlockOtherSkillsWhileCharging => blockOtherSkillsWhileCharging;
         public bool SuperArmorWhileCharging => superArmorWhileCharging;
+        public bool SuperArmorDuringEntireSkill => superArmorDuringEntireSkill;
         public bool UseHeavyTwoStage => useHeavyTwoStage;
         public float HeavyStage1CastTime => Mathf.Max(0f, heavyStage1CastTime);
         public float HeavyStage1HitboxDuration => Mathf.Max(0.01f, heavyStage1HitboxDuration);

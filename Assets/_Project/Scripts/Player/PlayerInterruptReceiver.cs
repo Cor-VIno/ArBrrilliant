@@ -120,6 +120,17 @@ namespace JingHongLu.Player
                 return;
             }
 
+            SkillData currentSkill = skillController != null
+                ? skillController.CurrentSkill
+                : null;
+
+            if (currentSkill != null && currentSkill.SuperArmorDuringEntireSkill)
+            {
+                LogReject(
+                    $"[PlayerInterrupt] Ignore: current skill has full super armor. Skill={currentSkill.DisplayName}");
+                return;
+            }
+
             if (superArmorController != null && superArmorController.HasSuperArmor)
             {
                 LogReject("[PlayerInterrupt] Ignore: player has super armor.");
@@ -140,8 +151,8 @@ namespace JingHongLu.Player
             }
 
             float duration = ResolveInterruptDuration();
-            string skillName = skillController.CurrentSkill != null
-                ? skillController.CurrentSkill.DisplayName
+            string skillName = currentSkill != null
+                ? currentSkill.DisplayName
                 : "None";
 
             if (logInterruptDebug)

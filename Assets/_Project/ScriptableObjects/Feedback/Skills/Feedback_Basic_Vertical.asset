@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e96e7f7828a43b79313ee2916f5a77b, type: 3}
+  m_Name: Feedback_Basic_Vertical
+  m_EditorClassIdentifier: 
+  skill: {fileID: 11400000, guid: a1e31bcf821d44f5b1bb46b235a3d81d, type: 2}
+  castStartedCue: {vfxPrefab: {fileID: 0}, audioClip: {fileID: 0}, animatorTrigger: , spawnPoint: 0, localOffset: {x: 0, y: 0}, rotateToDirection: 0, parentToCaster: 0, destroyDelay: 2, volume: 1, pitch: 1}
+  executedCue: {vfxPrefab: {fileID: 0}, audioClip: {fileID: 0}, animatorTrigger: , spawnPoint: 0, localOffset: {x: 0, y: 0}, rotateToDirection: 0, parentToCaster: 0, destroyDelay: 2, volume: 1, pitch: 1}
+  castFinishedCue: {vfxPrefab: {fileID: 0}, audioClip: {fileID: 0}, animatorTrigger: , spawnPoint: 0, localOffset: {x: 0, y: 0}, rotateToDirection: 0, parentToCaster: 0, destroyDelay: 2, volume: 1, pitch: 1}
+  chargeStartedCue: {vfxPrefab: {fileID: 0}, audioClip: {fileID: 0}, animatorTrigger: , spawnPoint: 0, localOffset: {x: 0, y: 0}, rotateToDirection: 0, parentToCaster: 0, destroyDelay: 2, volume: 1, pitch: 1}
+  chargeReleasedCue: {vfxPrefab: {fileID: 0}, audioClip: {fileID: 0}, animatorTrigger: , spawnPoint: 0, localOffset: {x: 0, y: 0}, rotateToDirection: 0, parentToCaster: 0, destroyDelay: 2, volume: 1, pitch: 1}
+  dashStartedCue: {vfxPrefab: {fileID: 0}, audioClip: {fileID: 0}, animatorTrigger: , spawnPoint: 0, localOffset: {x: 0, y: 0}, rotateToDirection: 0, parentToCaster: 0, destroyDelay: 2, volume: 1, pitch: 1}
+  dashFinishedCue: {vfxPrefab: {fileID: 0}, audioClip: {fileID: 0}, animatorTrigger: , spawnPoint: 0, localOffset: {x: 0, y: 0}, rotateToDirection: 0, parentToCaster: 0, destroyDelay: 2, volume: 1, pitch: 1}
+  projectileSpawnedCue: {vfxPrefab: {fileID: 0}, audioClip: {fileID: 0}, animatorTrigger: , spawnPoint: 0, localOffset: {x: 0, y: 0}, rotateToDirection: 0, parentToCaster: 0, destroyDelay: 2, volume: 1, pitch: 1}
