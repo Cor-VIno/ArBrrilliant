@@ -47,9 +47,53 @@ namespace JingHongLu.Combat
                 return;
             }
 
-            health.TakeDamage(damageInfo.Damage);
-
             bool hasSuperArmor = HasSuperArmor();
+            ShieldComponent shield = GetShieldComponent();
+
+            if (shield != null && shield.HasShield)
+            {
+                shield.ApplyShieldDamage(damageInfo.ShieldDamage);
+
+                if (!shield.HasShield)
+                {
+                    ApplyKnockback(damageInfo, hasSuperArmor);
+                    return;
+                }
+
+                if (shield.BlockHealthDamageWhileShielded)
+                {
+                    if (shield.CurrentShield > 0f)
+                    {
+                        Debug.Log("[Shield] Health damage blocked while shielded.", shield);
+                    }
+
+                    ApplyKnockback(damageInfo, hasSuperArmor);
+                    return;
+                }
+
+                float shieldedDamage =
+                    damageInfo.Damage * shield.HealthDamageMultiplierWhileShielded;
+
+                if (shieldedDamage <= 0f)
+                {
+                    ApplyKnockback(damageInfo, hasSuperArmor);
+                    return;
+                }
+
+                ApplyHealthDamage(damageInfo, shieldedDamage, hasSuperArmor);
+                return;
+            }
+
+            ApplyHealthDamage(damageInfo, damageInfo.Damage, hasSuperArmor);
+        }
+
+        private void ApplyHealthDamage(
+            DamageInfo damageInfo,
+            float healthDamage,
+            bool hasSuperArmor)
+        {
+            health.TakeDamage(healthDamage);
+
             OnDamageTaken?.Invoke(damageInfo);
 
             if (hasSuperArmor)
@@ -65,10 +109,11 @@ namespace JingHongLu.Combat
             if (!health.IsDead)
             {
                 ApplyHitStun(damageInfo);
+                ApplyKnockback(damageInfo, hasSuperArmor);
             }
 
             Debug.Log(
-                $"{name} took {damageInfo.Damage} damage from {damageInfo.SourceDisplayName}",
+                $"{name} took {healthDamage} damage from {damageInfo.SourceDisplayName}",
                 this);
         }
 
@@ -98,6 +143,18 @@ namespace JingHongLu.Combat
 
             return superArmorController != null &&
                 superArmorController.HasSuperArmor;
+        }
+
+        private ShieldComponent GetShieldComponent()
+        {
+            ShieldComponent shield = GetComponentInParent<ShieldComponent>();
+
+            if (shield != null)
+            {
+                return shield;
+            }
+
+            return GetComponent<ShieldComponent>();
         }
 
         private void ResolveReferences()
@@ -179,6 +236,40 @@ namespace JingHongLu.Combat
             }
 
             hitStunReceiver.ApplyHitStun(damageInfo.HitStunDuration);
+        }
+
+        private void ApplyKnockback(DamageInfo damageInfo, bool hasSuperArmor)
+        {
+            if (hasSuperArmor ||
+                !damageInfo.CanApplyKnockback ||
+                damageInfo.KnockbackDistance <= 0f ||
+                damageInfo.KnockbackDuration <= 0f)
+            {
+                return;
+            }
+
+            if (health != null && health.IsDead)
+            {
+                return;
+            }
+
+            EnemyKnockbackReceiver2D knockbackReceiver =
+                GetComponentInParent<EnemyKnockbackReceiver2D>();
+
+            if (knockbackReceiver == null)
+            {
+                knockbackReceiver = GetComponent<EnemyKnockbackReceiver2D>();
+            }
+
+            if (knockbackReceiver == null)
+            {
+                return;
+            }
+
+            knockbackReceiver.ApplyKnockback(
+                damageInfo.KnockbackDirection,
+                damageInfo.KnockbackDistance,
+                damageInfo.KnockbackDuration);
         }
     }
 }

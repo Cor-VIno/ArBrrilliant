@@ -11,6 +11,7 @@ namespace JingHongLu.Combat
         [SerializeField] private GameObject owner;
         [SerializeField] private TeamId ownerTeam;
         [SerializeField] private float damage;
+        [SerializeField] private float shieldDamage;
         [SerializeField] private Vector2 size = Vector2.one;
         [SerializeField] private Vector2 direction = Vector2.right;
         [SerializeField] private float lifetime = 0.08f;
@@ -33,6 +34,9 @@ namespace JingHongLu.Combat
         [SerializeField] private float hitStunDuration;
         [SerializeField] private AttackInterruptType interruptType;
         [SerializeField] private bool canBePerfectDodged;
+        [SerializeField] private bool canApplyKnockback;
+        [SerializeField] private float knockbackDistance;
+        [SerializeField] private float knockbackDuration;
 
         private readonly Collider2D[] overlapResults = new Collider2D[MaxOverlapCount];
         private readonly HashSet<Damageable> hitTargets = new HashSet<Damageable>();
@@ -69,11 +73,17 @@ namespace JingHongLu.Combat
             bool canApplyHitStun = false,
             float hitStunDuration = 0f,
             AttackInterruptType interruptType = AttackInterruptType.None,
-            bool canBePerfectDodged = false)
+            bool canBePerfectDodged = false,
+            float shieldDamage = 0f,
+            bool overrideKnockback = false,
+            bool canApplyKnockback = false,
+            float knockbackDistance = 0f,
+            float knockbackDuration = 0f)
         {
             this.owner = owner;
             this.ownerTeam = ownerTeam;
             this.damage = damage;
+            this.shieldDamage = ResolveShieldDamage(sourceSkill, shieldDamage);
             this.size = size;
             this.direction = direction.sqrMagnitude > 0f ? direction.normalized : Vector2.right;
             this.lifetime = lifetime;
@@ -96,6 +106,12 @@ namespace JingHongLu.Combat
             this.hitStunDuration = Mathf.Max(0f, hitStunDuration);
             this.interruptType = interruptType;
             this.canBePerfectDodged = canBePerfectDodged;
+            ResolveKnockback(
+                sourceSkill,
+                overrideKnockback,
+                canApplyKnockback,
+                knockbackDistance,
+                knockbackDuration);
 
             ConfigureContactFilter();
             ConfigurePerfectDodgeCollider();
@@ -323,7 +339,7 @@ namespace JingHongLu.Combat
                 target: target,
                 damage: damage,
                 hitPoint: transform.position,
-                knockbackDirection: direction,
+                knockbackDirection: ResolveHorizontalKnockbackDirection(direction),
                 knockbackForce: 0f,
                 canCritical: canCritical,
                 isCritical: false,
@@ -334,7 +350,11 @@ namespace JingHongLu.Combat
                 airborneDuration: airborneDuration,
                 canApplyHitStun: canApplyHitStun,
                 hitStunDuration: hitStunDuration,
-                interruptType: interruptType);
+                interruptType: interruptType,
+                shieldDamage: this.shieldDamage,
+                canApplyKnockback: this.canApplyKnockback,
+                knockbackDistance: this.knockbackDistance,
+                knockbackDuration: this.knockbackDuration);
 
             target.ApplyDamage(damageInfo);
 
@@ -457,6 +477,51 @@ namespace JingHongLu.Combat
         {
             float radians = angle * Mathf.Deg2Rad;
             return new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
+        }
+
+        private static float ResolveShieldDamage(
+            SkillData sourceSkill,
+            float explicitShieldDamage)
+        {
+            if (explicitShieldDamage > 0f)
+            {
+                return explicitShieldDamage;
+            }
+
+            return sourceSkill != null ? sourceSkill.ShieldDamage : 0f;
+        }
+
+        private void ResolveKnockback(
+            SkillData sourceSkill,
+            bool overrideKnockback,
+            bool explicitCanApplyKnockback,
+            float explicitKnockbackDistance,
+            float explicitKnockbackDuration)
+        {
+            if (overrideKnockback)
+            {
+                canApplyKnockback = explicitCanApplyKnockback;
+                knockbackDistance = Mathf.Max(0f, explicitKnockbackDistance);
+                knockbackDuration = Mathf.Max(0f, explicitKnockbackDuration);
+                return;
+            }
+
+            if (sourceSkill == null)
+            {
+                canApplyKnockback = false;
+                knockbackDistance = 0f;
+                knockbackDuration = 0f;
+                return;
+            }
+
+            canApplyKnockback = sourceSkill.CanApplyKnockback;
+            knockbackDistance = sourceSkill.KnockbackDistance;
+            knockbackDuration = sourceSkill.KnockbackDuration;
+        }
+
+        private static Vector2 ResolveHorizontalKnockbackDirection(Vector2 direction)
+        {
+            return direction.x >= 0f ? Vector2.right : Vector2.left;
         }
     }
 }

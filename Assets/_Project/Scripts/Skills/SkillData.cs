@@ -44,6 +44,10 @@ namespace JingHongLu.Skills
         [SerializeField] private float heavyStage1HitboxDuration = 0.2f;
         [SerializeField] private float heavyStage1RecoveryTime = 0f;
         [SerializeField] private float heavyStage1Damage = 10f;
+        [SerializeField] private float heavyStage1ShieldDamage = 5f;
+        [SerializeField] private bool heavyStage1CanApplyKnockback = true;
+        [SerializeField] private float heavyStage1KnockbackDistance = 0.5f;
+        [SerializeField] private float heavyStage1KnockbackDuration = 0.1f;
         [SerializeField] private Vector2 heavyStage1HitboxSize = new Vector2(0.6f, 0.6f);
         [SerializeField] private bool heavyStage1CanApplyHitStun = true;
         [SerializeField] private float heavyStage1HitStunDuration = 0.1f;
@@ -53,6 +57,12 @@ namespace JingHongLu.Skills
         [SerializeField] private float heavyStage2BaseDamage = 15f;
         [SerializeField] private float heavyStage2DamageBonusPerSecond = 20f;
         [SerializeField] private float heavyStage2MaxDamageBonus = 30f;
+        [SerializeField] private float heavyStage2BaseShieldDamage = 10f;
+        [SerializeField] private float heavyStage2ShieldDamageBonusPerSecond = 20f;
+        [SerializeField] private float heavyStage2MaxShieldDamageBonus = 25f;
+        [SerializeField] private bool heavyStage2CanApplyKnockback = true;
+        [SerializeField] private float heavyStage2KnockbackDistance = 0.8f;
+        [SerializeField] private float heavyStage2KnockbackDuration = 0.12f;
         [SerializeField] private Vector2 heavyStage2HitboxSize = new Vector2(1f, 1f);
         [SerializeField] private bool heavyStage2CanApplyHitStun = true;
         [SerializeField] private float heavyStage2HitStunDuration = 0.2f;
@@ -61,6 +71,14 @@ namespace JingHongLu.Skills
         [SerializeField] private float damage = 10f;
         [SerializeField] private bool canCritical = true;
         [SerializeField] private bool canKnockUp = false;
+
+        [Header("Shield")]
+        [SerializeField] private float shieldDamage = 0f;
+
+        [Header("Knockback")]
+        [SerializeField] private bool canApplyKnockback;
+        [SerializeField] private float knockbackDistance;
+        [SerializeField] private float knockbackDuration;
 
         [Header("Hit Stun")]
         [SerializeField] private bool canApplyHitStun;
@@ -152,6 +170,12 @@ namespace JingHongLu.Skills
         public float HeavyStage1HitboxDuration => Mathf.Max(0.01f, heavyStage1HitboxDuration);
         public float HeavyStage1RecoveryTime => Mathf.Max(0f, heavyStage1RecoveryTime);
         public float HeavyStage1Damage => heavyStage1Damage;
+        public float HeavyStage1ShieldDamage => Mathf.Max(0f, heavyStage1ShieldDamage);
+        public bool HeavyStage1CanApplyKnockback => heavyStage1CanApplyKnockback;
+        public float HeavyStage1KnockbackDistance =>
+            Mathf.Max(0f, heavyStage1KnockbackDistance);
+        public float HeavyStage1KnockbackDuration =>
+            Mathf.Max(0f, heavyStage1KnockbackDuration);
         public Vector2 HeavyStage1HitboxSize => heavyStage1HitboxSize;
         public bool HeavyStage1CanApplyHitStun => heavyStage1CanApplyHitStun;
         public float HeavyStage1HitStunDuration => Mathf.Max(0f, heavyStage1HitStunDuration);
@@ -161,12 +185,26 @@ namespace JingHongLu.Skills
         public float HeavyStage2BaseDamage => heavyStage2BaseDamage;
         public float HeavyStage2DamageBonusPerSecond => heavyStage2DamageBonusPerSecond;
         public float HeavyStage2MaxDamageBonus => Mathf.Max(0f, heavyStage2MaxDamageBonus);
+        public float HeavyStage2BaseShieldDamage => Mathf.Max(0f, heavyStage2BaseShieldDamage);
+        public float HeavyStage2ShieldDamageBonusPerSecond =>
+            heavyStage2ShieldDamageBonusPerSecond;
+        public float HeavyStage2MaxShieldDamageBonus =>
+            Mathf.Max(0f, heavyStage2MaxShieldDamageBonus);
+        public bool HeavyStage2CanApplyKnockback => heavyStage2CanApplyKnockback;
+        public float HeavyStage2KnockbackDistance =>
+            Mathf.Max(0f, heavyStage2KnockbackDistance);
+        public float HeavyStage2KnockbackDuration =>
+            Mathf.Max(0f, heavyStage2KnockbackDuration);
         public Vector2 HeavyStage2HitboxSize => heavyStage2HitboxSize;
         public bool HeavyStage2CanApplyHitStun => heavyStage2CanApplyHitStun;
         public float HeavyStage2HitStunDuration => Mathf.Max(0f, heavyStage2HitStunDuration);
         public float Damage => damage;
         public bool CanCritical => canCritical;
         public bool CanKnockUp => canKnockUp;
+        public float ShieldDamage => Mathf.Max(0f, shieldDamage);
+        public bool CanApplyKnockback => canApplyKnockback;
+        public float KnockbackDistance => Mathf.Max(0f, knockbackDistance);
+        public float KnockbackDuration => Mathf.Max(0f, knockbackDuration);
         public bool CanApplyHitStun => canApplyHitStun;
         public float HitStunDuration => hitStunDuration;
         public Vector2 KnockUpVelocity => knockUpVelocity;

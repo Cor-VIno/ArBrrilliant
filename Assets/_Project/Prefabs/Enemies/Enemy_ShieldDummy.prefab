@@ -17,10 +17,11 @@ GameObject:
   - component: {fileID: 6201000000000000002}
   - component: {fileID: 6201000000000000003}
   - component: {fileID: 6201000000000000005}
-  - component: {fileID: 6201000000000000006}
   - component: {fileID: 6201000000000000004}
+  - component: {fileID: 6201000000000000006}
+  - component: {fileID: 6201000000000000007}
   m_Layer: 8
-  m_Name: Dummy_Enemy
+  m_Name: Enemy_ShieldDummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -125,7 +126,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b7f49958f3d40888ebac83242fa4de9, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.Health
   maxHealth: 100
   currentHealth: 100
@@ -220,7 +221,7 @@ MonoBehaviour:
   body: {fileID: 6201000000000000001}
   airborneTarget: {fileID: 6201000000000000003}
   hitStunReceiver: {fileID: 6201000000000000005}
-  knockbackReceiver: {fileID: 6201000000000000006}
+  knockbackReceiver: {fileID: 6201000000000000007}
   targetSkillController: {fileID: 0}
   ownerTeam: 2
   logAttack: 1
@@ -259,8 +260,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 4505163382433563501}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dbe463a744f411d816d8ab5729557a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.ShieldComponent
+  maxShield: 30
+  currentShield: 30
+  startFull: 1
+  blockHealthDamageWhileShielded: 1
+  healthDamageMultiplierWhileShielded: 0
+  logShield: 1
+--- !u!114 &6201000000000000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4505163382433563501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0042c066404746aaa07f3ae928c42730, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.EnemyKnockbackReceiver2D
   rb: {fileID: 6201000000000000001}
   logKnockback: 1

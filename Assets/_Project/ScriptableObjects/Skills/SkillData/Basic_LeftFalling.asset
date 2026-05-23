@@ -31,6 +31,10 @@ MonoBehaviour:
   damage: 10
   canCritical: 1
   canKnockUp: 0
+  shieldDamage: 0
+  canApplyKnockback: 0
+  knockbackDistance: 0
+  knockbackDuration: 0
   canApplyHitStun: 1
   hitStunDuration: 0.1
   knockUpVelocity: {x: 2, y: 7}

@@ -572,7 +572,12 @@ namespace JingHongLu.Skills
                 skill.HeavyStage1HitboxSize,
                 skill.HeavyStage1HitboxDuration,
                 skill.HeavyStage1CanApplyHitStun,
-                skill.HeavyStage1HitStunDuration);
+                skill.HeavyStage1HitStunDuration,
+                skill.HeavyStage1ShieldDamage,
+                overrideKnockback: true,
+                canApplyKnockback: skill.HeavyStage1CanApplyKnockback,
+                knockbackDistance: skill.HeavyStage1KnockbackDistance,
+                knockbackDuration: skill.HeavyStage1KnockbackDuration);
 
             if (skill.HeavyStage1HitboxDuration > 0f)
             {
@@ -626,6 +631,11 @@ namespace JingHongLu.Skills
                 releasedChargeTime * skill.HeavyStage2DamageBonusPerSecond,
                 skill.HeavyStage2MaxDamageBonus);
             float finalDamage = skill.HeavyStage2BaseDamage + damageBonus;
+            float shieldDamageBonus = Mathf.Min(
+                releasedChargeTime * skill.HeavyStage2ShieldDamageBonusPerSecond,
+                skill.HeavyStage2MaxShieldDamageBonus);
+            float finalShieldDamage =
+                skill.HeavyStage2BaseShieldDamage + shieldDamageBonus;
             EndChargeState();
 
             currentSkill = skill;
@@ -637,7 +647,12 @@ namespace JingHongLu.Skills
                 skill.HeavyStage2HitboxSize,
                 skill.HeavyStage2HitboxDuration,
                 skill.HeavyStage2CanApplyHitStun,
-                skill.HeavyStage2HitStunDuration);
+                skill.HeavyStage2HitStunDuration,
+                finalShieldDamage,
+                overrideKnockback: true,
+                canApplyKnockback: skill.HeavyStage2CanApplyKnockback,
+                knockbackDistance: skill.HeavyStage2KnockbackDistance,
+                knockbackDuration: skill.HeavyStage2KnockbackDuration);
             OnSkillExecuted?.Invoke(skill);
 
             if (skill.HeavyStage2HitboxDuration > 0f)
@@ -752,7 +767,8 @@ namespace JingHongLu.Skills
                 skill.HitboxSize,
                 skill.HitboxDuration,
                 skill.CanApplyHitStun,
-                skill.HitStunDuration);
+                skill.HitStunDuration,
+                skill.ShieldDamage);
         }
 
         private void SpawnInstantHitbox(
@@ -761,7 +777,12 @@ namespace JingHongLu.Skills
             Vector2 hitboxSize,
             float hitboxDuration,
             bool canApplyHitStun,
-            float hitStunDuration)
+            float hitStunDuration,
+            float shieldDamage,
+            bool overrideKnockback = false,
+            bool canApplyKnockback = false,
+            float knockbackDistance = 0f,
+            float knockbackDuration = 0f)
         {
             Vector2 aimDirection = ResolveSkillDirection(skill);
             float angleDegrees = GetAimAngleDegrees(aimDirection, skill);
@@ -794,7 +815,12 @@ namespace JingHongLu.Skills
                 knockUpVelocity: skill.KnockUpVelocity,
                 airborneDuration: skill.AirborneDuration,
                 canApplyHitStun: canApplyHitStun,
-                hitStunDuration: hitStunDuration);
+                hitStunDuration: hitStunDuration,
+                shieldDamage: shieldDamage,
+                overrideKnockback: overrideKnockback,
+                canApplyKnockback: canApplyKnockback,
+                knockbackDistance: knockbackDistance,
+                knockbackDuration: knockbackDuration);
         }
 
         private void SpawnProjectile(SkillData skill)
@@ -879,7 +905,8 @@ namespace JingHongLu.Skills
                 knockUpVelocity: skill.KnockUpVelocity,
                 airborneDuration: skill.AirborneDuration,
                 canApplyHitStun: skill.CanApplyHitStun,
-                hitStunDuration: skill.HitStunDuration);
+                hitStunDuration: skill.HitStunDuration,
+                shieldDamage: skill.ShieldDamage);
 
             OnProjectileSpawned?.Invoke(skill, projectileObject);
         }
@@ -917,7 +944,8 @@ namespace JingHongLu.Skills
                 knockUpVelocity: skill.KnockUpVelocity,
                 airborneDuration: skill.AirborneDuration,
                 canApplyHitStun: skill.CanApplyHitStun,
-                hitStunDuration: skill.HitStunDuration);
+                hitStunDuration: skill.HitStunDuration,
+                shieldDamage: skill.ShieldDamage);
         }
 
         private Vector2 ResolveDashDirection(SkillData skill, DashData dashData)

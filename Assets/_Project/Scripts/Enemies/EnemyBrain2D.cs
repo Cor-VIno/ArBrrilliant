@@ -12,6 +12,7 @@ namespace JingHongLu.Enemies
         [SerializeField] private Rigidbody2D body;
         [SerializeField] private AirborneTarget2D airborneTarget;
         [SerializeField] private HitStunReceiver2D hitStunReceiver;
+        [SerializeField] private EnemyKnockbackReceiver2D knockbackReceiver;
         [SerializeField] private PlayerSkillController targetSkillController;
         [SerializeField] private TeamId ownerTeam = TeamId.Enemy;
         [SerializeField] private bool logAttack = true;
@@ -35,12 +36,14 @@ namespace JingHongLu.Enemies
             ResolveReferences();
             SubscribeAirborneEvents();
             SubscribeHitStunEvents();
+            SubscribeKnockbackEvents();
             SubscribeTargetSkillEvents();
         }
 
         private void OnDisable()
         {
             UnsubscribeTargetSkillEvents();
+            UnsubscribeKnockbackEvents();
             UnsubscribeHitStunEvents();
             UnsubscribeAirborneEvents();
             StopAllCoroutines();
@@ -68,6 +71,11 @@ namespace JingHongLu.Enemies
             if (hitStunReceiver != null && hitStunReceiver.IsStunned)
             {
                 StopHorizontalMovement();
+                return;
+            }
+
+            if (knockbackReceiver != null && knockbackReceiver.IsKnockbacking)
+            {
                 return;
             }
 
@@ -201,6 +209,21 @@ namespace JingHongLu.Enemies
                 hitStunReceiver = GetComponentInChildren<HitStunReceiver2D>();
             }
 
+            if (knockbackReceiver == null)
+            {
+                TryGetComponent(out knockbackReceiver);
+            }
+
+            if (knockbackReceiver == null)
+            {
+                knockbackReceiver = GetComponentInParent<EnemyKnockbackReceiver2D>();
+            }
+
+            if (knockbackReceiver == null)
+            {
+                knockbackReceiver = GetComponentInChildren<EnemyKnockbackReceiver2D>();
+            }
+
             if (target == null)
             {
                 ResolveTarget();
@@ -260,6 +283,30 @@ namespace JingHongLu.Enemies
             hitStunReceiver.OnHitStunEnded -= HandleHitStunEnded;
         }
 
+        private void SubscribeKnockbackEvents()
+        {
+            if (knockbackReceiver == null)
+            {
+                return;
+            }
+
+            knockbackReceiver.OnKnockbackStarted -= HandleKnockbackStarted;
+            knockbackReceiver.OnKnockbackEnded -= HandleKnockbackEnded;
+            knockbackReceiver.OnKnockbackStarted += HandleKnockbackStarted;
+            knockbackReceiver.OnKnockbackEnded += HandleKnockbackEnded;
+        }
+
+        private void UnsubscribeKnockbackEvents()
+        {
+            if (knockbackReceiver == null)
+            {
+                return;
+            }
+
+            knockbackReceiver.OnKnockbackStarted -= HandleKnockbackStarted;
+            knockbackReceiver.OnKnockbackEnded -= HandleKnockbackEnded;
+        }
+
         private void HandleAirborneStarted(AirborneTarget2D target)
         {
             InterruptCurrentAction("airborne");
@@ -284,6 +331,19 @@ namespace JingHongLu.Enemies
             if (logAttack)
             {
                 Debug.Log($"{name} hit stun ended, AI resumed.", this);
+            }
+        }
+
+        private void HandleKnockbackStarted()
+        {
+            InterruptCurrentAction("knockback");
+        }
+
+        private void HandleKnockbackEnded()
+        {
+            if (logAttack)
+            {
+                Debug.Log($"{name} knockback ended, AI resumed.", this);
             }
         }
 
