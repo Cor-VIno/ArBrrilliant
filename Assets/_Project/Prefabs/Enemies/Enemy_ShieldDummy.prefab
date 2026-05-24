@@ -126,10 +126,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b7f49958f3d40888ebac83242fa4de9, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.Health
-  maxHealth: 100
-  currentHealth: 100
+  maxHealth: 120
+  currentHealth: 120
 --- !u!114 &2201039791129687974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d03fac33434445edb22c262e84be07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.Damageable
   team: 2
   health: {fileID: 4160151727826028457}
@@ -214,14 +214,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a802543ff5654a82bed1468f5aaf7a2a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Enemies.EnemyBrain2D
-  data: {fileID: 11400000, guid: 3093388f2b7f413fbbe85beb1f80a22f, type: 2}
+  data: {fileID: 11400000, guid: 7c430dd8f84f71946a4d3d8a05ec2b41, type: 2}
   target: {fileID: 0}
   body: {fileID: 6201000000000000001}
   airborneTarget: {fileID: 6201000000000000003}
   hitStunReceiver: {fileID: 6201000000000000005}
   knockbackReceiver: {fileID: 6201000000000000007}
+  slowMotionController: {fileID: 0}
   targetSkillController: {fileID: 0}
   ownerTeam: 2
   logAttack: 1
@@ -235,7 +236,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9539088221db47fd80726c591b2fc920, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.AirborneTarget2D
   logStateChange: 0
 --- !u!114 &6201000000000000005
@@ -248,9 +249,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8e8a2f15c4b4ea2b8d6c245a71bc9aa, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.HitStunReceiver2D
   logHitStun: 0
+--- !u!114 &6201000000000000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4505163382433563501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa85bfdadf7461b859006cfed45377d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Enemies.EnemyDeathHandler
+  health: {fileID: 4160151727826028457}
+  brain: {fileID: 6201000000000000002}
+  body: {fileID: 6201000000000000001}
+  collidersToDisable:
+  - {fileID: 3466161962813156661}
+  - {fileID: 6201000000000000102}
+  behavioursToDisable:
+  - {fileID: 6201000000000000002}
+  visualRoot: {fileID: 4505163382433563501}
+  destroyOnDeath: 1
+  destroyDelay: 0.8
+  logDeath: 1
 --- !u!114 &6201000000000000006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,7 +286,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7dbe463a744f411d816d8ab5729557a0, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.ShieldComponent
   maxShield: 30
   currentShield: 30
@@ -279,34 +304,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0042c066404746aaa07f3ae928c42730, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.EnemyKnockbackReceiver2D
   rb: {fileID: 6201000000000000001}
   logKnockback: 1
---- !u!114 &6201000000000000004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4505163382433563501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa85bfdadf7461b859006cfed45377d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Enemies.EnemyDeathHandler
-  health: {fileID: 4160151727826028457}
-  brain: {fileID: 6201000000000000002}
-  body: {fileID: 6201000000000000001}
-  collidersToDisable:
-  - {fileID: 3466161962813156661}
-  - {fileID: 6201000000000000102}
-  behavioursToDisable:
-  - {fileID: 6201000000000000002}
-  visualRoot: {fileID: 4505163382433563501}
-  destroyOnDeath: 1
-  destroyDelay: 0.8
-  logDeath: 1
 --- !u!1 &6201000000000000100
 GameObject:
   m_ObjectHideFlags: 0
@@ -396,7 +397,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 687982e3dffc43c494760ca972a3effc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.Hurtbox2D
   damageable: {fileID: 2201039791129687974}
   hurtboxCollider: {fileID: 6201000000000000102}

@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea3abe7dba7874a2ba8c622edfa14bed, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::PerfectDodgeDebug
   triggerKey: 9
   perfectDodgeCooldown: 2
@@ -321,7 +321,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -449,8 +449,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
@@ -559,7 +559,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 79c581a5b091443799a23bda84fe41f5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Core.CameraFollow2D
   target: {fileID: 1997788003}
   followX: 1
@@ -600,8 +600,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_ComponentVersion: 2
   m_LightType: 4
   m_BlendStyleIndex: 0
@@ -684,7 +684,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
   m_IsGlobal: 1
   priority: 0
@@ -859,7 +859,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe40e0f7f253e4a82b5e999b3c54cc77, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitSoundPlayer
   hitClips:
   - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
@@ -964,6 +964,181 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1049238215
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1049238216}
+  - component: {fileID: 1049238218}
+  - component: {fileID: 1049238217}
+  m_Layer: 0
+  m_Name: PlayerVisual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1049238216
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049238215}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1997788003}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1049238217
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049238215}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 17f2db8725edac14eaedb7c6bd2584a4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage:
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!212 &1049238218
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049238215}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: 6acf824612c57f94b857c0c7775968e0, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 15, y: 20}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!1001 &1053707711
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4505163382433563501, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_Name
+      value: Enemy_RangedDummy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6201000000000000002, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: data
+      value:
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
 --- !u!1 &1108831983
 GameObject:
   m_ObjectHideFlags: 0
@@ -1013,7 +1188,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
@@ -1211,7 +1386,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe40e0f7f253e4a82b5e999b3c54cc77, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitSoundPlayer
   hitClips:
   - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
@@ -1330,7 +1505,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 547af1a0efee6764db3384e601196fd0, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerMotor2D
 --- !u!4 &1997788003 stripped
 Transform:
@@ -1347,7 +1522,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1d1115b403040439cd634020b47896d, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerDashController2D
   motor: {fileID: 1997787998}
   damageable: {fileID: 0}
@@ -1361,7 +1536,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2641afe09baa441c899ed77f53cc00fb, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.SwordArtMatcher
   strokeRecorder: {fileID: 1997788012}
   swordArts:
@@ -1379,7 +1554,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1cc40a18c73b4d2b903bce911041bb49, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Skills.PlayerSkillController
 --- !u!114 &1997788012
 MonoBehaviour:
@@ -1391,7 +1566,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77f7b42b41db43b186bdb90908e019ea, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.StrokeRecorder
   skillController: {fileID: 1997788006}
   maxSlotCount: 7
@@ -1407,7 +1582,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84e11d3496014c118c6762656ef8b474, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.SwordArtExecutor
   matcher: {fileID: 1997788005}
   aim: {fileID: 1997788014}
@@ -1422,7 +1597,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ea0af83a9a84466a3f492bc64776361, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerAim2D
 --- !u!114 &1997788015 stripped
 MonoBehaviour:
@@ -1433,7 +1608,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47889eb0647137f428192c849f4f79f5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Input.PlayerInputReader
 --- !u!114 &1997788016
 MonoBehaviour:
@@ -1445,7 +1620,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d8405fdbdee4a1293fb8f33041aee19, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.SwordArtReleaseController
   inputReader: {fileID: 1997788015}
   matcher: {fileID: 1997788005}
@@ -1461,7 +1636,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 55ecfc21b5014ef6be91cc65d802510d, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.InsightSelectionController
   timeScaleController: {fileID: 7000000000000000102}
   slowMotionScale: 0.25
@@ -1478,7 +1653,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 422b188c1d184bfeabe65b923aa8e93a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.InsightInputGuard
   insightSelection: {fileID: 1997788017}
   inputReader: {fileID: 1997788015}
@@ -1504,7 +1679,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59dcbdada76441dab8b8a58a8529581e, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerInvincibilityController
   isInvincible: 0
   logStateChange: 0
@@ -1518,7 +1693,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce3e6c1a2bd542caa01e510159142501, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerSuperArmorController
   hasSuperArmor: 0
   logStateChange: 0
@@ -1532,7 +1707,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fbeac6efc224a15aac327486b4942f5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerControlLockController
   logLocks: 0
 --- !u!114 &1997788023
@@ -1545,7 +1720,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df7d947dbd984f9981f6d10c1c446ed4, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerInterruptReceiver
   skillController: {fileID: 1997788006}
   dashController: {fileID: 1997788004}
@@ -1567,11 +1742,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f5221b3b8ce34b2b9f77c486da6fd839, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerPerfectDodgeController2D
   dashController: {fileID: 1997788004}
   dodgeTrigger: {fileID: 1997788102}
   enemyTeam: 2
+  internalCooldown: 2
   logPerfectDodge: 1
 --- !u!114 &1997788025
 MonoBehaviour:
@@ -1583,7 +1759,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56f5346e649b411a8ad49fd9fb3e8604, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerSwordArtArmorGuard
   swordArtExecutor: {fileID: 1997788013}
   superArmorController: {fileID: 1997788021}
@@ -1695,12 +1871,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ebf2d74887e4f7db321eab8f0928fa7, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Feedback.PlayerSkillFeedbackBinder
   skillController: {fileID: 1997788006}
   dashController: {fileID: 1997788004}
   perfectDodgeController: {fileID: 1997788024}
-  animator: {fileID: 0}
+  animator: {fileID: 1049238217}
   audioSource: {fileID: 1997788026}
   casterRoot: {fileID: 1997788003}
   casterCenter: {fileID: 1997788003}
@@ -1715,7 +1891,7 @@ MonoBehaviour:
   perfectDodgeCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
-    animatorTrigger: 
+    animatorTrigger:
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
     rotateToDirection: 0
@@ -1734,10 +1910,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67bc5dca9c7d49c6bf3a73543ba36bf9, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Feedback.SwordArtFeedbackBinder
   swordArtExecutor: {fileID: 1997788013}
-  animator: {fileID: 0}
+  animator: {fileID: 1049238217}
   audioSource: {fileID: 1997788026}
   casterRoot: {fileID: 1997788003}
   casterCenter: {fileID: 1997788003}
@@ -1748,6 +1924,24 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ef09ef78d32445579075724f87a0af1f, type: 2}
   - {fileID: 11400000, guid: c21fbac7736d40ae8396ee8d144f1f64, type: 2}
   logFeedback: 1
+--- !u!114 &1997788029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997787995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eb4a61c381447c48ee9fbd9cd5a406e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerPerfectDodgeEffectBinder
+  perfectDodgeController: {fileID: 1997788024}
+  dashController: {fileID: 1997788004}
+  slowMotionController: {fileID: 7000000000000000103}
+  damageable: {fileID: 0}
+  extraInvincibleDuration: 0.1
+  logPerfectDodgeEffect: 1
 --- !u!1 &1997788100
 GameObject:
   m_ObjectHideFlags: 0
@@ -1836,15 +2030,23 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1785346738552175715, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: dashController
-      value: 
+      value:
       objectReference: {fileID: 1997788004}
     - target: {fileID: 4047285271196294360, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.9986
+      objectReference: {fileID: 0}
+    - target: {fileID: 4047285271196294360, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.9388347
+      objectReference: {fileID: 0}
+    - target: {fileID: 4047285271196294360, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.4993
       objectReference: {fileID: 0}
     - target: {fileID: 4047285271196294360, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.0174
       objectReference: {fileID: 0}
     - target: {fileID: 4047285271196294360, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1880,11 +2082,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4257306292869420020, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: aimOrigin
-      value: 
+      value:
       objectReference: {fileID: 1997788003}
     - target: {fileID: 4257306292869420020, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: targetCamera
-      value: 
+      value:
       objectReference: {fileID: 519420031}
     - target: {fileID: 6101000000000000001, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: maxHealth
@@ -1896,11 +2098,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6101000000000000004, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: dashController
-      value: 
+      value:
       objectReference: {fileID: 1997788004}
+    - target: {fileID: 6972502443504621448, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969482643598906977, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: m_Size.x
+      value: 0.49167907
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969482643598906977, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: m_Size.y
+      value: 1.5284684
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969482643598906977, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.045618564
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969482643598906977, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.008957028
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1908,6 +2130,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4047285271196294360, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1997788101}
+    - targetCorrespondingSourceObject: {fileID: 4047285271196294360, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1049238216}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       insertIndex: -1
@@ -1945,6 +2170,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1997788024}
+    - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1997788029}
     - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1997788025}
@@ -2012,11 +2240,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4160151727826028457, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
       propertyPath: maxHealth
-      value: 10000
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4160151727826028457, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
       propertyPath: currentHealth
-      value: 10000
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4505163382433563501, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
       propertyPath: m_Name
@@ -2032,7 +2260,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6201000000000000002, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
       propertyPath: target
-      value: 
+      value:
       objectReference: {fileID: 1997788003}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2055,6 +2283,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7000000000000000101}
   - component: {fileID: 7000000000000000102}
+  - component: {fileID: 7000000000000000103}
+  - component: {fileID: 7000000000000000104}
   m_Layer: 0
   m_Name: TimeScaleController
   m_TagString: Untagged
@@ -2087,9 +2317,41 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 54c45d1fbbfd4a51995a12c6356a18bb, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Core.TimeScaleController
   resetOnDisable: 1
+--- !u!114 &7000000000000000103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c52f3d5d8904dd3a7b0d97006a69f2b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.PerfectDodgeSlowMotionController
+  slowDuration: 1.5
+  enemyTimeScale: 0.2
+  projectileTimeScale: 0.2
+  environmentTimeScale: 0.2
+  logPerfectDodgeSlow: 1
+--- !u!114 &7000000000000000104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53bdcfe1fd3846aca9e0c9fcf0a4bba8, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.SwordArts.InsightPerfectDodgeSlowGuard
+  insightSelectionController: {fileID: 1997788017}
+  slowMotionController: {fileID: 7000000000000000103}
+  logCancel: 1
 --- !u!1 &7000000000000000200
 GameObject:
   m_ObjectHideFlags: 0
@@ -2165,7 +2427,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
@@ -2188,7 +2450,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
   m_IgnoreReversedGraphics: 1
   m_BlockingObjects: 0
@@ -2277,7 +2539,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 477fc088e3054200ad020a745fa02e72, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.InsightSelectionView
   insightSelection: {fileID: 1997788017}
   root: {fileID: 7000000000000000210}
@@ -2330,7 +2592,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
   m_Padding:
     m_Left: 0
@@ -2389,7 +2651,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
@@ -2404,7 +2666,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
   m_SendPointerHoverToParent: 1
   m_MoveRepeatDelay: 0.5
@@ -2511,7 +2773,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.35}
@@ -2592,7 +2854,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
   m_Padding:
     m_Left: 0
@@ -2655,7 +2917,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -2665,7 +2927,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f53b3e81f876b34ebc250d45b04b2a6, type: 2}
   m_sharedMaterial: {fileID: 1527338180462828903, guid: 8f53b3e81f876b34ebc250d45b04b2a6, type: 2}
@@ -2791,7 +3053,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77f51f62f54b4ae0ab1a6d606a87c051, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.StrokeSlotBarView
   strokeRecorder: {fileID: 1997788012}
   slotViews:
@@ -2860,7 +3122,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.55}
@@ -2910,7 +3172,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
   m_MinWidth: -1
@@ -2930,7 +3192,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8691a4d956a4e67af7bb2e21d8e5941, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.StrokeSlotItemView
   strokeText: {fileID: 7100000000000000112}
   background: {fileID: 7100000000000000102}
@@ -2984,7 +3246,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3125,7 +3387,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.55}
@@ -3175,7 +3437,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
   m_MinWidth: -1
@@ -3195,7 +3457,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8691a4d956a4e67af7bb2e21d8e5941, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.StrokeSlotItemView
   strokeText: {fileID: 7100000000000000132}
   background: {fileID: 7100000000000000122}
@@ -3249,7 +3511,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3390,7 +3652,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.55}
@@ -3440,7 +3702,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
   m_MinWidth: -1
@@ -3460,7 +3722,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8691a4d956a4e67af7bb2e21d8e5941, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.StrokeSlotItemView
   strokeText: {fileID: 7100000000000000152}
   background: {fileID: 7100000000000000142}
@@ -3514,7 +3776,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3655,7 +3917,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.55}
@@ -3705,7 +3967,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
   m_MinWidth: -1
@@ -3725,7 +3987,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8691a4d956a4e67af7bb2e21d8e5941, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.StrokeSlotItemView
   strokeText: {fileID: 7100000000000000172}
   background: {fileID: 7100000000000000162}
@@ -3779,7 +4041,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3920,7 +4182,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.55}
@@ -3970,7 +4232,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
   m_MinWidth: -1
@@ -3990,7 +4252,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8691a4d956a4e67af7bb2e21d8e5941, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.StrokeSlotItemView
   strokeText: {fileID: 7100000000000000192}
   background: {fileID: 7100000000000000182}
@@ -4044,7 +4306,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4185,7 +4447,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.55}
@@ -4235,7 +4497,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
   m_MinWidth: -1
@@ -4255,7 +4517,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8691a4d956a4e67af7bb2e21d8e5941, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.StrokeSlotItemView
   strokeText: {fileID: 7100000000000000212}
   background: {fileID: 7100000000000000202}
@@ -4309,7 +4571,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4450,7 +4712,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.55}
@@ -4500,7 +4762,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
   m_MinWidth: -1
@@ -4520,7 +4782,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8691a4d956a4e67af7bb2e21d8e5941, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.StrokeSlotItemView
   strokeText: {fileID: 7100000000000000232}
   background: {fileID: 7100000000000000222}
@@ -4574,7 +4836,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4674,7 +4936,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 233800391487977931, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 233800391487977931, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4726,7 +4988,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6201000000000000002, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
       propertyPath: target
-      value: 
+      value:
       objectReference: {fileID: 1997788003}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4755,3 +5017,4 @@ SceneRoots:
   - {fileID: 1235100948}
   - {fileID: 272439908}
   - {fileID: 647414220}
+  - {fileID: 1053707711}

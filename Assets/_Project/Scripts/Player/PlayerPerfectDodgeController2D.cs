@@ -10,11 +10,15 @@ namespace JingHongLu.Player
         [SerializeField] private PlayerDashController2D dashController;
         [SerializeField] private Collider2D dodgeTrigger;
         [SerializeField] private TeamId enemyTeam = TeamId.Enemy;
+        [SerializeField] private float internalCooldown = 2f;
         [SerializeField] private bool logPerfectDodge = true;
 
         private readonly HashSet<Hitbox2D> triggeredHitboxes = new HashSet<Hitbox2D>();
         private bool isDetectionActive;
+        private bool hasTriggeredThisDash;
+        private bool hasLoggedCooldownRejectThisDash;
         private Vector2 currentDashDirection;
+        private float cooldownTimer;
 
         public event Action<PerfectDodgeEventData> OnPerfectDodgeTriggered;
 
@@ -62,6 +66,18 @@ namespace JingHongLu.Player
 
             SetDetectionActive(false);
             triggeredHitboxes.Clear();
+            hasTriggeredThisDash = false;
+            hasLoggedCooldownRejectThisDash = false;
+        }
+
+        private void Update()
+        {
+            if (cooldownTimer <= 0f)
+            {
+                return;
+            }
+
+            cooldownTimer = Mathf.Max(0f, cooldownTimer - Time.unscaledDeltaTime);
         }
 
         private Collider2D FindDodgeTriggerInChildren()
@@ -87,6 +103,8 @@ namespace JingHongLu.Player
                 ? direction.normalized
                 : Vector2.right;
             triggeredHitboxes.Clear();
+            hasTriggeredThisDash = false;
+            hasLoggedCooldownRejectThisDash = false;
             SetDetectionActive(true);
         }
 
@@ -94,6 +112,8 @@ namespace JingHongLu.Player
         {
             SetDetectionActive(false);
             triggeredHitboxes.Clear();
+            hasTriggeredThisDash = false;
+            hasLoggedCooldownRejectThisDash = false;
         }
 
         private void SetDetectionActive(bool active)
@@ -118,8 +138,19 @@ namespace JingHongLu.Player
 
         private void TryTriggerPerfectDodge(Collider2D other)
         {
-            if (!isDetectionActive || other == null)
+            if (!isDetectionActive || other == null || hasTriggeredThisDash)
             {
+                return;
+            }
+
+            if (cooldownTimer > 0f)
+            {
+                if (logPerfectDodge && !hasLoggedCooldownRejectThisDash)
+                {
+                    Debug.Log("[PerfectDodge] Rejected by internal cooldown.", this);
+                    hasLoggedCooldownRejectThisDash = true;
+                }
+
                 return;
             }
 
@@ -139,6 +170,8 @@ namespace JingHongLu.Player
             }
 
             triggeredHitboxes.Add(hitbox);
+            hasTriggeredThisDash = true;
+            cooldownTimer = Mathf.Max(0f, internalCooldown);
 
             Vector2 contactPoint = dodgeTrigger != null
                 ? other.ClosestPoint(dodgeTrigger.bounds.center)
@@ -149,7 +182,7 @@ namespace JingHongLu.Player
                 dodgedHitbox: hitbox,
                 dodgeDirection: currentDashDirection,
                 contactPoint: contactPoint,
-                time: Time.time);
+                time: Time.unscaledTime);
 
             OnPerfectDodgeTriggered?.Invoke(eventData);
 

@@ -861,7 +861,8 @@ namespace JingHongLu.Skills
                 speed: projectileData.Speed,
                 lifetime: projectileData.Lifetime,
                 gravity: projectileData.Gravity,
-                rotateToVelocity: projectileData.RotateToVelocity);
+                rotateToVelocity: projectileData.RotateToVelocity,
+                ownerTeam: TeamId.Player);
 
             ProjectileImpact2D impact = projectileObject.GetComponent<ProjectileImpact2D>();
 

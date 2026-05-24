@@ -13,6 +13,7 @@ namespace JingHongLu.Enemies
         [SerializeField] private AirborneTarget2D airborneTarget;
         [SerializeField] private HitStunReceiver2D hitStunReceiver;
         [SerializeField] private EnemyKnockbackReceiver2D knockbackReceiver;
+        [SerializeField] private PerfectDodgeSlowMotionController slowMotionController;
         [SerializeField] private PlayerSkillController targetSkillController;
         [SerializeField] private TeamId ownerTeam = TeamId.Enemy;
         [SerializeField] private bool logAttack = true;
@@ -222,6 +223,16 @@ namespace JingHongLu.Enemies
             if (knockbackReceiver == null)
             {
                 knockbackReceiver = GetComponentInChildren<EnemyKnockbackReceiver2D>();
+            }
+
+            if (slowMotionController == null)
+            {
+                slowMotionController = PerfectDodgeSlowMotionController.Instance;
+            }
+
+            if (slowMotionController == null)
+            {
+                slowMotionController = FindAnyObjectByType<PerfectDodgeSlowMotionController>();
             }
 
             if (target == null)
@@ -461,7 +472,7 @@ namespace JingHongLu.Enemies
         {
             if (cooldownTimer > 0f)
             {
-                cooldownTimer -= Time.deltaTime;
+                cooldownTimer -= EnemyDeltaTime;
             }
         }
 
@@ -469,7 +480,7 @@ namespace JingHongLu.Enemies
         {
             if (rangedCooldownTimer > 0f)
             {
-                rangedCooldownTimer -= Time.deltaTime;
+                rangedCooldownTimer -= EnemyDeltaTime;
             }
         }
 
@@ -477,7 +488,7 @@ namespace JingHongLu.Enemies
         {
             if (backstepCooldownTimer > 0f)
             {
-                backstepCooldownTimer -= Time.deltaTime;
+                backstepCooldownTimer -= EnemyDeltaTime;
             }
         }
 
@@ -485,7 +496,7 @@ namespace JingHongLu.Enemies
         {
             if (reactionCooldownTimer > 0f)
             {
-                reactionCooldownTimer -= Time.deltaTime;
+                reactionCooldownTimer -= EnemyDeltaTime;
             }
         }
 
@@ -512,7 +523,7 @@ namespace JingHongLu.Enemies
             int directionSign = horizontalDelta >= 0f ? 1 : -1;
             facingSign = directionSign;
             SetVisualFacing(directionSign);
-            SetHorizontalVelocity(directionSign * data.MoveSpeed);
+            SetHorizontalVelocity(directionSign * data.MoveSpeed * GetEnemyTimeScale());
         }
 
         private void TryAttack()
@@ -549,7 +560,7 @@ namespace JingHongLu.Enemies
 
             if (data.AttackWindup > 0f)
             {
-                yield return new WaitForSeconds(data.AttackWindup);
+                yield return WaitEnemyScaled(data.AttackWindup);
             }
 
             if (airborneTarget != null && airborneTarget.IsAirborne)
@@ -564,7 +575,7 @@ namespace JingHongLu.Enemies
 
             if (data.AttackRecovery > 0f)
             {
-                yield return new WaitForSeconds(data.AttackRecovery);
+                yield return WaitEnemyScaled(data.AttackRecovery);
             }
 
             yield return PostAttackRhythmRoutine();
@@ -578,7 +589,7 @@ namespace JingHongLu.Enemies
 
             if (data.RangedAttackWindup > 0f)
             {
-                yield return new WaitForSeconds(data.RangedAttackWindup);
+                yield return WaitEnemyScaled(data.RangedAttackWindup);
             }
 
             if (airborneTarget != null && airborneTarget.IsAirborne)
@@ -592,7 +603,7 @@ namespace JingHongLu.Enemies
 
             if (data.AttackRecovery > 0f)
             {
-                yield return new WaitForSeconds(data.AttackRecovery);
+                yield return WaitEnemyScaled(data.AttackRecovery);
             }
 
             yield return PostAttackRhythmRoutine();
@@ -607,7 +618,7 @@ namespace JingHongLu.Enemies
             {
                 isRepositioning = true;
                 StopHorizontalMovement();
-                yield return new WaitForSeconds(data.PostAttackIdleTime);
+                yield return WaitEnemyScaled(data.PostAttackIdleTime);
                 isRepositioning = false;
             }
 
@@ -674,8 +685,8 @@ namespace JingHongLu.Enemies
                     break;
                 }
 
-                SetHorizontalVelocity(direction * data.BackstepSpeed);
-                timer += Time.deltaTime;
+                SetHorizontalVelocity(direction * data.BackstepSpeed * GetEnemyTimeScale());
+                timer += EnemyDeltaTime;
                 yield return null;
             }
 
@@ -718,7 +729,7 @@ namespace JingHongLu.Enemies
 
             if (logAttack)
             {
-                Debug.Log($"{name} attacked.", this);
+                Debug.Log($"[EnemyAI] {name} melee attack.", this);
             }
         }
 
@@ -754,7 +765,8 @@ namespace JingHongLu.Enemies
                 speed: projectileData.Speed,
                 lifetime: projectileData.Lifetime,
                 gravity: projectileData.Gravity,
-                rotateToVelocity: projectileData.RotateToVelocity);
+                rotateToVelocity: projectileData.RotateToVelocity,
+                ownerTeam: ownerTeam);
 
             ProjectileImpact2D impact = projectileObject.GetComponent<ProjectileImpact2D>();
 
@@ -797,7 +809,7 @@ namespace JingHongLu.Enemies
 
             if (logAttack)
             {
-                Debug.Log($"{name} threw a harpoon.", this);
+                Debug.Log($"[EnemyAI] {name} threw a harpoon.", this);
             }
         }
 
@@ -852,6 +864,37 @@ namespace JingHongLu.Enemies
             Vector2 velocity = body.linearVelocity;
             velocity.x = xVelocity;
             body.linearVelocity = velocity;
+        }
+
+        private float EnemyDeltaTime => Time.deltaTime * GetEnemyTimeScale();
+
+        private float GetEnemyTimeScale()
+        {
+            if (slowMotionController == null)
+            {
+                slowMotionController = PerfectDodgeSlowMotionController.Instance;
+            }
+
+            if (slowMotionController == null)
+            {
+                slowMotionController = FindAnyObjectByType<PerfectDodgeSlowMotionController>();
+            }
+
+            return slowMotionController != null &&
+                slowMotionController.IsPerfectDodgeSlowActive
+                ? slowMotionController.EnemyTimeScale
+                : 1f;
+        }
+
+        private IEnumerator WaitEnemyScaled(float duration)
+        {
+            float timer = 0f;
+
+            while (timer < duration)
+            {
+                timer += EnemyDeltaTime;
+                yield return null;
+            }
         }
 
         private void StopHorizontalMovement()

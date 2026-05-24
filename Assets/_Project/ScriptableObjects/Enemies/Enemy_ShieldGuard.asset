@@ -10,39 +10,39 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c17a56ca260d4d58b0925dfdbd0937a3, type: 3}
-  m_Name: Enemy_BasicMelee
-  m_EditorClassIdentifier: 
+  m_Name: Enemy_ShieldGuard
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Enemies.EnemyData
   aggroRange: 7
   loseTargetRange: 11
-  moveSpeed: 2
+  moveSpeed: 1.35
   stopDistance: 1.1
-  attackDamage: 8
-  attackRange: 1.4
-  attackCooldown: 1.25
-  attackWindup: 0.25
-  attackRecovery: 0.35
+  attackDamage: 14
+  attackRange: 1.45
+  attackCooldown: 1.45
+  attackWindup: 0.35
+  attackRecovery: 0.45
   canUseRangedAttack: 0
   rangedAttackDamage: 0
   rangedAttackMinDistance: 3
   rangedAttackMaxDistance: 8
-  rangedAttackCooldown: 2.2
-  rangedAttackWindup: 0.35
+  rangedAttackCooldown: 2.4
+  rangedAttackWindup: 0.4
   harpoonProjectileData: {fileID: 0}
   enableCombatSpacing: 0
-  preferredMinDistance: 1.4
-  preferredMaxDistance: 3
-  postAttackIdleTime: 0.2
+  preferredMinDistance: 1.2
+  preferredMaxDistance: 2.5
+  postAttackIdleTime: 0.25
   enableBackstep: 0
-  backstepSpeed: 3
+  backstepSpeed: 2.5
   backstepDuration: 0.2
-  backstepCooldown: 2
+  backstepCooldown: 3
   backstepChanceAfterAttack: 0
   reactToDangerousPlayerSkill: 0
   dangerousSkillReactionChance: 0
   dangerousSkillReactionCooldown: 1.5
   hitboxShape: 0
-  hitboxSize: {x: 1.2, y: 0.8}
-  hitboxOffset: {x: 0.8, y: 0}
+  hitboxSize: {x: 1.3, y: 0.9}
+  hitboxOffset: {x: 0.85, y: 0}
   hitboxDuration: 0.12
   targetLayerMask:
     serializedVersion: 2

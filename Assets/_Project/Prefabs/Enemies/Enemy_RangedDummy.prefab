@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 6201000000000000006}
   - component: {fileID: 6201000000000000004}
   m_Layer: 8
-  m_Name: Dummy_Enemy
+  m_Name: Enemy_RangedDummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -125,10 +125,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b7f49958f3d40888ebac83242fa4de9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.Health
-  maxHealth: 60
-  currentHealth: 60
+  maxHealth: 45
+  currentHealth: 45
 --- !u!114 &2201039791129687974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d03fac33434445edb22c262e84be07ff, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.Damageable
   team: 2
   health: {fileID: 4160151727826028457}
@@ -213,9 +213,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a802543ff5654a82bed1468f5aaf7a2a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Enemies.EnemyBrain2D
-  data: {fileID: 11400000, guid: a8f8bfbe363e4bc0a225ce913713d48d, type: 2}
+  data: {fileID: 11400000, guid: 155e36852bc6b7c419f85dd10f5ed2b6, type: 2}
   target: {fileID: 0}
   body: {fileID: 6201000000000000001}
   airborneTarget: {fileID: 6201000000000000003}
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9539088221db47fd80726c591b2fc920, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.AirborneTarget2D
   logStateChange: 0
 --- !u!114 &6201000000000000005
@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8e8a2f15c4b4ea2b8d6c245a71bc9aa, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.HitStunReceiver2D
   logHitStun: 0
 --- !u!114 &6201000000000000006
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0042c066404746aaa07f3ae928c42730, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.EnemyKnockbackReceiver2D
   rb: {fileID: 6201000000000000001}
   logKnockback: 1
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1aa85bfdadf7461b859006cfed45377d, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Enemies.EnemyDeathHandler
   health: {fileID: 4160151727826028457}
   brain: {fileID: 6201000000000000002}
@@ -378,7 +378,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 687982e3dffc43c494760ca972a3effc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Combat.Hurtbox2D
   damageable: {fileID: 2201039791129687974}
   hurtboxCollider: {fileID: 6201000000000000102}
