@@ -225,6 +225,8 @@ MonoBehaviour:
   targetSkillController: {fileID: 0}
   ownerTeam: 2
   logAttack: 1
+  logRangedDecision: 0
+  rangedDecisionLogInterval: 0.5
 --- !u!114 &6201000000000000003
 MonoBehaviour:
   m_ObjectHideFlags: 0

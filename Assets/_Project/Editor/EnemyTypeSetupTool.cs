@@ -351,6 +351,7 @@ namespace JingHongLu.EditorTools
             {
                 SerializedObject brainObject = new SerializedObject(brain);
                 Set(brainObject, "data", data);
+                Set(brainObject, "logRangedDecision", data != null && data.CanUseRangedAttack);
                 brainObject.ApplyModifiedPropertiesWithoutUndo();
             }
 
@@ -452,7 +453,9 @@ namespace JingHongLu.EditorTools
             {
                 SerializedObject brainObject = new SerializedObject(brain);
                 Set(brainObject, "data", data);
+                Set(brainObject, "logRangedDecision", data != null && data.CanUseRangedAttack);
                 brainObject.ApplyModifiedPropertiesWithoutUndo();
+                PrefabUtility.RecordPrefabInstancePropertyModifications(brain);
             }
 
             Health healthComponent = enemy.GetComponent<Health>();

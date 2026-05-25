@@ -17,6 +17,8 @@ namespace JingHongLu.Enemies
         [SerializeField] private PlayerSkillController targetSkillController;
         [SerializeField] private TeamId ownerTeam = TeamId.Enemy;
         [SerializeField] private bool logAttack = true;
+        [SerializeField] private bool logRangedDecision;
+        [SerializeField] private float rangedDecisionLogInterval = 0.5f;
 
         private bool isAttacking;
         private bool isRepositioning;
@@ -26,6 +28,7 @@ namespace JingHongLu.Enemies
         private float reactionCooldownTimer;
         private int facingSign = 1;
         private bool warnedMissingTarget;
+        private float nextRangedDecisionLogTime;
 
         private void Awake()
         {
@@ -66,17 +69,20 @@ namespace JingHongLu.Enemies
 
             if (airborneTarget != null && airborneTarget.IsAirborne)
             {
+                LogRangedDecision("Reject: currently airborne.");
                 return;
             }
 
             if (hitStunReceiver != null && hitStunReceiver.IsStunned)
             {
+                LogRangedDecision("Reject: currently in hit stun.");
                 StopHorizontalMovement();
                 return;
             }
 
             if (knockbackReceiver != null && knockbackReceiver.IsKnockbacking)
             {
+                LogRangedDecision("Reject: currently knockbacking.");
                 return;
             }
 
@@ -92,6 +98,7 @@ namespace JingHongLu.Enemies
 
                 if (target == null)
                 {
+                    LogRangedDecision("Reject: target missing.");
                     StopHorizontalMovement();
                     LogMissingTargetWarning();
                     return;
@@ -103,6 +110,7 @@ namespace JingHongLu.Enemies
 
             if (isAttacking)
             {
+                LogRangedDecision("Reject: currently attacking.");
                 StopHorizontalMovement();
                 return;
             }
@@ -114,9 +122,18 @@ namespace JingHongLu.Enemies
 
             float horizontalDistance = Mathf.Abs(target.position.x - transform.position.x);
             FaceTarget();
+            LogRangedDecision(
+                $"name={name}, distance={horizontalDistance:F2}, " +
+                $"canUseRanged={data.CanUseRangedAttack}, " +
+                $"cooldown={rangedCooldownTimer:F2}, " +
+                $"min={data.RangedAttackMinDistance:F2}, " +
+                $"max={data.RangedAttackMaxDistance:F2}, " +
+                $"hasProjectileData={data.HarpoonProjectileData != null}, " +
+                $"hasTarget={target != null}");
 
             if (horizontalDistance > data.LoseTargetRange)
             {
+                LogRangedDecision("Reject: distance too far.");
                 StopHorizontalMovement();
                 return;
             }
@@ -132,6 +149,19 @@ namespace JingHongLu.Enemies
                 && horizontalDistance >= data.RangedAttackMinDistance
                 && horizontalDistance <= data.RangedAttackMaxDistance;
 
+            if (data.CanUseRangedAttack && horizontalDistance < data.RangedAttackMinDistance)
+            {
+                LogRangedDecision("Reject: distance too close.");
+            }
+            else if (data.CanUseRangedAttack && horizontalDistance > data.RangedAttackMaxDistance)
+            {
+                LogRangedDecision("Reject: distance too far.");
+            }
+            else if (!data.CanUseRangedAttack)
+            {
+                LogRangedDecision("Reject: CanUseRangedAttack=false.");
+            }
+
             if (inRangedRange)
             {
                 StopHorizontalMovement();
@@ -143,6 +173,7 @@ namespace JingHongLu.Enemies
 
                 if (rangedCooldownTimer > 0f)
                 {
+                    LogRangedDecision("Reject: cooldown not ready.");
                     return;
                 }
             }
@@ -540,11 +571,13 @@ namespace JingHongLu.Enemies
         {
             if (isAttacking || rangedCooldownTimer > 0f)
             {
+                LogRangedDecision("Reject: cooldown not ready.");
                 return false;
             }
 
             if (data.HarpoonProjectileData == null)
             {
+                LogRangedDecision("Reject: projectile data missing.");
                 return false;
             }
 
@@ -811,6 +844,8 @@ namespace JingHongLu.Enemies
             {
                 Debug.Log($"[EnemyAI] {name} threw a harpoon.", this);
             }
+
+            LogRangedDecision($"{name} threw a harpoon.", true);
         }
 
         private Vector2 GetDirectionToTarget()
@@ -900,6 +935,27 @@ namespace JingHongLu.Enemies
         private void StopHorizontalMovement()
         {
             SetHorizontalVelocity(0f);
+        }
+
+        private void LogRangedDecision(string message, bool force = false)
+        {
+            if (!logRangedDecision)
+            {
+                return;
+            }
+
+            float now = Time.unscaledTime;
+
+            if (!force && now < nextRangedDecisionLogTime)
+            {
+                return;
+            }
+
+            nextRangedDecisionLogTime = now + Mathf.Max(
+                0.1f,
+                rangedDecisionLogInterval);
+
+            Debug.Log($"[EnemyAI][Ranged] {message}", this);
         }
 
         private void FaceTarget()
