@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skill: {fileID: 11400000, guid: b0bc56f88ef1477bb303f5529a2b686e, type: 2}
   castStartedCue:
-    vfxPrefab: {fileID: 0}
+    vfxPrefab: {fileID: 8134040973879617579, guid: 32f87cc7e2cf5ec4a9926b393cc43fb7, type: 3}
     audioClip: {fileID: 0}
     animatorTrigger: 
-    spawnPoint: 0
+    spawnPoint: 4
     localOffset: {x: 0, y: 0}
-    rotateToDirection: 0
+    rotateToDirection: 1
     parentToCaster: 0
     destroyDelay: 2
     volume: 1
@@ -28,7 +28,7 @@ MonoBehaviour:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
     animatorTrigger: 
-    spawnPoint: 0
+    spawnPoint: 3
     localOffset: {x: 0, y: 0}
     rotateToDirection: 0
     parentToCaster: 0
