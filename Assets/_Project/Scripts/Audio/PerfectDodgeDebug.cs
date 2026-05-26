@@ -22,6 +22,9 @@ public class PerfectDodgeDebug : MonoBehaviour
     [SerializeField] private AudioClip enterClip;
     [SerializeField] private AudioClip exitClip;
 
+    [SerializeField]
+    private float exitSoundAdvanceTime = 0.15f;
+
     [Header("Post Processing")]
     [SerializeField] private Volume globalVolume;
 
@@ -31,7 +34,7 @@ public class PerfectDodgeDebug : MonoBehaviour
     [Header("BGM Filter")]
     [SerializeField] private AudioLowPassFilter bgmLowPassFilter;
     [SerializeField] private float dodgeLowPassCutoff = 800f;
-    [SerializeField] private float filterRestoreDuration = 0.35f;
+    [SerializeField] private float filterRestoreDuration = 0.15f;
 
     private ColorAdjustments colorAdjustments;
 
@@ -52,14 +55,18 @@ public class PerfectDodgeDebug : MonoBehaviour
 
             if (colorAdjustments != null)
             {
-                originalSaturation = colorAdjustments.saturation.value;
-                originalContrast = colorAdjustments.contrast.value;
+                originalSaturation =
+                    colorAdjustments.saturation.value;
+
+                originalContrast =
+                    colorAdjustments.contrast.value;
             }
         }
 
         if (bgmLowPassFilter != null)
         {
-            originalCutoff = bgmLowPassFilter.cutoffFrequency;
+            originalCutoff =
+                bgmLowPassFilter.cutoffFrequency;
         }
     }
 
@@ -106,31 +113,94 @@ public class PerfectDodgeDebug : MonoBehaviour
         // Enter slow motion
         if (timeScaleController != null)
         {
-            timeScaleController.EnterSlowMotion(slowMotionScale);
+            timeScaleController.EnterSlowMotion(
+                slowMotionScale);
         }
 
         // Enter black & white
         if (colorAdjustments != null)
         {
             colorAdjustments.saturation.value = -100f;
-            colorAdjustments.contrast.value = dodgeContrast;
+            colorAdjustments.contrast.value =
+                dodgeContrast;
         }
 
         // Apply BGM low pass
         if (bgmLowPassFilter != null)
         {
-            bgmLowPassFilter.cutoffFrequency = dodgeLowPassCutoff;
+            bgmLowPassFilter.cutoffFrequency =
+                dodgeLowPassCutoff;
         }
 
         // Play enter sound
-        if (audioSource != null && enterClip != null)
+        if (audioSource != null &&
+            enterClip != null)
         {
             audioSource.PlayOneShot(enterClip);
         }
 
-        // Wait in real time
-        yield return new WaitForSecondsRealtime(
-            slowMotionDuration);
+        float exitSoundTime =
+            Mathf.Max(
+                0f,
+                slowMotionDuration -
+                exitSoundAdvanceTime);
+
+        float restoreStartTime =
+            Mathf.Max(
+                0f,
+                slowMotionDuration -
+                filterRestoreDuration);
+
+        float timer = 0f;
+
+        bool exitSoundPlayed = false;
+
+        while (timer < slowMotionDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            // Play exit sound
+            if (!exitSoundPlayed &&
+                timer >= exitSoundTime)
+            {
+                exitSoundPlayed = true;
+
+                if (audioSource != null &&
+                    exitClip != null)
+                {
+                    audioSource.PlayOneShot(exitClip);
+                }
+            }
+
+            // Restore BGM filter
+            if (bgmLowPassFilter != null &&
+                timer >= restoreStartTime)
+            {
+                float restoreTimer =
+                    timer - restoreStartTime;
+
+                float t = Mathf.Clamp01(
+                    restoreTimer /
+                    filterRestoreDuration);
+
+                t = Mathf.SmoothStep(0f, 1f, t);
+
+                bgmLowPassFilter.cutoffFrequency =
+                    Mathf.Lerp(
+                        dodgeLowPassCutoff,
+                        originalCutoff,
+                        t);
+            }
+
+            yield return null;
+        }
+
+        // Ensure final cutoff restored
+        if (bgmLowPassFilter != null)
+        {
+            bgmLowPassFilter.cutoffFrequency =
+                originalCutoff;
+        }
 
         // Exit slow motion
         if (timeScaleController != null)
@@ -148,47 +218,6 @@ public class PerfectDodgeDebug : MonoBehaviour
                 originalContrast;
         }
 
-        // Smoothly restore BGM filter
-        if (bgmLowPassFilter != null)
-        {
-            StartCoroutine(RestoreLowPassFilter());
-        }
-
-        // Play exit sound
-        if (audioSource != null && exitClip != null)
-        {
-            audioSource.PlayOneShot(exitClip);
-        }
-
         isPlaying = false;
-    }
-
-    private IEnumerator RestoreLowPassFilter()
-    {
-        float startFrequency =
-            bgmLowPassFilter.cutoffFrequency;
-
-        float timer = 0f;
-
-        while (timer < filterRestoreDuration)
-        {
-            timer += Time.unscaledDeltaTime;
-
-            float t = Mathf.SmoothStep(
-                0f,
-                1f,
-                timer / filterRestoreDuration);
-
-            bgmLowPassFilter.cutoffFrequency =
-                Mathf.Lerp(
-                    startFrequency,
-                    originalCutoff,
-                    t);
-
-            yield return null;
-        }
-
-        bgmLowPassFilter.cutoffFrequency =
-            originalCutoff;
     }
 }
