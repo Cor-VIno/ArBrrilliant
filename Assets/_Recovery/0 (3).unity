@@ -119,7 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
-<<<<<<< HEAD
 --- !u!1 &272439905
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,12 +254,11 @@ MonoBehaviour:
   audioSource: {fileID: 272439906}
   enterClip: {fileID: 8300000, guid: 3b7cae6ab2d644d7ebe999c87e0e04a5, type: 3}
   exitClip: {fileID: 8300000, guid: bfa69a842d5534e449dbd424a29b6f46, type: 3}
-  exitSoundAdvanceTime: 0.3
   globalVolume: {fileID: 647414219}
   dodgeContrast: 25
   bgmLowPassFilter: {fileID: 1235100949}
   dodgeLowPassCutoff: 1200
-  filterRestoreDuration: 0.2
+  filterRestoreDuration: 0.5
 --- !u!4 &272439908
 Transform:
   m_ObjectHideFlags: 0
@@ -276,140 +274,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
->>>>>>> parent of 28bf64b (【有场景变动】实现完美闪避调试效果)
-=======
->>>>>>> Stashed changes
---- !u!1 &349285701 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4505163382433563501, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
-  m_PrefabInstance: {fileID: 1053707711}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &349285713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 349285701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe40e0f7f253e4a82b5e999b3c54cc77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyHitSoundPlayer
-  hitClips:
-  - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
-  - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
-  - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
-  shieldHitClips: []
-  shieldBlockedClips: []
-  audioSource: {fileID: 349285714}
-  damageable: {fileID: 0}
-  shieldComponent: {fileID: 0}
---- !u!82 &349285714
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 349285701}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 0.5
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-<<<<<<< Updated upstream
-=======
->>>>>>> 2e37c94affc29f9f2e1e95f550cdf5c387f044a8
->>>>>>> Stashed changes
 --- !u!1 &514516057
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,7 +462,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -793,7 +657,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
 --- !u!1 &647414218
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,8 +706,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-=======
->>>>>>> parent of 28bf64b (【有场景变动】实现完美闪避调试效果)
 --- !u!1 &848189520
 GameObject:
   m_ObjectHideFlags: 0
@@ -1004,11 +865,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
   - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
   - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
-  shieldHitClips: []
-  shieldBlockedClips: []
   audioSource: {fileID: 1020650792}
   damageable: {fileID: 0}
-  shieldComponent: {fileID: 0}
 --- !u!82 &1020650792
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1279,13 +1137,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4505163382433563501, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 349285714}
-    - targetCorrespondingSourceObject: {fileID: 4505163382433563501, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 349285713}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
 --- !u!1 &1108831983
 GameObject:
@@ -1374,6 +1226,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1235100948}
   - component: {fileID: 1235100947}
+  - component: {fileID: 1235100949}
   m_Layer: 0
   m_Name: MusicLooper
   m_TagString: Untagged
@@ -1493,6 +1346,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!169 &1235100949
+AudioLowPassFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235100944}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_LowpassResonanceQ: 1
+  lowpassLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1784262282 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4505163382433563501, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
@@ -1514,17 +1392,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
   - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
   - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
-  shieldHitClips:
-  - {fileID: 8300000, guid: 8baf8d97c5378403e87d1a9dd834c0b0, type: 3}
-  - {fileID: 8300000, guid: dcb098e728e9649b88d3ce0f0eec1c01, type: 3}
-  - {fileID: 8300000, guid: e8e182681f7e64216ae760067c2f3b7a, type: 3}
-  shieldBlockedClips:
-  - {fileID: 8300000, guid: 9b912a17b48af411ea52a02139b559ce, type: 3}
-  - {fileID: 8300000, guid: ff082960a32014cf7bf37512a5d65858, type: 3}
-  - {fileID: 8300000, guid: 7ffaf1cfcefc84f5fb4a81c46a213ed6, type: 3}
   audioSource: {fileID: 1784262296}
   damageable: {fileID: 0}
-  shieldComponent: {fileID: 0}
 --- !u!82 &1784262296
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5105,10 +4974,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1609544813888992145, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
-      propertyPath: m_PresetInfoIsWorld
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4074697777117585183, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
@@ -5129,10 +4994,6 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1997788003}
-    - target: {fileID: 7100778490193041236, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5158,9 +5019,6 @@ SceneRoots:
   - {fileID: 7000000000000000301}
   - {fileID: 7200000000000000000}
   - {fileID: 1235100948}
-<<<<<<< HEAD
   - {fileID: 272439908}
   - {fileID: 647414220}
   - {fileID: 1053707711}
-=======
->>>>>>> parent of 28bf64b (【有场景变动】实现完美闪避调试效果)
