@@ -1,4 +1,5 @@
-﻿using JingHongLu.Combat;
+using JingHongLu.Combat;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace JingHongLu.Player
@@ -15,14 +16,25 @@ namespace JingHongLu.Player
         [SerializeField] private bool logCollisionDebug;
 
         private readonly Collider2D[] overlapResults = new Collider2D[16];
+        private readonly List<Collider2D> ignoredEnemyBodyColliders = new();
+        private readonly List<ColliderPair> ignoredEnemyBodyPairs = new();
         private bool isIgnoringEnemyBodyCollision;
         private bool waitingForSeparation;
-        private bool storedPlayerEnemyIgnore;
-        private bool storedEnemyEnemyIgnore;
-        private bool hasStoredLayerState;
         private int playerLayer = -1;
         private int enemyLayer = -1;
         private Vector2 lastDashDirection = Vector2.right;
+
+        private readonly struct ColliderPair
+        {
+            public ColliderPair(Collider2D first, Collider2D second)
+            {
+                First = first;
+                Second = second;
+            }
+
+            public Collider2D First { get; }
+            public Collider2D Second { get; }
+        }
 
         private void Awake()
         {
@@ -39,8 +51,7 @@ namespace JingHongLu.Player
                 return;
             }
 
-            StoreLayerState();
-            SetEnemyEnemyCollisionIgnored(true);
+            IgnoreEnemyEnemyBodyCollisions();
             RestorePlayerEnemyCollision();
 
             if (dashController != null)
@@ -56,6 +67,8 @@ namespace JingHongLu.Player
             {
                 return;
             }
+
+            IgnoreCurrentEnemyBodyColliders();
 
             if (IsPlayerOverlappingEnemyAt(GetPlayerBodyPosition()))
             {
@@ -75,13 +88,12 @@ namespace JingHongLu.Player
                 dashController.OnDashFinished -= HandleDashFinished;
             }
 
-            waitingForSeparation = false;
-            RestoreStoredLayerState();
+            RestoreAllIgnoredCollisions();
         }
 
         private void OnDestroy()
         {
-            RestoreStoredLayerState();
+            RestoreAllIgnoredCollisions();
         }
 
         private void ResolveReferences()
@@ -194,20 +206,6 @@ namespace JingHongLu.Player
             return layer >= 0 && layer < 32;
         }
 
-        private void StoreLayerState()
-        {
-            if (hasStoredLayerState || playerLayer < 0 || enemyLayer < 0)
-            {
-                return;
-            }
-
-            storedPlayerEnemyIgnore =
-                Physics2D.GetIgnoreLayerCollision(playerLayer, enemyLayer);
-            storedEnemyEnemyIgnore =
-                Physics2D.GetIgnoreLayerCollision(enemyLayer, enemyLayer);
-            hasStoredLayerState = true;
-        }
-
         private void HandleDashStarted(Vector2 direction)
         {
             lastDashDirection = direction.sqrMagnitude > 0.0001f
@@ -244,19 +242,14 @@ namespace JingHongLu.Player
 
         private void BeginIgnorePlayerEnemyCollision()
         {
-            Debug.Log(
-    $"[PlayerEnemyCollision] BeginIgnore args: playerLayer={playerLayer}({LayerMask.LayerToName(playerLayer)}), " +
-    $"enemyLayer={enemyLayer}({LayerMask.LayerToName(enemyLayer)}), " +
-    $"enemyMask={enemyBodyLayer.value}, hasValid={HasValidLayerIndices()}",
-    this);
             if (!useLayerIgnore || !HasValidLayerIndices())
             {
                 return;
             }
 
-            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
+            IgnoreCurrentEnemyBodyColliders();
             isIgnoringEnemyBodyCollision = true;
-            Log("Player/Enemy body collision ignored for dash.");
+            Log($"Player/Enemy body collision ignored for dash. Count={ignoredEnemyBodyColliders.Count}.");
         }
 
         private void RestorePlayerEnemyCollision()
@@ -267,46 +260,117 @@ namespace JingHongLu.Player
                 return;
             }
 
-            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
+            RestorePlayerEnemyBodyCollisions();
             isIgnoringEnemyBodyCollision = false;
             Log(
                 $"Player/Enemy body collision restored. playerLayer={playerLayer} enemyLayer={enemyLayer} ignore=false.");
         }
 
-        private void SetEnemyEnemyCollisionIgnored(bool ignored)
+        private void IgnoreCurrentEnemyBodyColliders()
         {
-            if (!IsValidLayerIndex(enemyLayer))
+            if (playerBodyCollider == null)
             {
                 return;
             }
 
-            Physics2D.IgnoreLayerCollision(enemyLayer, enemyLayer, ignored);
-            Log("Enemy/Enemy body collision ignored.");
+            Collider2D[] colliders = FindObjectsByType<Collider2D>();
+
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                Collider2D enemyBody = colliders[i];
+
+                if (!IsEnemyBodyCollider(enemyBody) ||
+                    ignoredEnemyBodyColliders.Contains(enemyBody))
+                {
+                    continue;
+                }
+
+                Physics2D.IgnoreCollision(playerBodyCollider, enemyBody, true);
+                ignoredEnemyBodyColliders.Add(enemyBody);
+            }
         }
 
-        private void RestoreStoredLayerState()
+        private void RestorePlayerEnemyBodyCollisions()
         {
-            if (!hasStoredLayerState)
+            if (playerBodyCollider == null)
             {
+                ignoredEnemyBodyColliders.Clear();
                 return;
             }
 
-            if (HasValidLayerIndices())
+            for (int i = 0; i < ignoredEnemyBodyColliders.Count; i++)
             {
-                Physics2D.IgnoreLayerCollision(
-                    playerLayer,
-                    enemyLayer,
-                    storedPlayerEnemyIgnore);
+                Collider2D enemyBody = ignoredEnemyBodyColliders[i];
+
+                if (enemyBody == null)
+                {
+                    continue;
+                }
+
+                Physics2D.IgnoreCollision(playerBodyCollider, enemyBody, false);
             }
 
-            if (IsValidLayerIndex(enemyLayer))
+            ignoredEnemyBodyColliders.Clear();
+        }
+
+        private void IgnoreEnemyEnemyBodyCollisions()
+        {
+            RestoreEnemyEnemyBodyCollisions();
+
+            Collider2D[] colliders = FindObjectsByType<Collider2D>();
+            List<Collider2D> enemyBodies = new();
+
+            for (int i = 0; i < colliders.Length; i++)
             {
-                Physics2D.IgnoreLayerCollision(
-                    enemyLayer,
-                    enemyLayer,
-                    storedEnemyEnemyIgnore);
+                Collider2D collider = colliders[i];
+
+                if (IsEnemyBodyCollider(collider))
+                {
+                    enemyBodies.Add(collider);
+                }
             }
 
+            for (int i = 0; i < enemyBodies.Count; i++)
+            {
+                for (int j = i + 1; j < enemyBodies.Count; j++)
+                {
+                    Collider2D first = enemyBodies[i];
+                    Collider2D second = enemyBodies[j];
+
+                    if (first == null || second == null)
+                    {
+                        continue;
+                    }
+
+                    Physics2D.IgnoreCollision(first, second, true);
+                    ignoredEnemyBodyPairs.Add(new ColliderPair(first, second));
+                }
+            }
+
+            Log($"Enemy/Enemy body collision ignored. PairCount={ignoredEnemyBodyPairs.Count}.");
+        }
+
+        private void RestoreEnemyEnemyBodyCollisions()
+        {
+            for (int i = 0; i < ignoredEnemyBodyPairs.Count; i++)
+            {
+                ColliderPair pair = ignoredEnemyBodyPairs[i];
+
+                if (pair.First == null || pair.Second == null)
+                {
+                    continue;
+                }
+
+                Physics2D.IgnoreCollision(pair.First, pair.Second, false);
+            }
+
+            ignoredEnemyBodyPairs.Clear();
+        }
+
+        private void RestoreAllIgnoredCollisions()
+        {
+            RestorePlayerEnemyBodyCollisions();
+            RestoreEnemyEnemyBodyCollisions();
             isIgnoringEnemyBodyCollision = false;
             waitingForSeparation = false;
         }
@@ -314,6 +378,15 @@ namespace JingHongLu.Player
         private bool HasValidLayerIndices()
         {
             return IsValidLayerIndex(playerLayer) && IsValidLayerIndex(enemyLayer);
+        }
+
+        private bool IsEnemyBodyCollider(Collider2D collider)
+        {
+            return collider != null &&
+                collider != playerBodyCollider &&
+                collider.gameObject.layer == enemyLayer &&
+                !collider.isTrigger &&
+                collider.GetComponentInParent<Hurtbox2D>() == null;
         }
 
         private bool TryMoveToSafePoint(Vector2 currentPosition)
@@ -397,10 +470,7 @@ namespace JingHongLu.Player
             {
                 Collider2D hit = overlapResults[i];
 
-                if (hit == null ||
-                    hit == playerBodyCollider ||
-                    hit.isTrigger ||
-                    hit.GetComponentInParent<Hurtbox2D>() != null)
+                if (!IsEnemyBodyCollider(hit))
                 {
                     continue;
                 }
