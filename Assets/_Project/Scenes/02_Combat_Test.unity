@@ -296,8 +296,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
   - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
   - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
+  shieldHitClips: []
   audioSource: {fileID: 349285714}
   damageable: {fileID: 0}
+  shieldComponent: {fileID: 0}
 --- !u!82 &349285714
 AudioSource:
   m_ObjectHideFlags: 0
@@ -986,8 +988,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
   - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
   - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
+  shieldHitClips: []
   audioSource: {fileID: 1020650792}
   damageable: {fileID: 0}
+  shieldComponent: {fileID: 0}
 --- !u!82 &1020650792
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1519,8 +1523,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
   - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
   - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
+  shieldHitClips:
+  - {fileID: 8300000, guid: 9b912a17b48af411ea52a02139b559ce, type: 3}
+  - {fileID: 8300000, guid: ff082960a32014cf7bf37512a5d65858, type: 3}
+  - {fileID: 8300000, guid: 7ffaf1cfcefc84f5fb4a81c46a213ed6, type: 3}
   audioSource: {fileID: 1784262296}
   damageable: {fileID: 0}
+  shieldComponent: {fileID: 0}
 --- !u!82 &1784262296
 AudioSource:
   m_ObjectHideFlags: 0

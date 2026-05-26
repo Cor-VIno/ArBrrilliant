@@ -3,8 +3,11 @@ using JingHongLu.Combat;
 
 public class EnemyHitSoundPlayer : MonoBehaviour
 {
-    [Header("Hit Sounds")]
+    [Header("Health Hit Sounds")]
     [SerializeField] private AudioClip[] hitClips;
+
+    [Header("Shield Hit Sounds")]
+    [SerializeField] private AudioClip[] shieldHitClips;
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -12,7 +15,13 @@ public class EnemyHitSoundPlayer : MonoBehaviour
     [Header("Damageable")]
     [SerializeField] private Damageable damageable;
 
-    private int lastIndex = -1;
+    [Header("Shield")]
+    [SerializeField] private ShieldComponent shieldComponent;
+
+    private int lastHealthIndex = -1;
+    private int lastShieldIndex = -1;
+
+    private float lastShieldValue;
 
     private void Awake()
     {
@@ -30,13 +39,38 @@ public class EnemyHitSoundPlayer : MonoBehaviour
         {
             damageable = GetComponentInParent<Damageable>();
         }
+
+        if (shieldComponent == null)
+        {
+            shieldComponent =
+                GetComponent<ShieldComponent>();
+        }
+
+        if (shieldComponent == null)
+        {
+            shieldComponent =
+                GetComponentInParent<ShieldComponent>();
+        }
+
+        if (shieldComponent != null)
+        {
+            lastShieldValue =
+                shieldComponent.CurrentShield;
+        }
     }
 
     private void OnEnable()
     {
         if (damageable != null)
         {
-            damageable.OnDamageTaken += PlayRandomHitSound;
+            damageable.OnDamageTaken +=
+                PlayRandomHealthHitSound;
+        }
+
+        if (shieldComponent != null)
+        {
+            shieldComponent.OnShieldChanged +=
+                OnShieldChanged;
         }
     }
 
@@ -44,13 +78,54 @@ public class EnemyHitSoundPlayer : MonoBehaviour
     {
         if (damageable != null)
         {
-            damageable.OnDamageTaken -= PlayRandomHitSound;
+            damageable.OnDamageTaken -=
+                PlayRandomHealthHitSound;
+        }
+
+        if (shieldComponent != null)
+        {
+            shieldComponent.OnShieldChanged -=
+                OnShieldChanged;
         }
     }
 
-    private void PlayRandomHitSound(DamageInfo info)
+    private void PlayRandomHealthHitSound(
+        DamageInfo info)
     {
-        if (hitClips == null || hitClips.Length == 0)
+        // shield still exists
+        // don't play flesh hit
+        if (shieldComponent != null &&
+            shieldComponent.HasShield)
+        {
+            return;
+        }
+
+        PlayRandomClip(
+            hitClips,
+            ref lastHealthIndex);
+    }
+
+    private void OnShieldChanged(
+        float current,
+        float max)
+    {
+        // shield damaged
+        if (current < lastShieldValue)
+        {
+            PlayRandomClip(
+                shieldHitClips,
+                ref lastShieldIndex);
+        }
+
+        lastShieldValue = current;
+    }
+
+    private void PlayRandomClip(
+        AudioClip[] clips,
+        ref int lastIndex)
+    {
+        if (clips == null ||
+            clips.Length == 0)
         {
             return;
         }
@@ -64,12 +139,17 @@ public class EnemyHitSoundPlayer : MonoBehaviour
 
         do
         {
-            index = Random.Range(0, hitClips.Length);
+            index = Random.Range(
+                0,
+                clips.Length);
         }
-        while (hitClips.Length > 1 && index == lastIndex);
+        while (
+            clips.Length > 1 &&
+            index == lastIndex);
 
         lastIndex = index;
 
-        audioSource.PlayOneShot(hitClips[index]);
+        audioSource.PlayOneShot(
+            clips[index]);
     }
 }
