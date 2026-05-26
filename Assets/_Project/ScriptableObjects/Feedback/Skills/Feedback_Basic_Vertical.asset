@@ -17,8 +17,8 @@ MonoBehaviour:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
     animatorTrigger: 
-    spawnPoint: 0
-    localOffset: {x: 0, y: 0}
+    spawnPoint: 4
+    localOffset: {x: 1, y: 0}
     rotateToDirection: 0
     parentToCaster: 0
     destroyDelay: 2
