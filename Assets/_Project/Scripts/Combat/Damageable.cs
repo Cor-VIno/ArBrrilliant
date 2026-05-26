@@ -54,11 +54,14 @@ namespace JingHongLu.Combat
             {
                 shield.ApplyShieldDamage(damageInfo.ShieldDamage);
 
+                if (!shield.HasShield)
+                {
+                    ApplyKnockback(damageInfo, hasSuperArmor);
+                    return;
+                }
+
                 if (shield.BlockHealthDamageWhileShielded)
                 {
-<<<<<<< HEAD
-                    Debug.Log("[Shield] Health damage blocked while shielded.", shield);
-=======
                     if (shield.CurrentShield > 0f)
                     {
                         shield.NotifyBlocked();
@@ -67,9 +70,18 @@ namespace JingHongLu.Combat
 
                     ApplyKnockback(damageInfo, hasSuperArmor);
                     return;
->>>>>>> 2e37c94affc29f9f2e1e95f550cdf5c387f044a8
                 }
 
+                float shieldedDamage =
+                    damageInfo.Damage * shield.HealthDamageMultiplierWhileShielded;
+
+                if (shieldedDamage <= 0f)
+                {
+                    ApplyKnockback(damageInfo, hasSuperArmor);
+                    return;
+                }
+
+                ApplyHealthDamage(damageInfo, shieldedDamage, hasSuperArmor);
                 return;
             }
 

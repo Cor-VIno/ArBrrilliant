@@ -19,12 +19,6 @@ namespace JingHongLu.Enemies
         [SerializeField] private bool logAttack = true;
         [SerializeField] private bool logRangedDecision;
         [SerializeField] private float rangedDecisionLogInterval = 0.5f;
-        [Header("Battle Bounds")]
-        [SerializeField] private bool useBattleBounds = true;
-        [SerializeField] private float minX = -9f;
-        [SerializeField] private float maxX = 9f;
-        [SerializeField] private bool clampPositionWhenOutOfBounds = true;
-        [SerializeField] private bool logBattleBounds;
 
         private bool isAttacking;
         private bool isRepositioning;
@@ -208,11 +202,6 @@ namespace JingHongLu.Enemies
             }
 
             StopHorizontalMovement();
-        }
-
-        private void LateUpdate()
-        {
-            ClampPositionToBattleBounds();
         }
 
         private void ResolveReferences()
@@ -722,15 +711,6 @@ namespace JingHongLu.Enemies
                 }
             }
 
-            if (!CanBackstepWithinBattleBounds(direction))
-            {
-                LogBattleBounds(
-                    $"Backstep canceled by battle bounds. Enemy={name}");
-                StopHorizontalMovement();
-                isRepositioning = false;
-                yield break;
-            }
-
             while (timer < data.BackstepDuration)
             {
                 if (airborneTarget != null && airborneTarget.IsAirborne)
@@ -910,8 +890,6 @@ namespace JingHongLu.Enemies
 
         private void SetHorizontalVelocity(float xVelocity)
         {
-            xVelocity = ConstrainVelocityByBattleBounds(xVelocity);
-
             if (body == null)
             {
                 transform.position += Vector3.right * (xVelocity * Time.deltaTime);
@@ -957,84 +935,6 @@ namespace JingHongLu.Enemies
         private void StopHorizontalMovement()
         {
             SetHorizontalVelocity(0f);
-        }
-
-        private float ClampXToBattleBounds(float x)
-        {
-            return useBattleBounds ? Mathf.Clamp(x, minX, maxX) : x;
-        }
-
-        private float ConstrainVelocityByBattleBounds(float xVelocity)
-        {
-            if (!useBattleBounds || Mathf.Approximately(xVelocity, 0f))
-            {
-                return xVelocity;
-            }
-
-            float currentX = transform.position.x;
-            bool movingLeftOut = xVelocity < 0f && currentX <= minX;
-            bool movingRightOut = xVelocity > 0f && currentX >= maxX;
-
-            if (!movingLeftOut && !movingRightOut)
-            {
-                return xVelocity;
-            }
-
-            LogBattleBounds($"Horizontal movement blocked by battle bounds. Enemy={name}");
-            return 0f;
-        }
-
-        private bool CanBackstepWithinBattleBounds(float direction)
-        {
-            if (!useBattleBounds || data == null)
-            {
-                return true;
-            }
-
-            float targetX = transform.position.x +
-                direction * data.BackstepSpeed * data.BackstepDuration;
-            float clampedX = ClampXToBattleBounds(targetX);
-            return Mathf.Approximately(targetX, clampedX);
-        }
-
-        private void ClampPositionToBattleBounds()
-        {
-            if (!useBattleBounds || !clampPositionWhenOutOfBounds)
-            {
-                return;
-            }
-
-            Vector3 position = transform.position;
-            float clampedX = ClampXToBattleBounds(position.x);
-
-            if (Mathf.Approximately(position.x, clampedX))
-            {
-                return;
-            }
-
-            transform.position = new Vector3(clampedX, position.y, position.z);
-
-            if (body != null)
-            {
-                Vector2 velocity = body.linearVelocity;
-
-                if ((position.x < minX && velocity.x < 0f) ||
-                    (position.x > maxX && velocity.x > 0f))
-                {
-                    velocity.x = 0f;
-                    body.linearVelocity = velocity;
-                }
-            }
-
-            LogBattleBounds($"Position clamped by battle bounds. Enemy={name}");
-        }
-
-        private void LogBattleBounds(string message)
-        {
-            if (logBattleBounds)
-            {
-                Debug.Log($"[EnemyAI][Bounds] {message}", this);
-            }
         }
 
         private void LogRangedDecision(string message, bool force = false)
