@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1944,7 +1944,37 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1997788028}
+    - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2665350594413093925}
   m_SourcePrefab: {fileID: 100100000, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+--- !u!61 &2665350594413093924 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 8969482643598906977, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+  m_PrefabInstance: {fileID: 2665350594413093923}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2665350594413093925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997787995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a9f5137ca6329c41907fe87fe785fa1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerEnemyCollisionController2D
+  playerBodyCollider: {fileID: 2665350594413093924}
+  playerRigidbody: {fileID: 1997788019}
+  dashController: {fileID: 1997788004}
+  enemyBodyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  useLayerIgnore: 1
+  safePointStep: 0.1
+  maxSafePointSteps: 12
+  logCollisionDebug: 0
 --- !u!1001 &6100636087996527265
 PrefabInstance:
   m_ObjectHideFlags: 0
