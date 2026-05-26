@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JingHongLu.Player;
 using UnityEngine;
 
@@ -64,7 +64,6 @@ namespace JingHongLu.Combat
                 {
                     if (shield.CurrentShield > 0f)
                     {
-                        shield.NotifyBlocked();
                         Debug.Log("[Shield] Health damage blocked while shielded.", shield);
                     }
 
