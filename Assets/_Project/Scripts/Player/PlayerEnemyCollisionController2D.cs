@@ -1,4 +1,4 @@
-using JingHongLu.Combat;
+﻿using JingHongLu.Combat;
 using UnityEngine;
 
 namespace JingHongLu.Player
@@ -27,13 +27,18 @@ namespace JingHongLu.Player
         private void Awake()
         {
             ResolveReferences();
-            ResolveLayers();
         }
 
         private void OnEnable()
         {
             ResolveReferences();
-            ResolveLayers();
+
+            if (!TryResolveAndValidateConfiguration())
+            {
+                enabled = false;
+                return;
+            }
+
             StoreLayerState();
             SetEnemyEnemyCollisionIgnored(true);
             RestorePlayerEnemyCollision();
@@ -97,38 +102,96 @@ namespace JingHongLu.Player
             }
         }
 
-        private void ResolveLayers()
+        private bool TryResolveAndValidateConfiguration()
         {
-            playerLayer = playerBodyCollider != null
-                ? playerBodyCollider.gameObject.layer
-                : gameObject.layer;
-
-            enemyLayer = ResolveSingleLayer(enemyBodyLayer);
-
-            if (enemyLayer < 0)
+            if (playerBodyCollider == null)
             {
-                enemyLayer = LayerMask.NameToLayer("Enemy");
+                Debug.LogError("[PlayerEnemyCollision] Player body collider is missing.", this);
+                return false;
             }
+
+            if (playerRigidbody == null)
+            {
+                Debug.LogError("[PlayerEnemyCollision] Player Rigidbody2D is missing.", this);
+                return false;
+            }
+
+            if (dashController == null)
+            {
+                Debug.LogError("[PlayerEnemyCollision] PlayerDashController2D is missing.", this);
+                return false;
+            }
+
+            playerLayer = playerBodyCollider.gameObject.layer;
+
+            if (!IsValidLayerIndex(playerLayer))
+            {
+                Debug.LogError(
+                    $"[PlayerEnemyCollision] Player layer index is invalid: {playerLayer}.",
+                    this);
+                return false;
+            }
+
+            if (!TryResolveSingleLayer(enemyBodyLayer, out enemyLayer))
+            {
+                return false;
+            }
+
+            if (playerLayer == enemyLayer)
+            {
+                Debug.LogError(
+                    $"[PlayerEnemyCollision] Player and enemy body layers must be different. Layer={playerLayer}.",
+                    this);
+                return false;
+            }
+
+            return true;
         }
 
-        private static int ResolveSingleLayer(LayerMask mask)
+        private bool TryResolveSingleLayer(LayerMask mask, out int layer)
         {
             int value = mask.value;
+            layer = -1;
 
             if (value == 0)
             {
-                return -1;
+                Debug.LogError("[PlayerEnemyCollision] Enemy body layer mask is empty.", this);
+                return false;
+            }
+
+            if ((value & (value - 1)) != 0)
+            {
+                Debug.LogError(
+                    "[PlayerEnemyCollision] Enemy body layer mask must contain exactly one layer.",
+                    this);
+                return false;
             }
 
             for (int i = 0; i < 32; i++)
             {
-                if ((value & (1 << i)) != 0)
+                if ((value & (1 << i)) == 0)
                 {
-                    return i;
+                    continue;
                 }
+
+                layer = i;
+                break;
             }
 
-            return -1;
+            if (!IsValidLayerIndex(layer))
+            {
+                Debug.LogError(
+                    $"[PlayerEnemyCollision] Enemy body layer index is invalid: {layer}.",
+                    this);
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsValidLayerIndex(int layer)
+        {
+            return layer >= 0 && layer < 32;
         }
 
         private void StoreLayerState()
@@ -181,7 +244,12 @@ namespace JingHongLu.Player
 
         private void BeginIgnorePlayerEnemyCollision()
         {
-            if (!useLayerIgnore || playerLayer < 0 || enemyLayer < 0)
+            Debug.Log(
+    $"[PlayerEnemyCollision] BeginIgnore args: playerLayer={playerLayer}({LayerMask.LayerToName(playerLayer)}), " +
+    $"enemyLayer={enemyLayer}({LayerMask.LayerToName(enemyLayer)}), " +
+    $"enemyMask={enemyBodyLayer.value}, hasValid={HasValidLayerIndices()}",
+    this);
+            if (!useLayerIgnore || !HasValidLayerIndices())
             {
                 return;
             }
@@ -193,20 +261,21 @@ namespace JingHongLu.Player
 
         private void RestorePlayerEnemyCollision()
         {
-            if (!useLayerIgnore || playerLayer < 0 || enemyLayer < 0)
+            if (!useLayerIgnore || !HasValidLayerIndices())
             {
                 isIgnoringEnemyBodyCollision = false;
                 return;
             }
 
-            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, storedPlayerEnemyIgnore);
-            isIgnoringEnemyBodyCollision = storedPlayerEnemyIgnore;
-            Log("Player/Enemy body collision restored.");
+            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
+            isIgnoringEnemyBodyCollision = false;
+            Log(
+                $"Player/Enemy body collision restored. playerLayer={playerLayer} enemyLayer={enemyLayer} ignore=false.");
         }
 
         private void SetEnemyEnemyCollisionIgnored(bool ignored)
         {
-            if (enemyLayer < 0)
+            if (!IsValidLayerIndex(enemyLayer))
             {
                 return;
             }
@@ -222,7 +291,7 @@ namespace JingHongLu.Player
                 return;
             }
 
-            if (playerLayer >= 0 && enemyLayer >= 0)
+            if (HasValidLayerIndices())
             {
                 Physics2D.IgnoreLayerCollision(
                     playerLayer,
@@ -230,7 +299,7 @@ namespace JingHongLu.Player
                     storedPlayerEnemyIgnore);
             }
 
-            if (enemyLayer >= 0)
+            if (IsValidLayerIndex(enemyLayer))
             {
                 Physics2D.IgnoreLayerCollision(
                     enemyLayer,
@@ -240,6 +309,11 @@ namespace JingHongLu.Player
 
             isIgnoringEnemyBodyCollision = false;
             waitingForSeparation = false;
+        }
+
+        private bool HasValidLayerIndices()
+        {
+            return IsValidLayerIndex(playerLayer) && IsValidLayerIndex(enemyLayer);
         }
 
         private bool TryMoveToSafePoint(Vector2 currentPosition)

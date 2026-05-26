@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1054,6 +1054,14 @@ PrefabInstance:
     - target: {fileID: 233800391487977931, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2010387119673501263, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3298210440498685475, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 4505163382433563501, guid: e71103697ece0cc48ac46177829f6fd5, type: 3}
       propertyPath: m_Name
@@ -1963,7 +1971,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a9f5137ca6329c41907fe87fe785fa1, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Player.PlayerEnemyCollisionController2D
   playerBodyCollider: {fileID: 2665350594413093924}
   playerRigidbody: {fileID: 1997788019}
@@ -2023,6 +2031,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3174087502728914474, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 3466161962813156661, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
       propertyPath: m_IsTrigger
       value: 0
@@ -2034,6 +2046,10 @@ PrefabInstance:
     - target: {fileID: 4160151727826028457, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
       propertyPath: currentHealth
       value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 4386812021012024915, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4505163382433563501, guid: d080eee25c2895440b16a39ca77d6526, type: 3}
       propertyPath: m_Name
@@ -4764,6 +4780,10 @@ PrefabInstance:
       propertyPath: m_PresetInfoIsWorld
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3888844286847380335, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 4074697777117585183, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
@@ -4784,6 +4804,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1997788003}
+    - target: {fileID: 6588521246492832797, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 7100778490193041236, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
       propertyPath: m_TextStyleHashCode
       value: -1183493901
