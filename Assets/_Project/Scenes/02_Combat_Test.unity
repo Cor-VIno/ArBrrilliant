@@ -297,6 +297,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
   - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
   shieldHitClips: []
+  shieldBlockedClips: []
   audioSource: {fileID: 349285714}
   damageable: {fileID: 0}
   shieldComponent: {fileID: 0}
@@ -989,6 +990,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
   - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
   shieldHitClips: []
+  shieldBlockedClips: []
   audioSource: {fileID: 1020650792}
   damageable: {fileID: 0}
   shieldComponent: {fileID: 0}
@@ -1524,6 +1526,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
   - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
   shieldHitClips:
+  - {fileID: 8300000, guid: 8baf8d97c5378403e87d1a9dd834c0b0, type: 3}
+  - {fileID: 8300000, guid: dcb098e728e9649b88d3ce0f0eec1c01, type: 3}
+  - {fileID: 8300000, guid: e8e182681f7e64216ae760067c2f3b7a, type: 3}
+  shieldBlockedClips:
   - {fileID: 8300000, guid: 9b912a17b48af411ea52a02139b559ce, type: 3}
   - {fileID: 8300000, guid: ff082960a32014cf7bf37512a5d65858, type: 3}
   - {fileID: 8300000, guid: 7ffaf1cfcefc84f5fb4a81c46a213ed6, type: 3}
@@ -5109,6 +5115,10 @@ PrefabInstance:
     - target: {fileID: 233800391487977931, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1609544813888992145, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4074697777117585183, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag

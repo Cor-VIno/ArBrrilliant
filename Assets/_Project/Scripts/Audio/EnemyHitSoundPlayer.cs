@@ -6,8 +6,11 @@ public class EnemyHitSoundPlayer : MonoBehaviour
     [Header("Health Hit Sounds")]
     [SerializeField] private AudioClip[] hitClips;
 
-    [Header("Shield Hit Sounds")]
+    [Header("Shield Damage Sounds")]
     [SerializeField] private AudioClip[] shieldHitClips;
+
+    [Header("Shield Blocked Sounds")]
+    [SerializeField] private AudioClip[] shieldBlockedClips;
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -20,8 +23,7 @@ public class EnemyHitSoundPlayer : MonoBehaviour
 
     private int lastHealthIndex = -1;
     private int lastShieldIndex = -1;
-
-    private float lastShieldValue;
+    private int lastBlockedIndex = -1;
 
     private void Awake()
     {
@@ -37,7 +39,8 @@ public class EnemyHitSoundPlayer : MonoBehaviour
 
         if (damageable == null)
         {
-            damageable = GetComponentInParent<Damageable>();
+            damageable =
+                GetComponentInParent<Damageable>();
         }
 
         if (shieldComponent == null)
@@ -51,12 +54,6 @@ public class EnemyHitSoundPlayer : MonoBehaviour
             shieldComponent =
                 GetComponentInParent<ShieldComponent>();
         }
-
-        if (shieldComponent != null)
-        {
-            lastShieldValue =
-                shieldComponent.CurrentShield;
-        }
     }
 
     private void OnEnable()
@@ -69,8 +66,11 @@ public class EnemyHitSoundPlayer : MonoBehaviour
 
         if (shieldComponent != null)
         {
-            shieldComponent.OnShieldChanged +=
-                OnShieldChanged;
+            shieldComponent.OnShieldDamaged +=
+                OnShieldDamaged;
+
+            shieldComponent.OnShieldBlocked +=
+                OnShieldBlocked;
         }
     }
 
@@ -84,8 +84,11 @@ public class EnemyHitSoundPlayer : MonoBehaviour
 
         if (shieldComponent != null)
         {
-            shieldComponent.OnShieldChanged -=
-                OnShieldChanged;
+            shieldComponent.OnShieldDamaged -=
+                OnShieldDamaged;
+
+            shieldComponent.OnShieldBlocked -=
+                OnShieldBlocked;
         }
     }
 
@@ -105,19 +108,18 @@ public class EnemyHitSoundPlayer : MonoBehaviour
             ref lastHealthIndex);
     }
 
-    private void OnShieldChanged(
-        float current,
-        float max)
+    private void OnShieldDamaged(float amount)
     {
-        // shield damaged
-        if (current < lastShieldValue)
-        {
-            PlayRandomClip(
-                shieldHitClips,
-                ref lastShieldIndex);
-        }
+        PlayRandomClip(
+            shieldHitClips,
+            ref lastShieldIndex);
+    }
 
-        lastShieldValue = current;
+    private void OnShieldBlocked()
+    {
+        PlayRandomClip(
+            shieldBlockedClips,
+            ref lastBlockedIndex);
     }
 
     private void PlayRandomClip(
