@@ -34,6 +34,9 @@ MonoBehaviour:
   heavyStage1RecoveryTime: 0
   heavyStage1Damage: 10
   heavyStage1ShieldDamage: 5
+  heavyStage1CanApplyKnockback: 1
+  heavyStage1KnockbackDistance: 0.5
+  heavyStage1KnockbackDuration: 0.1
   heavyStage1HitboxSize: {x: 0.6, y: 0.6}
   heavyStage1CanApplyHitStun: 1
   heavyStage1HitStunDuration: 0.1
@@ -46,6 +49,9 @@ MonoBehaviour:
   heavyStage2BaseShieldDamage: 10
   heavyStage2ShieldDamageBonusPerSecond: 20
   heavyStage2MaxShieldDamageBonus: 25
+  heavyStage2CanApplyKnockback: 1
+  heavyStage2KnockbackDistance: 0.8
+  heavyStage2KnockbackDuration: 0.12
   heavyStage2HitboxSize: {x: 1, y: 1}
   heavyStage2CanApplyHitStun: 1
   heavyStage2HitStunDuration: 0.2

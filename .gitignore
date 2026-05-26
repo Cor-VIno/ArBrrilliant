@@ -82,3 +82,6 @@ crashlytics-build.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# 动画源文件过大，不走github
+Assets/_Project/Art/Characters/Player/Raw/
