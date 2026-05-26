@@ -91,7 +91,7 @@ namespace JingHongLu.Player
         {
             if (slowMotionController != null)
             {
-                slowMotionController.StartPerfectDodgeSlow();
+                slowMotionController.TriggerSlowMotion();
             }
 
             if (extraInvincibleDuration > 0f && damageable != null)

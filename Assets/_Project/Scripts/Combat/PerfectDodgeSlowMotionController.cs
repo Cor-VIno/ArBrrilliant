@@ -18,6 +18,7 @@ namespace JingHongLu.Combat
         public event Action OnPerfectDodgeSlowStarted;
         public event Action OnPerfectDodgeSlowEnded;
 
+        public bool IsActive => IsPerfectDodgeSlowActive;
         public bool IsPerfectDodgeSlowActive => remainingTime > 0f;
         public float EnemyTimeScale => IsPerfectDodgeSlowActive ? Mathf.Clamp01(enemyTimeScale) : 1f;
         public float ProjectileTimeScale => IsPerfectDodgeSlowActive ? Mathf.Clamp01(projectileTimeScale) : 1f;
@@ -50,7 +51,7 @@ namespace JingHongLu.Combat
 
             if (remainingTime <= 0f)
             {
-                EndSlow();
+                EndSlow(wasActive: true);
             }
         }
 
@@ -63,8 +64,13 @@ namespace JingHongLu.Combat
 
             if (IsPerfectDodgeSlowActive)
             {
-                EndSlow();
+                EndSlow(wasActive: true);
             }
+        }
+
+        public void TriggerSlowMotion()
+        {
+            StartPerfectDodgeSlow();
         }
 
         public void StartPerfectDodgeSlow()
@@ -86,8 +92,13 @@ namespace JingHongLu.Combat
 
             if (remainingTime <= 0f)
             {
-                EndSlow();
+                EndSlow(wasActive: wasActive);
             }
+        }
+
+        public void CancelSlowMotion()
+        {
+            CancelPerfectDodgeSlow();
         }
 
         public void CancelPerfectDodgeSlow()
@@ -98,19 +109,21 @@ namespace JingHongLu.Combat
             }
 
             remainingTime = 0f;
-            EndSlow();
+            EndSlow(wasActive: true);
         }
 
-        private void EndSlow()
+        private void EndSlow(bool wasActive)
         {
-            bool wasActive = remainingTime > 0f;
             remainingTime = 0f;
 
-            OnPerfectDodgeSlowEnded?.Invoke();
+            if (wasActive)
+            {
+                OnPerfectDodgeSlowEnded?.Invoke();
+            }
 
             if (logPerfectDodgeSlow)
             {
-                Debug.Log(wasActive ? "[PerfectDodgeSlow] Ended." : "[PerfectDodgeSlow] Ended.", this);
+                Debug.Log("[PerfectDodgeSlow] Ended.", this);
             }
         }
     }

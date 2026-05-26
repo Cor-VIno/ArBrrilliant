@@ -60,7 +60,7 @@ namespace JingHongLu.SwordArts
                 return;
             }
 
-            slowMotionController.CancelPerfectDodgeSlow();
+            slowMotionController.CancelSlowMotion();
 
             if (logCancel)
             {
