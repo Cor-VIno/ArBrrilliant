@@ -182,7 +182,7 @@ namespace JingHongLu.Feedback
             {
                 case FeedbackSpawnPoint.CasterFeet:
                     return (casterFeet != null ? casterFeet.position : fallback.position) +
-                           (Vector3)cue.LocalOffset;
+                           ResolveDirectionalOffset(cue.LocalOffset, direction);
                 case FeedbackSpawnPoint.CasterForward:
                     return fallback.position +
                            (Vector3)(direction * cue.LocalOffset.x) +
@@ -192,8 +192,14 @@ namespace JingHongLu.Feedback
                 case FeedbackSpawnPoint.CasterCenter:
                 default:
                     return (casterCenter != null ? casterCenter.position : fallback.position) +
-                           (Vector3)cue.LocalOffset;
+                           ResolveDirectionalOffset(cue.LocalOffset, direction);
             }
+        }
+
+        private static Vector3 ResolveDirectionalOffset(Vector2 localOffset, Vector2 direction)
+        {
+            float sign = direction.x < 0f ? -1f : 1f;
+            return new Vector3(localOffset.x * sign, localOffset.y, 0f);
         }
     }
 }

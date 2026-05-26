@@ -38,6 +38,7 @@ namespace JingHongLu.Skills
         private bool chargeAppliedSuperArmor;
         private bool isHeavyTwoStageCharging;
         private bool fullSkillSuperArmorApplied;
+        private Vector2 lastSkillDirection = Vector2.right;
 
         public event Action<SkillData> OnSkillCastStarted;
         public event Action<SkillData> OnSkillExecuted;
@@ -53,6 +54,7 @@ namespace JingHongLu.Skills
         public bool IsCasting => isCasting;
         public bool IsChargingSkill => isChargingSkill;
         public SkillData CurrentSkill => currentSkill;
+        public Vector2 LastSkillDirection => lastSkillDirection;
 
         private void Awake()
         {
@@ -285,6 +287,7 @@ namespace JingHongLu.Skills
                 return;
             }
 
+            CacheSkillDirection(skill);
             BeginChargeState(slot, skill, heavyTwoStage: false);
             OnSkillCastStarted?.Invoke(skill);
         }
@@ -365,6 +368,7 @@ namespace JingHongLu.Skills
                 return;
             }
 
+            CacheSkillDirection(skill);
             OnSkillChargeReleased?.Invoke(skill, releasedChargeTime);
             currentCastRoutine = StartCoroutine(CastChargedSkillRoutine(skill));
         }
@@ -376,6 +380,7 @@ namespace JingHongLu.Skills
             AddSkillCastLock(PlayerControlLockFlags.Gameplay);
             ApplyFullSkillSuperArmor(skill);
             StartCooldown(skill);
+            CacheSkillDirection(skill);
             OnSkillExecuted?.Invoke(skill);
             yield return ExecuteSkillRoutine(skill);
 
@@ -527,6 +532,7 @@ namespace JingHongLu.Skills
             AddSkillCastLock(PlayerControlLockFlags.Gameplay);
             ApplyFullSkillSuperArmor(skill);
             StartCooldown(skill);
+            CacheSkillDirection(skill);
             OnSkillCastStarted?.Invoke(skill);
 
             if (skill.CastTime > 0f)
@@ -534,6 +540,7 @@ namespace JingHongLu.Skills
                 yield return new WaitForSeconds(skill.CastTime);
             }
 
+            CacheSkillDirection(skill);
             OnSkillExecuted?.Invoke(skill);
             yield return ExecuteSkillRoutine(skill);
 
@@ -559,6 +566,7 @@ namespace JingHongLu.Skills
             AddSkillCastLock(PlayerControlLockFlags.Gameplay);
             ApplyFullSkillSuperArmor(skill);
             StartCooldown(skill);
+            CacheSkillDirection(skill);
             OnSkillCastStarted?.Invoke(skill);
 
             if (skill.HeavyStage1CastTime > 0f)
@@ -589,6 +597,7 @@ namespace JingHongLu.Skills
                 yield return new WaitForSeconds(skill.HeavyStage1RecoveryTime);
             }
 
+            CacheSkillDirection(skill);
             BeginChargeState(slot, skill, heavyTwoStage: true);
 
             while (isChargingSkill && chargingSkill == skill)
@@ -639,6 +648,7 @@ namespace JingHongLu.Skills
             EndChargeState();
 
             currentSkill = skill;
+            CacheSkillDirection(skill);
             OnSkillChargeReleased?.Invoke(skill, releasedChargeTime);
 
             SpawnInstantHitbox(
@@ -980,7 +990,7 @@ namespace JingHongLu.Skills
                 return fallbackDirection;
             }
 
-            return toTarget.normalized;
+            return SetLastSkillDirection(skill, toTarget.normalized);
         }
 
         private bool IsSkillControlLocked(SkillData skill)
@@ -1056,7 +1066,23 @@ namespace JingHongLu.Skills
                 direction = GetFacingHorizontalDirection();
             }
 
+            return SetLastSkillDirection(skill, direction);
+        }
+
+        private Vector2 CacheSkillDirection(SkillData skill)
+        {
+            return ResolveSkillDirection(skill);
+        }
+
+        private Vector2 SetLastSkillDirection(SkillData skill, Vector2 direction)
+        {
+            if (direction.sqrMagnitude < 0.0001f)
+            {
+                direction = GetFacingHorizontalDirection();
+            }
+
             direction = direction.normalized;
+            lastSkillDirection = direction;
             OnSkillDirectionResolved?.Invoke(skill, direction);
             return direction;
         }

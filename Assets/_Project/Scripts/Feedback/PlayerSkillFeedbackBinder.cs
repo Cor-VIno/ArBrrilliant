@@ -141,7 +141,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue("Skill cast started", feedbackData.CastStartedCue, skill, lastResolvedDirection);
+                PlayCue("Skill cast started", feedbackData.CastStartedCue, skill, GetCurrentSkillDirection());
             }
         }
 
@@ -149,7 +149,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue("Skill executed", feedbackData.ExecutedCue, skill, lastResolvedDirection);
+                PlayCue("Skill executed", feedbackData.ExecutedCue, skill, GetCurrentSkillDirection());
             }
         }
 
@@ -157,7 +157,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue("Skill cast finished", feedbackData.CastFinishedCue, skill, lastResolvedDirection);
+                PlayCue("Skill cast finished", feedbackData.CastFinishedCue, skill, GetCurrentSkillDirection());
             }
         }
 
@@ -165,7 +165,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue("Charge started", feedbackData.ChargeStartedCue, skill, lastResolvedDirection);
+                PlayCue("Charge started", feedbackData.ChargeStartedCue, skill, GetCurrentSkillDirection());
             }
         }
 
@@ -173,7 +173,7 @@ namespace JingHongLu.Feedback
         {
             if (TryGetFeedback(skill, out SkillFeedbackData feedbackData))
             {
-                PlayCue("Charge released", feedbackData.ChargeReleasedCue, skill, lastResolvedDirection);
+                PlayCue("Charge released", feedbackData.ChargeReleasedCue, skill, GetCurrentSkillDirection());
             }
         }
 
@@ -196,7 +196,7 @@ namespace JingHongLu.Feedback
                     "Projectile spawned",
                     feedbackData.ProjectileSpawnedCue,
                     skill,
-                    lastResolvedDirection,
+                    GetCurrentSkillDirection(),
                     projectile,
                     worldPosition);
             }
@@ -262,6 +262,17 @@ namespace JingHongLu.Feedback
             }
 
             return null;
+        }
+
+        private Vector2 GetCurrentSkillDirection()
+        {
+            if (skillController != null &&
+                skillController.LastSkillDirection.sqrMagnitude > 0.0001f)
+            {
+                lastResolvedDirection = skillController.LastSkillDirection.normalized;
+            }
+
+            return lastResolvedDirection;
         }
 
         private void PlayCue(
@@ -334,6 +345,12 @@ namespace JingHongLu.Feedback
                 return lastResolvedDirection.normalized;
             }
 
+            if (skillController != null &&
+                skillController.LastSkillDirection.sqrMagnitude > 0.0001f)
+            {
+                return skillController.LastSkillDirection.normalized;
+            }
+
             return casterRoot != null && casterRoot.localScale.x < 0f
                 ? Vector2.left
                 : Vector2.right;
@@ -351,21 +368,28 @@ namespace JingHongLu.Feedback
             {
                 case FeedbackSpawnPoint.CasterFeet:
                     return (casterFeet != null ? casterFeet.position : fallback.position) +
-                           (Vector3)cue.LocalOffset;
+                           ResolveDirectionalOffset(cue.LocalOffset, direction);
                 case FeedbackSpawnPoint.CasterForward:
                     return fallback.position +
                            (Vector3)(direction * cue.LocalOffset.x) +
                            Vector3.up * cue.LocalOffset.y;
                 case FeedbackSpawnPoint.Projectile:
                     return (projectile != null ? projectile.transform.position : fallback.position) +
-                           (Vector3)cue.LocalOffset;
+                           ResolveDirectionalOffset(cue.LocalOffset, direction);
                 case FeedbackSpawnPoint.WorldPosition:
-                    return (worldPosition ?? fallback.position) + (Vector3)cue.LocalOffset;
+                    return (worldPosition ?? fallback.position) +
+                           ResolveDirectionalOffset(cue.LocalOffset, direction);
                 case FeedbackSpawnPoint.CasterCenter:
                 default:
                     return (casterCenter != null ? casterCenter.position : fallback.position) +
-                           (Vector3)cue.LocalOffset;
+                           ResolveDirectionalOffset(cue.LocalOffset, direction);
             }
+        }
+
+        private static Vector3 ResolveDirectionalOffset(Vector2 localOffset, Vector2 direction)
+        {
+            float sign = direction.x < 0f ? -1f : 1f;
+            return new Vector3(localOffset.x * sign, localOffset.y, 0f);
         }
     }
 }

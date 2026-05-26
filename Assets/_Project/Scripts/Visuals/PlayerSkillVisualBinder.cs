@@ -15,6 +15,8 @@ namespace JingHongLu.Visuals
         [SerializeField] private Transform weaponSocket;
         [SerializeField] private bool logMissingReferences = true;
 
+        private Vector2 lastResolvedDirection = Vector2.right;
+
         private void Awake()
         {
             ResolveReferences();
@@ -39,6 +41,7 @@ namespace JingHongLu.Visuals
             skillController.OnSkillCastStarted += HandleSkillCastStarted;
             skillController.OnSkillExecuted += HandleSkillExecuted;
             skillController.OnSkillCastFinished += HandleSkillCastFinished;
+            skillController.OnSkillDirectionResolved += HandleSkillDirectionResolved;
         }
 
         private void OnDisable()
@@ -51,6 +54,7 @@ namespace JingHongLu.Visuals
             skillController.OnSkillCastStarted -= HandleSkillCastStarted;
             skillController.OnSkillExecuted -= HandleSkillExecuted;
             skillController.OnSkillCastFinished -= HandleSkillCastFinished;
+            skillController.OnSkillDirectionResolved -= HandleSkillDirectionResolved;
         }
 
         private void ResolveReferences()
@@ -91,6 +95,14 @@ namespace JingHongLu.Visuals
             PlayCue(skill?.VisualData?.CastFinishedCue);
         }
 
+        private void HandleSkillDirectionResolved(SkillData skill, Vector2 direction)
+        {
+            if (direction.sqrMagnitude > 0.0001f)
+            {
+                lastResolvedDirection = direction.normalized;
+            }
+        }
+
         private void PlayCue(VisualCueData cue)
         {
             if (cue == null)
@@ -111,7 +123,7 @@ namespace JingHongLu.Visuals
             Transform spawnTransform = ResolveSpawnTransform(cue.SpawnPoint);
             Vector3 position = ResolveSpawnPosition(cue, spawnTransform);
             Quaternion rotation = cue.RotateToAimDirection
-                ? Quaternion.Euler(0f, 0f, GetAimAngleDegrees())
+                ? Quaternion.Euler(0f, 0f, GetDirectionAngleDegrees())
                 : Quaternion.identity;
 
             GameObject instance = Instantiate(cue.VfxPrefab, position, rotation);
@@ -150,6 +162,7 @@ namespace JingHongLu.Visuals
             Transform spawnTransform)
         {
             Vector3 offset = cue.LocalOffset;
+            offset.x *= lastResolvedDirection.x < 0f ? -1f : 1f;
 
             if (cue.SpawnPoint == VisualSpawnPointType.WorldPosition)
             {
@@ -165,10 +178,10 @@ namespace JingHongLu.Visuals
             return origin + offset;
         }
 
-        private float GetAimAngleDegrees()
+        private float GetDirectionAngleDegrees()
         {
-            Vector2 direction = aim != null && aim.AimDirection.sqrMagnitude > 0.0001f
-                ? aim.AimDirection
+            Vector2 direction = lastResolvedDirection.sqrMagnitude > 0.0001f
+                ? lastResolvedDirection
                 : Vector2.right;
 
             return Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
