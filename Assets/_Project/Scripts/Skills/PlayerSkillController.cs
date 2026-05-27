@@ -582,6 +582,7 @@ namespace JingHongLu.Skills
                 skill.HeavyStage1CanApplyHitStun,
                 skill.HeavyStage1HitStunDuration,
                 skill.HeavyStage1ShieldDamage,
+                skill.HeavyStage1ToughnessDamage,
                 overrideKnockback: true,
                 canApplyKnockback: skill.HeavyStage1CanApplyKnockback,
                 knockbackDistance: skill.HeavyStage1KnockbackDistance,
@@ -659,6 +660,7 @@ namespace JingHongLu.Skills
                 skill.HeavyStage2CanApplyHitStun,
                 skill.HeavyStage2HitStunDuration,
                 finalShieldDamage,
+                skill.HeavyStage2ToughnessDamage,
                 overrideKnockback: true,
                 canApplyKnockback: skill.HeavyStage2CanApplyKnockback,
                 knockbackDistance: skill.HeavyStage2KnockbackDistance,
@@ -778,7 +780,8 @@ namespace JingHongLu.Skills
                 skill.HitboxDuration,
                 skill.CanApplyHitStun,
                 skill.HitStunDuration,
-                skill.ShieldDamage);
+                skill.ShieldDamage,
+                skill.ToughnessDamage);
         }
 
         private void SpawnInstantHitbox(
@@ -789,6 +792,7 @@ namespace JingHongLu.Skills
             bool canApplyHitStun,
             float hitStunDuration,
             float shieldDamage,
+            float toughnessDamage,
             bool overrideKnockback = false,
             bool canApplyKnockback = false,
             float knockbackDistance = 0f,
@@ -827,6 +831,7 @@ namespace JingHongLu.Skills
                 canApplyHitStun: canApplyHitStun,
                 hitStunDuration: hitStunDuration,
                 shieldDamage: shieldDamage,
+                toughnessDamage: toughnessDamage,
                 overrideKnockback: overrideKnockback,
                 canApplyKnockback: canApplyKnockback,
                 knockbackDistance: knockbackDistance,
@@ -917,7 +922,8 @@ namespace JingHongLu.Skills
                 airborneDuration: skill.AirborneDuration,
                 canApplyHitStun: skill.CanApplyHitStun,
                 hitStunDuration: skill.HitStunDuration,
-                shieldDamage: skill.ShieldDamage);
+                shieldDamage: skill.ShieldDamage,
+                toughnessDamage: skill.ToughnessDamage);
 
             OnProjectileSpawned?.Invoke(skill, projectileObject);
         }
@@ -956,7 +962,8 @@ namespace JingHongLu.Skills
                 airborneDuration: skill.AirborneDuration,
                 canApplyHitStun: skill.CanApplyHitStun,
                 hitStunDuration: skill.HitStunDuration,
-                shieldDamage: skill.ShieldDamage);
+                shieldDamage: skill.ShieldDamage,
+                toughnessDamage: skill.ToughnessDamage);
         }
 
         private Vector2 ResolveDashDirection(SkillData skill, DashData dashData)

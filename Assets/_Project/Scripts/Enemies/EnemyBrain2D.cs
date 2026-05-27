@@ -13,6 +13,7 @@ namespace JingHongLu.Enemies
         [SerializeField] private AirborneTarget2D airborneTarget;
         [SerializeField] private HitStunReceiver2D hitStunReceiver;
         [SerializeField] private EnemyKnockbackReceiver2D knockbackReceiver;
+        [SerializeField] private ToughnessComponent toughness;
         [SerializeField] private PerfectDodgeSlowMotionController slowMotionController;
         [SerializeField] private PlayerSkillController targetSkillController;
         [SerializeField] private TeamId ownerTeam = TeamId.Enemy;
@@ -41,12 +42,14 @@ namespace JingHongLu.Enemies
             SubscribeAirborneEvents();
             SubscribeHitStunEvents();
             SubscribeKnockbackEvents();
+            SubscribeToughnessEvents();
             SubscribeTargetSkillEvents();
         }
 
         private void OnDisable()
         {
             UnsubscribeTargetSkillEvents();
+            UnsubscribeToughnessEvents();
             UnsubscribeKnockbackEvents();
             UnsubscribeHitStunEvents();
             UnsubscribeAirborneEvents();
@@ -83,6 +86,13 @@ namespace JingHongLu.Enemies
             if (knockbackReceiver != null && knockbackReceiver.IsKnockbacking)
             {
                 LogRangedDecision("Reject: currently knockbacking.");
+                return;
+            }
+
+            if (toughness != null && toughness.IsBroken)
+            {
+                LogRangedDecision("Reject: toughness broken.");
+                StopHorizontalMovement();
                 return;
             }
 
@@ -256,6 +266,21 @@ namespace JingHongLu.Enemies
                 knockbackReceiver = GetComponentInChildren<EnemyKnockbackReceiver2D>();
             }
 
+            if (toughness == null)
+            {
+                TryGetComponent(out toughness);
+            }
+
+            if (toughness == null)
+            {
+                toughness = GetComponentInParent<ToughnessComponent>();
+            }
+
+            if (toughness == null)
+            {
+                toughness = GetComponentInChildren<ToughnessComponent>();
+            }
+
             if (slowMotionController == null)
             {
                 slowMotionController = PerfectDodgeSlowMotionController.Instance;
@@ -349,6 +374,30 @@ namespace JingHongLu.Enemies
             knockbackReceiver.OnKnockbackEnded -= HandleKnockbackEnded;
         }
 
+        private void SubscribeToughnessEvents()
+        {
+            if (toughness == null)
+            {
+                return;
+            }
+
+            toughness.OnBroken -= HandleToughnessBroken;
+            toughness.OnBreakRecovered -= HandleToughnessRecovered;
+            toughness.OnBroken += HandleToughnessBroken;
+            toughness.OnBreakRecovered += HandleToughnessRecovered;
+        }
+
+        private void UnsubscribeToughnessEvents()
+        {
+            if (toughness == null)
+            {
+                return;
+            }
+
+            toughness.OnBroken -= HandleToughnessBroken;
+            toughness.OnBreakRecovered -= HandleToughnessRecovered;
+        }
+
         private void HandleAirborneStarted(AirborneTarget2D target)
         {
             InterruptCurrentAction("airborne");
@@ -386,6 +435,20 @@ namespace JingHongLu.Enemies
             if (logAttack)
             {
                 Debug.Log($"{name} knockback ended, AI resumed.", this);
+            }
+        }
+
+        private void HandleToughnessBroken()
+        {
+            InterruptCurrentAction("toughness break");
+            StopHorizontalMovement();
+        }
+
+        private void HandleToughnessRecovered()
+        {
+            if (logAttack)
+            {
+                Debug.Log($"{name} toughness recovered, AI resumed.", this);
             }
         }
 

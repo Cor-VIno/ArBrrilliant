@@ -23,6 +23,7 @@ namespace JingHongLu.Combat
             float hitStunDuration = 0f,
             AttackInterruptType interruptType = AttackInterruptType.None,
             float shieldDamage = 0f,
+            float toughnessDamage = 0f,
             bool canApplyKnockback = false,
             float knockbackDistance = 0f,
             float knockbackDuration = 0f)
@@ -44,6 +45,7 @@ namespace JingHongLu.Combat
             HitStunDuration = hitStunDuration;
             InterruptType = interruptType;
             ShieldDamage = shieldDamage;
+            ToughnessDamage = toughnessDamage;
             CanApplyKnockback = canApplyKnockback;
             KnockbackDistance = knockbackDistance;
             KnockbackDuration = knockbackDuration;
@@ -66,6 +68,7 @@ namespace JingHongLu.Combat
         public float HitStunDuration { get; }
         public AttackInterruptType InterruptType { get; }
         public float ShieldDamage { get; }
+        public float ToughnessDamage { get; }
         public bool CanApplyKnockback { get; }
         public float KnockbackDistance { get; }
         public float KnockbackDuration { get; }

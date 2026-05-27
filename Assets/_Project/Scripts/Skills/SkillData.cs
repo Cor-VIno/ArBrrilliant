@@ -45,6 +45,7 @@ namespace JingHongLu.Skills
         [SerializeField] private float heavyStage1RecoveryTime = 0f;
         [SerializeField] private float heavyStage1Damage = 10f;
         [SerializeField] private float heavyStage1ShieldDamage = 5f;
+        [SerializeField] private float heavyStage1ToughnessDamage = 20f;
         [SerializeField] private bool heavyStage1CanApplyKnockback = true;
         [SerializeField] private float heavyStage1KnockbackDistance = 0.5f;
         [SerializeField] private float heavyStage1KnockbackDuration = 0.1f;
@@ -60,6 +61,7 @@ namespace JingHongLu.Skills
         [SerializeField] private float heavyStage2BaseShieldDamage = 10f;
         [SerializeField] private float heavyStage2ShieldDamageBonusPerSecond = 20f;
         [SerializeField] private float heavyStage2MaxShieldDamageBonus = 25f;
+        [SerializeField] private float heavyStage2ToughnessDamage = 40f;
         [SerializeField] private bool heavyStage2CanApplyKnockback = true;
         [SerializeField] private float heavyStage2KnockbackDistance = 0.8f;
         [SerializeField] private float heavyStage2KnockbackDuration = 0.12f;
@@ -74,6 +76,9 @@ namespace JingHongLu.Skills
 
         [Header("Shield")]
         [SerializeField] private float shieldDamage = 0f;
+
+        [Header("Toughness")]
+        [SerializeField] private float toughnessDamage = 10f;
 
         [Header("Knockback")]
         [SerializeField] private bool canApplyKnockback;
@@ -171,6 +176,7 @@ namespace JingHongLu.Skills
         public float HeavyStage1RecoveryTime => Mathf.Max(0f, heavyStage1RecoveryTime);
         public float HeavyStage1Damage => heavyStage1Damage;
         public float HeavyStage1ShieldDamage => Mathf.Max(0f, heavyStage1ShieldDamage);
+        public float HeavyStage1ToughnessDamage => Mathf.Max(0f, heavyStage1ToughnessDamage);
         public bool HeavyStage1CanApplyKnockback => heavyStage1CanApplyKnockback;
         public float HeavyStage1KnockbackDistance =>
             Mathf.Max(0f, heavyStage1KnockbackDistance);
@@ -190,6 +196,7 @@ namespace JingHongLu.Skills
             heavyStage2ShieldDamageBonusPerSecond;
         public float HeavyStage2MaxShieldDamageBonus =>
             Mathf.Max(0f, heavyStage2MaxShieldDamageBonus);
+        public float HeavyStage2ToughnessDamage => Mathf.Max(0f, heavyStage2ToughnessDamage);
         public bool HeavyStage2CanApplyKnockback => heavyStage2CanApplyKnockback;
         public float HeavyStage2KnockbackDistance =>
             Mathf.Max(0f, heavyStage2KnockbackDistance);
@@ -202,6 +209,7 @@ namespace JingHongLu.Skills
         public bool CanCritical => canCritical;
         public bool CanKnockUp => canKnockUp;
         public float ShieldDamage => Mathf.Max(0f, shieldDamage);
+        public float ToughnessDamage => Mathf.Max(0f, toughnessDamage);
         public bool CanApplyKnockback => canApplyKnockback;
         public float KnockbackDistance => Mathf.Max(0f, knockbackDistance);
         public float KnockbackDuration => Mathf.Max(0f, knockbackDuration);

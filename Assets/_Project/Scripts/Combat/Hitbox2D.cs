@@ -12,6 +12,7 @@ namespace JingHongLu.Combat
         [SerializeField] private TeamId ownerTeam;
         [SerializeField] private float damage;
         [SerializeField] private float shieldDamage;
+        [SerializeField] private float toughnessDamage;
         [SerializeField] private Vector2 size = Vector2.one;
         [SerializeField] private Vector2 direction = Vector2.right;
         [SerializeField] private float lifetime = 0.08f;
@@ -75,6 +76,7 @@ namespace JingHongLu.Combat
             AttackInterruptType interruptType = AttackInterruptType.None,
             bool canBePerfectDodged = false,
             float shieldDamage = 0f,
+            float toughnessDamage = 0f,
             bool overrideKnockback = false,
             bool canApplyKnockback = false,
             float knockbackDistance = 0f,
@@ -84,6 +86,7 @@ namespace JingHongLu.Combat
             this.ownerTeam = ownerTeam;
             this.damage = damage;
             this.shieldDamage = ResolveShieldDamage(sourceSkill, shieldDamage);
+            this.toughnessDamage = ResolveToughnessDamage(sourceSkill, toughnessDamage);
             this.size = size;
             this.direction = direction.sqrMagnitude > 0f ? direction.normalized : Vector2.right;
             this.lifetime = lifetime;
@@ -352,6 +355,7 @@ namespace JingHongLu.Combat
                 hitStunDuration: hitStunDuration,
                 interruptType: interruptType,
                 shieldDamage: this.shieldDamage,
+                toughnessDamage: this.toughnessDamage,
                 canApplyKnockback: this.canApplyKnockback,
                 knockbackDistance: this.knockbackDistance,
                 knockbackDuration: this.knockbackDuration);
@@ -489,6 +493,18 @@ namespace JingHongLu.Combat
             }
 
             return sourceSkill != null ? sourceSkill.ShieldDamage : 0f;
+        }
+
+        private static float ResolveToughnessDamage(
+            SkillData sourceSkill,
+            float explicitToughnessDamage)
+        {
+            if (explicitToughnessDamage > 0f)
+            {
+                return explicitToughnessDamage;
+            }
+
+            return sourceSkill != null ? sourceSkill.ToughnessDamage : 0f;
         }
 
         private void ResolveKnockback(

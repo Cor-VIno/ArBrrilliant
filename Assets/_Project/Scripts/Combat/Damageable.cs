@@ -56,13 +56,23 @@ namespace JingHongLu.Combat
                 return;
             }
 
-            ApplyHealthDamage(damageInfo, damageInfo.Damage, hasSuperArmor);
+            ToughnessComponent toughness = GetToughnessComponent();
+            bool suppressHitControl = ResolveToughnessHitControlSuppression(
+                toughness,
+                damageInfo);
+
+            ApplyHealthDamage(
+                damageInfo,
+                damageInfo.Damage,
+                hasSuperArmor,
+                suppressHitControl);
         }
 
         private void ApplyHealthDamage(
             DamageInfo damageInfo,
             float healthDamage,
-            bool hasSuperArmor)
+            bool hasSuperArmor,
+            bool suppressHitControl)
         {
             health.TakeDamage(healthDamage);
 
@@ -71,6 +81,14 @@ namespace JingHongLu.Combat
             if (hasSuperArmor)
             {
                 OnDamageTakenWithSuperArmor?.Invoke(damageInfo);
+            }
+
+            if (suppressHitControl)
+            {
+                Debug.Log(
+                    $"{name} took {healthDamage} damage from {damageInfo.SourceDisplayName}",
+                    this);
+                return;
             }
 
             if (damageInfo.CanKnockUp && !hasSuperArmor)
@@ -127,6 +145,41 @@ namespace JingHongLu.Combat
             }
 
             return GetComponent<ShieldComponent>();
+        }
+
+        private ToughnessComponent GetToughnessComponent()
+        {
+            ToughnessComponent toughness = GetComponentInParent<ToughnessComponent>();
+
+            if (toughness != null)
+            {
+                return toughness;
+            }
+
+            return GetComponent<ToughnessComponent>();
+        }
+
+        private static bool ResolveToughnessHitControlSuppression(
+            ToughnessComponent toughness,
+            DamageInfo damageInfo)
+        {
+            if (toughness == null)
+            {
+                return false;
+            }
+
+            if (toughness.IsBroken)
+            {
+                return true;
+            }
+
+            if (!toughness.HasActiveArmor)
+            {
+                return false;
+            }
+
+            toughness.ApplyToughnessDamage(damageInfo.ToughnessDamage);
+            return true;
         }
 
         private void ResolveReferences()
