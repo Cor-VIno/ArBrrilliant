@@ -28,10 +28,40 @@ MonoBehaviour:
   blockOtherSkillsWhileCharging: 1
   superArmorWhileCharging: 1
   superArmorDuringEntireSkill: 0
+  useHeavyTwoStage: 0
+  heavyStage1CastTime: 0.1
+  heavyStage1HitboxDuration: 0.2
+  heavyStage1RecoveryTime: 0
+  heavyStage1Damage: 10
+  heavyStage1ShieldDamage: 5
+  heavyStage1ToughnessDamage: 20
+  heavyStage1CanApplyKnockback: 1
+  heavyStage1KnockbackDistance: 0.5
+  heavyStage1KnockbackDuration: 0.1
+  heavyStage1HitboxSize: {x: 0.6, y: 0.6}
+  heavyStage1CanApplyHitStun: 1
+  heavyStage1HitStunDuration: 0.1
+  heavyStage2MaxChargeTime: 1.5
+  heavyStage2HitboxDuration: 0.2
+  heavyStage2RecoveryTime: 0.2
+  heavyStage2BaseDamage: 15
+  heavyStage2DamageBonusPerSecond: 20
+  heavyStage2MaxDamageBonus: 30
+  heavyStage2BaseShieldDamage: 10
+  heavyStage2ShieldDamageBonusPerSecond: 20
+  heavyStage2MaxShieldDamageBonus: 25
+  heavyStage2ToughnessDamage: 40
+  heavyStage2CanApplyKnockback: 1
+  heavyStage2KnockbackDistance: 0.8
+  heavyStage2KnockbackDuration: 0.12
+  heavyStage2HitboxSize: {x: 1, y: 1}
+  heavyStage2CanApplyHitStun: 1
+  heavyStage2HitStunDuration: 0.2
   damage: 10
   canCritical: 1
   canKnockUp: 0
   shieldDamage: 3
+  toughnessDamage: 10
   canApplyKnockback: 1
   knockbackDistance: 0.3
   knockbackDuration: 0.08

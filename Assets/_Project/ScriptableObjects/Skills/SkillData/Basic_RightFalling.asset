@@ -34,6 +34,7 @@ MonoBehaviour:
   heavyStage1RecoveryTime: 0
   heavyStage1Damage: 10
   heavyStage1ShieldDamage: 5
+  heavyStage1ToughnessDamage: 20
   heavyStage1CanApplyKnockback: 1
   heavyStage1KnockbackDistance: 0.5
   heavyStage1KnockbackDuration: 0.1
@@ -49,6 +50,7 @@ MonoBehaviour:
   heavyStage2BaseShieldDamage: 10
   heavyStage2ShieldDamageBonusPerSecond: 20
   heavyStage2MaxShieldDamageBonus: 25
+  heavyStage2ToughnessDamage: 40
   heavyStage2CanApplyKnockback: 1
   heavyStage2KnockbackDistance: 0.8
   heavyStage2KnockbackDuration: 0.12
@@ -59,6 +61,7 @@ MonoBehaviour:
   canCritical: 1
   canKnockUp: 1
   shieldDamage: 0
+  toughnessDamage: 25
   canApplyKnockback: 1
   knockbackDistance: 1.2
   knockbackDuration: 0.15
