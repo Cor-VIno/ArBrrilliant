@@ -1213,7 +1213,7 @@ MonoBehaviour:
   audioSource: {fileID: 6201000000000000008}
   cameraShake: {fileID: 0}
   vfxSpawnPoint: {fileID: 233800391487977931}
-  logFeedback: 0
+  logFeedback: 1
 --- !u!1 &4734509112797226586
 GameObject:
   m_ObjectHideFlags: 0
