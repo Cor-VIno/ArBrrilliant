@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7b0fef72d72402f9bc86f0cf74f11a1, type: 3}
+  m_Name: Dialog_Test_Intro
+  m_EditorClassIdentifier: 
+  lines:
+  - speakerName: 旁白
+    text: 这里是测试对话。
+  - speakerName: 主角
+    text: 我需要确认前方的敌人状态。
+  - speakerName: 旁白
+    text: 按下攻击键可以继续战斗。
