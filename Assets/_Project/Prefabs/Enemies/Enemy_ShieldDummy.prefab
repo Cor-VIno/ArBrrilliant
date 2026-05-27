@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 9157144591700415462}
   - component: {fileID: 6107901795619222743}
   m_Layer: 8
-  m_Name: Fill
+  m_Name: HealthFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -302,6 +302,81 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &7701000000000000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7701000000000001}
+  - component: {fileID: 7701000000000002}
+  - component: {fileID: 7701000000000003}
+  m_Layer: 8
+  m_Name: ShieldOverlayFill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7701000000000001
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7701000000000000}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4773586530267342575}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &7701000000000002
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7701000000000000}
+  m_CullTransparentMesh: 1
+--- !u!114 &7701000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7701000000000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.35, g: 0.85, b: 1, a: 0.72}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 3
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 0
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &2893355708589443886
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,7 +394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4204783319117796278
 RectTransform:
   m_ObjectHideFlags: 0
@@ -336,8 +411,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: 0, y: -20}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1128434912115155122
 CanvasRenderer:
@@ -394,12 +469,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 8
+  m_fontSizeMax: 12
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -594,7 +669,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3270727911338470572
 RectTransform:
   m_ObjectHideFlags: 0
@@ -614,7 +689,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 1.25}
-  m_SizeDelta: {x: 180, y: 42}
+  m_SizeDelta: {x: 126, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4074697777117585183
 Canvas:
@@ -682,7 +757,7 @@ MonoBehaviour:
   fillImage: {fileID: 7897772435939637310}
   valueText: {fileID: 7100778490193041236}
   hideWhenBroken: 1
-  showValueText: 1
+  showValueText: 0
   keepReadableWhenParentFlipped: 1
   faceCamera: 1
   baseLocalScale: {x: 0.01, y: 0.01, z: 0.01}
@@ -1057,8 +1132,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1.45}
-  m_SizeDelta: {x: 180, y: 42}
+  m_AnchoredPosition: {x: 0, y: 1.25}
+  m_SizeDelta: {x: 126, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4457030182360952449
 Canvas:
@@ -1120,13 +1195,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.EnemyToughnessBarView
   toughness: {fileID: 7349374325634140190}
+  health: {fileID: 4160151727826028457}
   followTarget: {fileID: 233800391487977931}
-  worldOffset: {x: 0, y: 1.15, z: 0}
+  worldOffset: {x: 0, y: 1.25, z: 0}
   root: {fileID: 4734509112797226586}
   fillImage: {fileID: 6107901795619222743}
   valueText: {fileID: 96777744664128999}
   hideWhenBroken: 0
-  showValueText: 1
+  showValueText: 0
   keepReadableWhenParentFlipped: 1
   faceCamera: 1
   targetCamera: {fileID: 0}
@@ -1165,8 +1241,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: 0, y: -20}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &252818427344887294
 CanvasRenderer:
@@ -1223,12 +1299,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 8
+  m_fontSizeMax: 12
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -1467,6 +1543,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6165621185823853480}
+  - {fileID: 7701000000000001}
   m_Father: {fileID: 5584644202484906403}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1550,7 +1627,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 1.45}
-  m_SizeDelta: {x: 180, y: 42}
+  m_SizeDelta: {x: 126, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &3888844286847380335
 Canvas:
@@ -1613,10 +1690,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.EnemyHealthBarView
   health: {fileID: 4160151727826028457}
   followTarget: {fileID: 233800391487977931}
-  worldOffset: {x: 0, y: 1.55, z: 0}
+  worldOffset: {x: 0, y: 1.45, z: 0}
   root: {fileID: 8705009048293866739}
   fillImage: {fileID: 2867429762114248055}
   valueText: {fileID: 6588521246492832797}
+  shield: {fileID: 6201000000000000006}
+  shieldOverlayRoot: {fileID: 7701000000000000}
+  shieldOverlayFill: {fileID: 7701000000000003}
   hideWhenDead: 1
   showValueText: 1
   keepReadableWhenParentFlipped: 1

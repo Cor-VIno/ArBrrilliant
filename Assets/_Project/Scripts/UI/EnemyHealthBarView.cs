@@ -13,6 +13,10 @@ namespace JingHongLu.UI
         [SerializeField] private GameObject root;
         [SerializeField] private Image fillImage;
         [SerializeField] private TextMeshProUGUI valueText;
+        [Header("Shield Overlay")]
+        [SerializeField] private ShieldComponent shield;
+        [SerializeField] private GameObject shieldOverlayRoot;
+        [SerializeField] private Image shieldOverlayFill;
         [SerializeField] private bool hideWhenDead = true;
         [SerializeField] private bool showValueText = true;
         [SerializeField] private bool keepReadableWhenParentFlipped = true;
@@ -59,6 +63,11 @@ namespace JingHongLu.UI
             if (health == null)
             {
                 health = GetComponentInParent<Health>();
+            }
+
+            if (shield == null)
+            {
+                shield = GetComponentInParent<ShieldComponent>();
             }
 
             if (followTarget == null && health != null)
@@ -134,17 +143,29 @@ namespace JingHongLu.UI
             health.OnDied -= HandleDied;
             health.OnHealthChanged += HandleHealthChanged;
             health.OnDied += HandleDied;
+
+            if (shield != null)
+            {
+                shield.OnShieldChanged -= HandleShieldChanged;
+                shield.OnShieldBroken -= HandleShieldBroken;
+                shield.OnShieldChanged += HandleShieldChanged;
+                shield.OnShieldBroken += HandleShieldBroken;
+            }
         }
 
         private void Unsubscribe()
         {
-            if (health == null)
+            if (health != null)
             {
-                return;
+                health.OnHealthChanged -= HandleHealthChanged;
+                health.OnDied -= HandleDied;
             }
 
-            health.OnHealthChanged -= HandleHealthChanged;
-            health.OnDied -= HandleDied;
+            if (shield != null)
+            {
+                shield.OnShieldChanged -= HandleShieldChanged;
+                shield.OnShieldBroken -= HandleShieldBroken;
+            }
         }
 
         private void HandleHealthChanged(float current, float max)
@@ -155,6 +176,16 @@ namespace JingHongLu.UI
         private void HandleDied()
         {
             Refresh(0f, health != null ? health.MaxHealth : 0f);
+        }
+
+        private void HandleShieldChanged(float current, float max)
+        {
+            RefreshShieldOverlay(current, max);
+        }
+
+        private void HandleShieldBroken()
+        {
+            RefreshShieldOverlay(0f, shield != null ? shield.MaxShield : 0f);
         }
 
         private void Refresh()
@@ -184,7 +215,46 @@ namespace JingHongLu.UI
                 valueText.text = $"{Mathf.CeilToInt(current)} / {Mathf.CeilToInt(max)}";
             }
 
+            RefreshShieldOverlay();
             SetRootActive(!hideWhenDead || isAlive);
+        }
+
+        private void RefreshShieldOverlay()
+        {
+            if (shield == null)
+            {
+                SetShieldOverlayActive(false);
+                return;
+            }
+
+            RefreshShieldOverlay(shield.CurrentShield, shield.MaxShield);
+        }
+
+        private void RefreshShieldOverlay(float current, float max)
+        {
+            bool hasOverlay = shieldOverlayFill != null;
+            bool hasShield = current > 0f && max > 0f;
+
+            if (shieldOverlayFill != null)
+            {
+                shieldOverlayFill.fillAmount = hasShield ? Mathf.Clamp01(current / max) : 0f;
+            }
+
+            SetShieldOverlayActive(hasOverlay && hasShield);
+        }
+
+        private void SetShieldOverlayActive(bool active)
+        {
+            GameObject target = shieldOverlayRoot != null
+                ? shieldOverlayRoot
+                : shieldOverlayFill != null
+                    ? shieldOverlayFill.gameObject
+                    : null;
+
+            if (target != null && target.activeSelf != active)
+            {
+                target.SetActive(active);
+            }
         }
 
         private void SetRootActive(bool active)

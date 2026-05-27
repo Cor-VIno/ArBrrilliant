@@ -8,6 +8,7 @@ namespace JingHongLu.UI
     public sealed class EnemyToughnessBarView : MonoBehaviour
     {
         [SerializeField] private ToughnessComponent toughness;
+        [SerializeField] private Health health;
         [SerializeField] private Transform followTarget;
         [SerializeField] private Vector3 worldOffset = new Vector3(0f, 1.15f, 0f);
         [SerializeField] private GameObject root;
@@ -59,6 +60,11 @@ namespace JingHongLu.UI
             if (toughness == null)
             {
                 toughness = GetComponentInParent<ToughnessComponent>();
+            }
+
+            if (health == null)
+            {
+                health = GetComponentInParent<Health>();
             }
 
             if (followTarget == null && toughness != null)
@@ -136,18 +142,27 @@ namespace JingHongLu.UI
             toughness.OnToughnessChanged += HandleToughnessChanged;
             toughness.OnBroken += HandleBroken;
             toughness.OnBreakRecovered += HandleBreakRecovered;
+
+            if (health != null)
+            {
+                health.OnDied -= HandleDied;
+                health.OnDied += HandleDied;
+            }
         }
 
         private void Unsubscribe()
         {
-            if (toughness == null)
+            if (toughness != null)
             {
-                return;
+                toughness.OnToughnessChanged -= HandleToughnessChanged;
+                toughness.OnBroken -= HandleBroken;
+                toughness.OnBreakRecovered -= HandleBreakRecovered;
             }
 
-            toughness.OnToughnessChanged -= HandleToughnessChanged;
-            toughness.OnBroken -= HandleBroken;
-            toughness.OnBreakRecovered -= HandleBreakRecovered;
+            if (health != null)
+            {
+                health.OnDied -= HandleDied;
+            }
         }
 
         private void HandleToughnessChanged(float current, float max)
@@ -163,6 +178,11 @@ namespace JingHongLu.UI
         private void HandleBreakRecovered()
         {
             Refresh();
+        }
+
+        private void HandleDied()
+        {
+            SetRootActive(false);
         }
 
         private void Refresh()
