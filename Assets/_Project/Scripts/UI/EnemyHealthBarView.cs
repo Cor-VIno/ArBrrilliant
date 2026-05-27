@@ -206,7 +206,7 @@ namespace JingHongLu.UI
 
             if (fillImage != null)
             {
-                fillImage.fillAmount = normalized;
+                SetHorizontalFill(fillImage.rectTransform, normalized);
             }
 
             if (valueText != null)
@@ -237,10 +237,24 @@ namespace JingHongLu.UI
 
             if (shieldOverlayFill != null)
             {
-                shieldOverlayFill.fillAmount = hasShield ? Mathf.Clamp01(current / max) : 0f;
+                SetHorizontalFill(shieldOverlayFill.rectTransform, hasShield ? current / max : 0f);
             }
 
             SetShieldOverlayActive(hasOverlay && hasShield);
+        }
+
+        private static void SetHorizontalFill(RectTransform fill, float normalized)
+        {
+            if (fill == null)
+            {
+                return;
+            }
+
+            normalized = Mathf.Clamp01(normalized);
+            fill.anchorMin = new Vector2(0f, 0f);
+            fill.anchorMax = new Vector2(normalized, 1f);
+            fill.offsetMin = Vector2.zero;
+            fill.offsetMax = Vector2.zero;
         }
 
         private void SetShieldOverlayActive(bool active)

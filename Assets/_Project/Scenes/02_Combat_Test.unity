@@ -4788,6 +4788,10 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 4115076182334216539, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4505163382433563501, guid: 20ebd83e48ed4d368040366bd3af5c13, type: 3}
       propertyPath: m_Name
       value: Enemy_ShieldDummy

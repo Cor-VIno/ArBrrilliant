@@ -1626,7 +1626,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1.45}
+  m_AnchoredPosition: {x: 0, y: 1.58}
   m_SizeDelta: {x: 126, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &3888844286847380335
@@ -1690,7 +1690,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.UI.EnemyHealthBarView
   health: {fileID: 4160151727826028457}
   followTarget: {fileID: 233800391487977931}
-  worldOffset: {x: 0, y: 1.45, z: 0}
+  worldOffset: {x: 0, y: 1.58, z: 0}
   root: {fileID: 8705009048293866739}
   fillImage: {fileID: 2867429762114248055}
   valueText: {fileID: 6588521246492832797}
