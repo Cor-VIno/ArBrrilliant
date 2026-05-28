@@ -1,3 +1,4 @@
+using JingHongLu.GameFlow;
 using UnityEngine;
 
 namespace JingHongLu.Combat
@@ -100,6 +101,11 @@ namespace JingHongLu.Combat
             if (ownerTeam != TeamId.Enemy)
             {
                 return 1f;
+            }
+
+            if (CombatPauseController.IsCombatPaused)
+            {
+                return 0f;
             }
 
             if (slowMotionController == null)

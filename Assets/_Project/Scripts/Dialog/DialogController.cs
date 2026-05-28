@@ -1,4 +1,5 @@
 using JingHongLu.Input;
+using JingHongLu.GameFlow;
 using JingHongLu.Player;
 using TMPro;
 using UnityEngine;
@@ -16,8 +17,10 @@ namespace JingHongLu.Dialog
         [Header("Input")]
         [SerializeField] private PlayerControlLockController playerControlLock;
         [SerializeField] private PlayerInputReader playerInputReader;
+        [SerializeField] private CombatPauseController combatPauseController;
         [SerializeField] private KeyCode advanceKey = KeyCode.Space;
         [SerializeField] private bool lockPlayerDuringDialog = true;
+        [SerializeField] private bool pauseCombatDuringDialog = true;
         [SerializeField] private bool logDialog;
 
         [Header("Debug")]
@@ -32,6 +35,7 @@ namespace JingHongLu.Dialog
         private int currentLineIndex = -1;
         private bool inputLockedByDialog;
         private bool inputReaderBlockedByDialog;
+        private bool combatPausedByDialog;
 
         public bool IsPlaying { get; private set; }
 
@@ -80,6 +84,7 @@ namespace JingHongLu.Dialog
             IsPlaying = true;
             SetRootVisible(true);
             ApplyInputLock();
+            ApplyCombatPause();
             ShowLine(currentLineIndex);
 
             if (logDialog)
@@ -115,6 +120,7 @@ namespace JingHongLu.Dialog
             }
 
             ReleaseInputLock();
+            ReleaseCombatPause();
             IsPlaying = false;
             currentDialogData = null;
             currentLineIndex = -1;
@@ -253,6 +259,39 @@ namespace JingHongLu.Dialog
             inputReaderBlockedByDialog = false;
         }
 
+        private void ApplyCombatPause()
+        {
+            if (!pauseCombatDuringDialog || combatPausedByDialog)
+            {
+                return;
+            }
+
+            ResolveReferences();
+
+            if (combatPauseController == null)
+            {
+                return;
+            }
+
+            combatPauseController.AddPause(this);
+            combatPausedByDialog = true;
+        }
+
+        private void ReleaseCombatPause()
+        {
+            if (!combatPausedByDialog)
+            {
+                return;
+            }
+
+            if (combatPauseController != null)
+            {
+                combatPauseController.RemovePause(this);
+            }
+
+            combatPausedByDialog = false;
+        }
+
         private void SetRootVisible(bool visible)
         {
             if (root != null)
@@ -277,11 +316,17 @@ namespace JingHongLu.Dialog
             {
                 playerControlLock = FindAnyObjectByType<PlayerControlLockController>();
             }
+
+            if (combatPauseController == null)
+            {
+                combatPauseController = FindAnyObjectByType<CombatPauseController>();
+            }
         }
 
         private void OnDisable()
         {
             ReleaseInputLock();
+            ReleaseCombatPause();
         }
     }
 }

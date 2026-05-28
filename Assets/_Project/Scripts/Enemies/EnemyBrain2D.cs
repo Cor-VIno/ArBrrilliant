@@ -1,5 +1,6 @@
 using System.Collections;
 using JingHongLu.Combat;
+using JingHongLu.GameFlow;
 using JingHongLu.Skills;
 using UnityEngine;
 
@@ -65,6 +66,12 @@ namespace JingHongLu.Enemies
 
         private void Update()
         {
+            if (CombatPauseController.IsCombatPaused)
+            {
+                StopHorizontalMovement();
+                return;
+            }
+
             TickCooldown();
             TickRangedCooldown();
             TickBackstepCooldown();
@@ -968,6 +975,11 @@ namespace JingHongLu.Enemies
 
         private float GetEnemyTimeScale()
         {
+            if (CombatPauseController.IsCombatPaused)
+            {
+                return 0f;
+            }
+
             if (slowMotionController == null)
             {
                 slowMotionController = PerfectDodgeSlowMotionController.Instance;
