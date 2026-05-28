@@ -15,39 +15,49 @@ MonoBehaviour:
   hitCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips:
+    - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
+    - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
+    - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
     rotateToDirection: 0
     parentToCaster: 0
     destroyDelay: 2
-    volume: 1
+    volume: 0.5
     pitch: 1
   shieldHitCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips:
+    - {fileID: 8300000, guid: 8baf8d97c5378403e87d1a9dd834c0b0, type: 3}
+    - {fileID: 8300000, guid: dcb098e728e9649b88d3ce0f0eec1c01, type: 3}
+    - {fileID: 8300000, guid: e8e182681f7e64216ae760067c2f3b7a, type: 3}
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
     rotateToDirection: 0
     parentToCaster: 0
     destroyDelay: 2
-    volume: 1
+    volume: 0.5
     pitch: 1
   shieldBreakCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
     rotateToDirection: 0
     parentToCaster: 0
     destroyDelay: 2
-    volume: 1
+    volume: 0.5
     pitch: 1
   toughnessBreakCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
