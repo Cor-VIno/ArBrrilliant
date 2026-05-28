@@ -15,18 +15,20 @@ MonoBehaviour:
   skill: {fileID: 11400000, guid: b0bc56f88ef1477bb303f5529a2b686e, type: 2}
   castStartedCue:
     vfxPrefab: {fileID: 8134040973879617579, guid: 32f87cc7e2cf5ec4a9926b393cc43fb7, type: 3}
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 44065b5c4c0c1403ca3bead105ab7ffd, type: 3}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 3
     localOffset: {x: 0, y: 0}
     rotateToDirection: 1
     parentToCaster: 0
     destroyDelay: 2
-    volume: 1
+    volume: 0.5
     pitch: 1
   executedCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 3
     localOffset: {x: 0, y: 0}
@@ -38,6 +40,7 @@ MonoBehaviour:
   castFinishedCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
@@ -49,6 +52,7 @@ MonoBehaviour:
   chargeStartedCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
@@ -60,6 +64,7 @@ MonoBehaviour:
   chargeReleasedCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
@@ -71,6 +76,7 @@ MonoBehaviour:
   dashStartedCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
@@ -82,6 +88,7 @@ MonoBehaviour:
   dashFinishedCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
@@ -93,6 +100,7 @@ MonoBehaviour:
   projectileSpawnedCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
+    randomAudioClips: []
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}

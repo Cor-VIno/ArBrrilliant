@@ -22,7 +22,7 @@ MonoBehaviour:
     rotateToDirection: 0
     parentToCaster: 0
     destroyDelay: 2
-    volume: 1
+    volume: 0.5
     pitch: 1
   shieldHitCue:
     vfxPrefab: {fileID: 0}
@@ -46,7 +46,7 @@ MonoBehaviour:
     rotateToDirection: 0
     parentToCaster: 0
     destroyDelay: 2
-    volume: 1
+    volume: 0.5
     pitch: 1
   shieldBreakCue:
     vfxPrefab: {fileID: 0}
@@ -58,7 +58,7 @@ MonoBehaviour:
     rotateToDirection: 0
     parentToCaster: 0
     destroyDelay: 2
-    volume: 1
+    volume: 0.5
     pitch: 1
   toughnessBreakCue:
     vfxPrefab: {fileID: 0}
