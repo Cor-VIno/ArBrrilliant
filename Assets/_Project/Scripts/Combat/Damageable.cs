@@ -52,7 +52,14 @@ namespace JingHongLu.Combat
 
             if (shield != null && shield.HasShield)
             {
+                float beforeShield = shield.CurrentShield;
                 shield.ApplyShieldDamage(damageInfo.ShieldDamage);
+
+                if (shield.CurrentShield >= beforeShield)
+                {
+                    shield.NotifyShieldBlocked();
+                }
+
                 return;
             }
 

@@ -9,6 +9,7 @@ namespace JingHongLu.Feedback
     {
         [SerializeField] private FeedbackCue hitCue = new FeedbackCue();
         [SerializeField] private FeedbackCue shieldHitCue = new FeedbackCue();
+        [SerializeField] private FeedbackCue shieldBlockCue = new FeedbackCue();
         [SerializeField] private FeedbackCue shieldBreakCue = new FeedbackCue();
         [SerializeField] private FeedbackCue toughnessBreakCue = new FeedbackCue();
 
@@ -25,6 +26,7 @@ namespace JingHongLu.Feedback
 
         public FeedbackCue HitCue => hitCue;
         public FeedbackCue ShieldHitCue => shieldHitCue;
+        public FeedbackCue ShieldBlockCue => shieldBlockCue;
         public FeedbackCue ShieldBreakCue => shieldBreakCue;
         public FeedbackCue ToughnessBreakCue => toughnessBreakCue;
         public bool ShakeOnHit => shakeOnHit;

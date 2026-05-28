@@ -36,6 +36,7 @@ namespace JingHongLu.Feedback
             if (shield != null)
             {
                 shield.OnShieldChanged += HandleShieldChanged;
+                shield.OnShieldBlocked += HandleShieldBlocked;
                 shield.OnShieldBroken += HandleShieldBroken;
             }
 
@@ -55,6 +56,7 @@ namespace JingHongLu.Feedback
             if (shield != null)
             {
                 shield.OnShieldChanged -= HandleShieldChanged;
+                shield.OnShieldBlocked -= HandleShieldBlocked;
                 shield.OnShieldBroken -= HandleShieldBroken;
             }
 
@@ -137,6 +139,16 @@ namespace JingHongLu.Feedback
             }
 
             PlayCue("Shield hit", feedbackData.ShieldHitCue, ResolveFacingDirection());
+        }
+
+        private void HandleShieldBlocked()
+        {
+            if (feedbackData == null)
+            {
+                return;
+            }
+
+            PlayCue("Shield block", feedbackData.ShieldBlockCue, ResolveFacingDirection());
         }
 
         private void HandleShieldBroken()

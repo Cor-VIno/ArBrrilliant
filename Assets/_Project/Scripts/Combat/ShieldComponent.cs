@@ -14,6 +14,7 @@ namespace JingHongLu.Combat
 
         public event Action<float, float> OnShieldChanged;
         public event Action OnShieldBroken;
+        public event Action OnShieldBlocked;
 
         public float CurrentShield => currentShield;
         public float MaxShield => maxShield;
@@ -83,6 +84,16 @@ namespace JingHongLu.Combat
             }
 
             return appliedAmount;
+        }
+
+        public void NotifyShieldBlocked()
+        {
+            if (logShield)
+            {
+                Debug.Log("[Shield] Blocked attack without shield damage.", this);
+            }
+
+            OnShieldBlocked?.Invoke();
         }
     }
 }
