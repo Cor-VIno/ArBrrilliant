@@ -1,0 +1,494 @@
+fileFormatVersion: 2
+guid: d5e42308eaeede04c84a8557e64abffa
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8427803000350055831
+    second: Ranged Attack_0002_0
+  - first:
+      213: -6260561450506887523
+    second: Ranged Attack_0002_1
+  - first:
+      213: -3522483727768371536
+    second: Ranged Attack_0002_2
+  - first:
+      213: -7141246086847150639
+    second: Ranged Attack_0002_3
+  - first:
+      213: -3339869765685308977
+    second: Ranged Attack_0002_4
+  - first:
+      213: -6080118947363120268
+    second: Ranged Attack_0002_5
+  - first:
+      213: -2541654191569784158
+    second: Ranged Attack_0002_6
+  - first:
+      213: -1706754497523958886
+    second: Ranged Attack_0002_7
+  - first:
+      213: -7831846726843600583
+    second: Ranged Attack_0002_8
+  - first:
+      213: -5678286721106945394
+    second: Ranged Attack_0002_9
+  - first:
+      213: -3767170817043430414
+    second: Ranged Attack_0002_10
+  - first:
+      213: 6208989352599823765
+    second: Ranged Attack_0002_11
+  - first:
+      213: -496971980702992368
+    second: Ranged Attack_0002_12
+  - first:
+      213: 5871984553924479906
+    second: Ranged Attack_0002_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Ranged Attack_0002_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 22069
+        height: 4524
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 962e927d2dd6a0b80800000000000000
+      internalID: -8427803000350055831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_1
+      rect:
+        serializedVersion: 2
+        x: 6528
+        y: 2121
+        width: 41
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9e5808d7840e19a0800000000000000
+      internalID: -6260561450506887523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_2
+      rect:
+        serializedVersion: 2
+        x: 7543
+        y: 1679
+        width: 48
+        height: 437
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0beb54766bf9d1fc0800000000000000
+      internalID: -3522483727768371536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_3
+      rect:
+        serializedVersion: 2
+        x: 7656
+        y: 1912
+        width: 36
+        height: 67
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d5c3db158235ec90800000000000000
+      internalID: -7141246086847150639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_4
+      rect:
+        serializedVersion: 2
+        x: 7471
+        y: 1673
+        width: 75
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc1924cb42666a1d0800000000000000
+      internalID: -3339869765685308977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_5
+      rect:
+        serializedVersion: 2
+        x: 7572
+        y: 1672
+        width: 58
+        height: 154
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47b9c4ef7041f9ba0800000000000000
+      internalID: -6080118947363120268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_6
+      rect:
+        serializedVersion: 2
+        x: 7601
+        y: 1622
+        width: 513
+        height: 249
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a2b991aafa3abcd0800000000000000
+      internalID: -2541654191569784158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_7
+      rect:
+        serializedVersion: 2
+        x: 7502
+        y: 1145
+        width: 68
+        height: 406
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9bb848c3d36058e0800000000000000
+      internalID: -1706754497523958886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_8
+      rect:
+        serializedVersion: 2
+        x: 7586
+        y: 1387
+        width: 110
+        height: 203
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9317e2795e0bf4390800000000000000
+      internalID: -7831846726843600583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_9
+      rect:
+        serializedVersion: 2
+        x: 7592
+        y: 1457
+        width: 272
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8a5a9fdf4ca231b0800000000000000
+      internalID: -5678286721106945394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_10
+      rect:
+        serializedVersion: 2
+        x: 6929
+        y: 947
+        width: 43
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f388e9e91258bbc0800000000000000
+      internalID: -3767170817043430414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_11
+      rect:
+        serializedVersion: 2
+        x: 6934
+        y: 934
+        width: 36
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59525e76be2ca2650800000000000000
+      internalID: 6208989352599823765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_12
+      rect:
+        serializedVersion: 2
+        x: 6949
+        y: 886
+        width: 75
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01830eadd966a19f0800000000000000
+      internalID: -496971980702992368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ranged Attack_0002_13
+      rect:
+        serializedVersion: 2
+        x: 6977
+        y: 833
+        width: 125
+        height: 115
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2abcf3737da7d7150800000000000000
+      internalID: 5871984553924479906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: b66add808f2225348b3ed77393e1b764
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Ranged Attack_0002_0: -8427803000350055831
+      Ranged Attack_0002_1: -6260561450506887523
+      Ranged Attack_0002_10: -3767170817043430414
+      Ranged Attack_0002_11: 6208989352599823765
+      Ranged Attack_0002_12: -496971980702992368
+      Ranged Attack_0002_13: 5871984553924479906
+      Ranged Attack_0002_2: -3522483727768371536
+      Ranged Attack_0002_3: -7141246086847150639
+      Ranged Attack_0002_4: -3339869765685308977
+      Ranged Attack_0002_5: -6080118947363120268
+      Ranged Attack_0002_6: -2541654191569784158
+      Ranged Attack_0002_7: -1706754497523958886
+      Ranged Attack_0002_8: -7831846726843600583
+      Ranged Attack_0002_9: -5678286721106945394
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
