@@ -1972,6 +1972,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2665350594413093925}
+    - targetCorrespondingSourceObject: {fileID: 8904948379743363279, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2665350594413093926}
   m_SourcePrefab: {fileID: 100100000, guid: bf04d6da86d715949a6be4fd69987a95, type: 3}
 --- !u!61 &2665350594413093924 stripped
 BoxCollider2D:
@@ -2000,6 +2003,25 @@ MonoBehaviour:
   safePointStep: 0.1
   maxSafePointSteps: 12
   logCollisionDebug: 0
+--- !u!114 &2665350594413093926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997787995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8443e2a20e545b887f0e3f42545fb4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JingHongLu.Feedback.PlayerDamageFeedbackBinder
+  feedbackData: {fileID: 11400000, guid: a5657e6721dd4de08012623f8b2396a8, type: 2}
+  damageable: {fileID: 0}
+  health: {fileID: 0}
+  audioSource: {fileID: 1997788026}
+  cameraShake: {fileID: 519420034}
+  vfxSpawnPoint: {fileID: 1997788003}
+  logFeedback: 0
 --- !u!1001 &6100636087996527265
 PrefabInstance:
   m_ObjectHideFlags: 0

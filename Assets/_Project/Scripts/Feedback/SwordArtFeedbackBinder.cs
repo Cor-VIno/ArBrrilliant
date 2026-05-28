@@ -136,10 +136,12 @@ namespace JingHongLu.Feedback
                 playedAny = true;
             }
 
-            if (cue.AudioClip != null && audioSource != null)
+            AudioClip audioClip = cue.GetAudioClip();
+
+            if (audioClip != null && audioSource != null)
             {
                 audioSource.pitch = Mathf.Max(0.01f, cue.Pitch);
-                audioSource.PlayOneShot(cue.AudioClip, Mathf.Max(0f, cue.Volume));
+                audioSource.PlayOneShot(audioClip, Mathf.Max(0f, cue.Volume));
                 playedAny = true;
             }
 

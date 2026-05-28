@@ -4,44 +4,33 @@ using UnityEngine;
 
 namespace JingHongLu.Feedback
 {
-    public sealed class EnemyCombatFeedbackBinder : MonoBehaviour
+    public sealed class PlayerDamageFeedbackBinder : MonoBehaviour
     {
-        [SerializeField] private EnemyCombatFeedbackData feedbackData;
+        [SerializeField] private PlayerDamageFeedbackData feedbackData;
         [SerializeField] private Damageable damageable;
-        [SerializeField] private ShieldComponent shield;
-        [SerializeField] private ToughnessComponent toughness;
+        [SerializeField] private Health health;
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private CameraShakeController2D cameraShake;
         [SerializeField] private Transform vfxSpawnPoint;
         [SerializeField] private bool logFeedback;
 
-        private float previousShield = -1f;
-
         private void Awake()
         {
             ResolveReferences();
-            CacheShieldValue();
         }
 
         private void OnEnable()
         {
             ResolveReferences();
-            CacheShieldValue();
 
             if (damageable != null)
             {
                 damageable.OnDamageTaken += HandleDamageTaken;
             }
 
-            if (shield != null)
+            if (health != null)
             {
-                shield.OnShieldChanged += HandleShieldChanged;
-                shield.OnShieldBroken += HandleShieldBroken;
-            }
-
-            if (toughness != null)
-            {
-                toughness.OnBroken += HandleToughnessBroken;
+                health.OnDied += HandleDied;
             }
         }
 
@@ -52,15 +41,9 @@ namespace JingHongLu.Feedback
                 damageable.OnDamageTaken -= HandleDamageTaken;
             }
 
-            if (shield != null)
+            if (health != null)
             {
-                shield.OnShieldChanged -= HandleShieldChanged;
-                shield.OnShieldBroken -= HandleShieldBroken;
-            }
-
-            if (toughness != null)
-            {
-                toughness.OnBroken -= HandleToughnessBroken;
+                health.OnDied -= HandleDied;
             }
         }
 
@@ -68,17 +51,22 @@ namespace JingHongLu.Feedback
         {
             if (damageable == null)
             {
+                damageable = GetComponent<Damageable>();
+            }
+
+            if (damageable == null)
+            {
                 damageable = GetComponentInParent<Damageable>();
             }
 
-            if (shield == null)
+            if (health == null)
             {
-                shield = GetComponentInParent<ShieldComponent>();
+                health = GetComponent<Health>();
             }
 
-            if (toughness == null)
+            if (health == null)
             {
-                toughness = GetComponentInParent<ToughnessComponent>();
+                health = GetComponentInParent<Health>();
             }
 
             if (audioSource == null)
@@ -97,11 +85,6 @@ namespace JingHongLu.Feedback
             }
         }
 
-        private void CacheShieldValue()
-        {
-            previousShield = shield != null ? shield.CurrentShield : -1f;
-        }
-
         private void HandleDamageTaken(DamageInfo damageInfo)
         {
             if (feedbackData == null)
@@ -109,7 +92,7 @@ namespace JingHongLu.Feedback
                 return;
             }
 
-            PlayCue("Hit", feedbackData.HitCue, ResolveDirection(damageInfo));
+            PlayCue("Player hit", feedbackData.HitCue, ResolveDirection(damageInfo));
 
             if (feedbackData.ShakeOnHit)
             {
@@ -119,61 +102,14 @@ namespace JingHongLu.Feedback
             }
         }
 
-        private void HandleShieldChanged(float current, float max)
-        {
-            if (feedbackData == null)
-            {
-                previousShield = current;
-                return;
-            }
-
-            bool hasPreviousValue = previousShield >= 0f;
-            bool shieldReduced = hasPreviousValue && current < previousShield;
-            previousShield = current;
-
-            if (!shieldReduced)
-            {
-                return;
-            }
-
-            PlayCue("Shield hit", feedbackData.ShieldHitCue, ResolveFacingDirection());
-        }
-
-        private void HandleShieldBroken()
+        private void HandleDied()
         {
             if (feedbackData == null)
             {
                 return;
             }
 
-            PlayCue("Shield break", feedbackData.ShieldBreakCue, ResolveFacingDirection());
-
-            if (feedbackData.ShakeOnShieldBreak)
-            {
-                PlayShake(
-                    feedbackData.ShieldBreakShakeDuration,
-                    feedbackData.ShieldBreakShakeStrength);
-            }
-        }
-
-        private void HandleToughnessBroken()
-        {
-            if (feedbackData == null)
-            {
-                return;
-            }
-
-            PlayCue(
-                "Toughness break",
-                feedbackData.ToughnessBreakCue,
-                ResolveFacingDirection());
-
-            if (feedbackData.ShakeOnToughnessBreak)
-            {
-                PlayShake(
-                    feedbackData.ToughnessBreakShakeDuration,
-                    feedbackData.ToughnessBreakShakeStrength);
-            }
+            PlayCue("Player death", feedbackData.DeathCue, ResolveFacingDirection());
         }
 
         private void PlayCue(string label, FeedbackCue cue, Vector2 direction)
@@ -182,7 +118,7 @@ namespace JingHongLu.Feedback
             {
                 if (logFeedback)
                 {
-                    Debug.Log($"[EnemyFeedback] {label} cue missing.", this);
+                    Debug.Log($"[PlayerDamageFeedback] {label} cue missing.", this);
                 }
 
                 return;
@@ -192,7 +128,6 @@ namespace JingHongLu.Feedback
                 ? direction.normalized
                 : ResolveFacingDirection();
             bool playedAny = false;
-
             AudioClip audioClip = cue.GetAudioClip();
 
             if (audioClip != null && audioSource != null)
@@ -225,7 +160,7 @@ namespace JingHongLu.Feedback
             if (logFeedback)
             {
                 string result = playedAny ? "played" : "has no configured output";
-                Debug.Log($"[EnemyFeedback] {label} cue {result}.", this);
+                Debug.Log($"[PlayerDamageFeedback] {label} cue {result}.", this);
             }
         }
 
