@@ -15,7 +15,10 @@ MonoBehaviour:
   hitCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
-    randomAudioClips: []
+    randomAudioClips:
+    - {fileID: 8300000, guid: cbd582129530346c69e614d40f43bcfd, type: 3}
+    - {fileID: 8300000, guid: c02cfc61b08c64eaa9061b5dc25d01b9, type: 3}
+    - {fileID: 8300000, guid: 353a10b3dbc6e45bea32154882116e8d, type: 3}
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
@@ -27,7 +30,10 @@ MonoBehaviour:
   shieldHitCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
-    randomAudioClips: []
+    randomAudioClips:
+    - {fileID: 8300000, guid: 0a3d00fb930c343aaabe1d6851e67685, type: 3}
+    - {fileID: 8300000, guid: dcb098e728e9649b88d3ce0f0eec1c01, type: 3}
+    - {fileID: 8300000, guid: e8e182681f7e64216ae760067c2f3b7a, type: 3}
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
@@ -39,7 +45,10 @@ MonoBehaviour:
   shieldBlockCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
-    randomAudioClips: []
+    randomAudioClips:
+    - {fileID: 8300000, guid: 9b912a17b48af411ea52a02139b559ce, type: 3}
+    - {fileID: 8300000, guid: ff082960a32014cf7bf37512a5d65858, type: 3}
+    - {fileID: 8300000, guid: 7ffaf1cfcefc84f5fb4a81c46a213ed6, type: 3}
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
@@ -51,7 +60,8 @@ MonoBehaviour:
   shieldBreakCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
-    randomAudioClips: []
+    randomAudioClips:
+    - {fileID: 8300000, guid: aeefc649831df429a8eefd0f743c17b1, type: 3}
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
@@ -63,7 +73,8 @@ MonoBehaviour:
   toughnessBreakCue:
     vfxPrefab: {fileID: 0}
     audioClip: {fileID: 0}
-    randomAudioClips: []
+    randomAudioClips:
+    - {fileID: 8300000, guid: 19ff4dd1df13341fa98d0c962eef04bd, type: 3}
     animatorTrigger: 
     spawnPoint: 0
     localOffset: {x: 0, y: 0}
